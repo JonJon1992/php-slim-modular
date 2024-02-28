@@ -11,8 +11,8 @@ use Illuminate\Database\Connection;
 use JsonSerializable;
 use Psr\Log\LoggerInterface;
 use ReflectionClass;
-use Slim\Interfaces\RouteGroupInterface;
 use Slim\Interfaces\RouteCollectorProxyInterface as Route;
+use Slim\Interfaces\RouteGroupInterface;
 use function DI\autowire;
 
 abstract class SlimModule implements ISlimModule
