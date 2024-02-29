@@ -1,9 +1,9 @@
 {
   "name": "jonjon1992/php-slim-modular",
   "type": "library",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "require": {
-    "php": ">= 8.2",
+    "php": ">= 8.0",
     "ext-fileinfo": "*",
     "ext-json": "*",
     "ext-openssl": "*",
@@ -27,9 +27,7 @@
     "laminas/laminas-hydrator": "4.15.0",
     "lcobucci/jwt": "^4.2",
     "php-di/php-di": "6.3.4",
-    "monolog/monolog": "2.3.2",
-    "ext-http": "*",
-    "ext-mongodb": "*"
+    "monolog/monolog": "2.3.2"
   },
   "require-dev": {
     "jangregor/phpstan-prophecy": "1.0.0",
