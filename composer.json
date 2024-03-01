@@ -1,7 +1,7 @@
 {
   "name": "jonjon1992/php-slim-modular",
   "type": "library",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "require": {
     "php": ">= 8.0",
     "ext-fileinfo": "*",
