@@ -27,7 +27,8 @@
     "laminas/laminas-hydrator": "4.15.0",
     "lcobucci/jwt": "^4.2",
     "php-di/php-di": "6.3.4",
-    "monolog/monolog": "2.3.2"
+    "monolog/monolog": "2.3.2",
+    "ramsey/uuid": "4.7.5"
   },
   "require-dev": {
     "jangregor/phpstan-prophecy": "1.0.0",
@@ -54,5 +55,8 @@
     "allow-plugins": {
       "phpstan/extension-installer": false
     }
+  },
+  "scripts": {
+    "start" : "php -S localhost:8088 public/index.php"
   }
 }
