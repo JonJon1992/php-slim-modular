@@ -1,6 +1,8 @@
 <?php
 
+use Core\Exceptions\ErrorHandler;
 use Core\Utils\Str;
+use Core\Utils\Trace;
 use Monolog\Formatter\JsonFormatter;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
@@ -20,7 +22,7 @@ ob_start(function ($buffer) {
                 'file' => $error['file'],
                 'line' => $error['line'],
                 'trace' => $trace,
-                'request' => ErrorHandler::metadados()
+                'request' => ErrorHandler::metadata()
             ]
         ];
 
@@ -30,7 +32,7 @@ ob_start(function ($buffer) {
         $logger = new Logger('Slim Modular');
 
         $logger->pushProcessor(function ($record) {
-            $record['extra']['trace'] = Trace::metadados();
+            $record['extra']['trace'] = Trace::metadata();
             return $record;
         });
         $logger->pushHandler($handler);

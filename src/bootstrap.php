@@ -3,10 +3,13 @@ declare(strict_types=1);
 
 use Core\App\App;
 use Core\Utils\Path;
+use Core\Utils\Trace;
 use DI\ContainerBuilder;
 use Dotenv\Dotenv;
 
 $global_started_at = microtime(true);
+
+Trace::bootstrap($global_started_at);
 
 Dotenv::createImmutable(Path::root())->load();
 
