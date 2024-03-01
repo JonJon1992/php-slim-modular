@@ -14,6 +14,7 @@ function app(): App
     return App::singleton();
 }
 
+
 /**
  * @param string $key
  * @param $default
