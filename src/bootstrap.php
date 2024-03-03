@@ -13,7 +13,7 @@ $global_started_at = microtime(true);
 Trace::bootstrap($global_started_at);
 Dotenv::createImmutable(Path::root())->load();
 
-
+require  'cors.php';
 require 'exception.php';
 
 

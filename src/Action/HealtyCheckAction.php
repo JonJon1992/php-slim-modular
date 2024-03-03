@@ -14,10 +14,8 @@ class HealtyCheckAction extends SlimAction
     protected array $services = [];
     const HEALTY_CHECK = '/healty-check.log';
 
-    /**
-     * @return array|string[]
-     */
-    protected function action(): array
+
+    protected function action()
     {
         $fs = new Filesystem();
 
