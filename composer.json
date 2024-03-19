@@ -1,7 +1,7 @@
 {
   "name": "jonjon1992/php-slim-modular",
   "type": "library",
-  "version": "1.0.5",
+  "version": "1.0.85",
   "require": {
     "php": ">= 8.0",
     "ext-fileinfo": "*",
@@ -11,13 +11,6 @@
     "ext-sodium": "*",
     "aws/aws-sdk-php": "3.295.0",
     "awurth/slim-validation": "5.0.0",
-    "slim/slim": "4.8.1",
-    "slim/psr7": "1.6.1",
-    "slim/php-view": "3.1.0",
-    "symfony/console": "v6.4.1",
-    "symfony/event-dispatcher": "^6.3",
-    "vlucas/phpdotenv": "v5.3.0",
-    "zircote/swagger-php": "3.2.3",
     "hashids/hashids": "4.1.0",
     "illuminate/database": "v10.37.3",
     "illuminate/events": "v10.37.3",
@@ -26,8 +19,17 @@
     "illuminate/pagination": "v10.37.3",
     "laminas/laminas-hydrator": "4.15.0",
     "lcobucci/jwt": "^4.2",
+    "monolog/monolog": "2.3.2",
     "php-di/php-di": "6.3.4",
-    "monolog/monolog": "2.3.2"
+    "predis/predis": "v1.1.6",
+    "ramsey/uuid": "4.7.5",
+    "slim/php-view": "3.1.0",
+    "slim/psr7": "1.6.1",
+    "slim/slim": "4.8.1",
+    "symfony/console": "v6.4.1",
+    "symfony/event-dispatcher": "^6.3",
+    "vlucas/phpdotenv": "v5.3.0",
+    "zircote/swagger-php": "3.2.3"
   },
   "require-dev": {
     "jangregor/phpstan-prophecy": "1.0.0",
@@ -54,5 +56,8 @@
     "allow-plugins": {
       "phpstan/extension-installer": false
     }
+  },
+  "scripts": {
+    "start": "php -S localhost:8088 public/index.php"
   }
 }

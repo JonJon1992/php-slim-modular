@@ -2,6 +2,7 @@
 
 namespace Core\Exceptions;
 
+use Core\Utils\Trace;
 use Psr\Http\Message\ResponseInterface;
 use Slim\Exception\HttpMethodNotAllowedException;
 use Slim\Exception\HttpNotFoundException;

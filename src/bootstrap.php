@@ -6,14 +6,14 @@ use Core\Utils\Path;
 use Core\Utils\Trace;
 use DI\ContainerBuilder;
 use Dotenv\Dotenv;
+use function DI\autowire;
 
 $global_started_at = microtime(true);
 
 Trace::bootstrap($global_started_at);
-
 Dotenv::createImmutable(Path::root())->load();
 
-
+require  'cors.php';
 require 'exception.php';
 
 
@@ -21,7 +21,7 @@ $containerBuilder = new ContainerBuilder();
 $bindings = require 'bindings.php';
 
 foreach ($bindings as $key => $class) {
-    $bindings[$key] = \DI\autowire($class);
+    $bindings[$key] = autowire($class);
 }
 
 $containerBuilder->addDefinitions($bindings);
