@@ -1,12 +1,11 @@
 {
   "name": "jonjon1992/php-slim-modular",
   "type": "library",
-  "version": "1.0.8",
+  "version": "1.0.85",
   "require": {
     "php": ">= 8.0",
     "ext-fileinfo": "*",
     "ext-json": "*",
-    "ext-mongodb": "*",
     "ext-openssl": "*",
     "ext-redis": "*",
     "ext-sodium": "*",
