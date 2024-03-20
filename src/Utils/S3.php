@@ -2,6 +2,9 @@
 
 namespace Core\Utils;
 
+use Exception;
+use S3\Lib\Bucket;
+
 class S3
 {
 
@@ -25,16 +28,14 @@ class S3
     /**
      * @param $file_path
      * @param $file_path_local
-     * @return Result|void
      */
     public function saveS3($file_path, $file_path_local)
     {
         try {
             $info['ContentType'] = mime_content_type($file_path_local);
             return $this->bucket->putFile($file_path, $file_path_local, $info);
-        } catch (\Exception $e) {
-
+        } catch (Exception $e) {
+            abort($e->getMessage(), 500);
         }
-
     }
 }

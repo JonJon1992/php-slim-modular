@@ -5,7 +5,8 @@
   "repositories": [
     {
       "type": "git",
-      "url": "git@github.com:JonJon1992/s3-php.git"
+      "name": "jonjon1992/s3-php",
+      "url": "https://github.com/JonJon1992/s3-php.git"
     }
   ],
   "require": {
@@ -36,7 +37,7 @@
     "symfony/event-dispatcher": "^6.3",
     "vlucas/phpdotenv": "v5.3.0",
     "zircote/swagger-php": "3.2.3",
-    "jonjon1992/s3-php": "v1.0.8"
+    "jonjon1992/s3-php": "*"
   },
   "require-dev": {
     "jangregor/phpstan-prophecy": "1.0.0",
@@ -65,7 +66,6 @@
     }
   },
   "scripts": {
-    "start": "php -S localhost:8088 public/index.php",
-    "slim": "php cli.php --ansi"
+    "start": "php -S localhost:8088 public/index.php"
   }
 }

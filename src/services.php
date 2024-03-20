@@ -1,15 +1,15 @@
 <?php
 declare(strict_types=1);
 
-use Core\Utils\{Config, Redis};
+use Core\Utils\{Arr, Config, Redis};
 use DI\ContainerBuilder;
 use Illuminate\Container\Container;
 use Illuminate\Database\Capsule\Manager;
 use Illuminate\Events\Dispatcher;
-use Illuminate\Support\Arr;
 use Monolog\Formatter\JsonFormatter;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
+use S3\Lib\S3;
 
 
 return function (ContainerBuilder $builder) {
@@ -60,6 +60,14 @@ return function (ContainerBuilder $builder) {
         $bindings["cache.$alias"] = function () use ($settings) {
             return new Redis($settings);
         };
+    }
+
+    $default = $configs->get('storage.default','');
+    $storages = Arr::except($configs->get('storage',[]),['default',$default]);
+    $storages = Arr::merge([$default => $configs->get("storage.$default",[])],$storages);
+
+    foreach ($storages as $alias => $settings){
+        S3::singleton()->use($alias,$settings);
     }
 
     $builder->addDefinitions($bindings);
