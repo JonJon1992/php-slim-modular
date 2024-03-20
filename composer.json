@@ -1,7 +1,7 @@
 {
   "name": "jonjon1992/php-slim-modular",
   "type": "library",
-  "version": "1.0.89",
+  "version": "v1.1.0",
   "repositories": [
     {
       "type": "git",
