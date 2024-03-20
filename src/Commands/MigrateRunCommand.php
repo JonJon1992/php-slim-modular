@@ -32,7 +32,6 @@ class MigrateRunCommand extends SlimCommand
         foreach (app()->modules() as $module) {
             try {
                 $db = MigrateRunCommand::getConnection($module);
-
             } catch (Throwable) {
                 continue;
             }
@@ -76,7 +75,6 @@ class MigrateRunCommand extends SlimCommand
             }
 
             $this->output->writeln('\n> Finalizando....');
-
         }
     }
 
@@ -112,7 +110,6 @@ class MigrateRunCommand extends SlimCommand
             $manager->bootEloquent();
 
             return $manager->getConnection();
-
         } catch (Throwable $exception) {
             throw new Exception('Falha ao conectar no database', 0, $exception);
         }
@@ -141,7 +138,7 @@ class MigrateRunCommand extends SlimCommand
             $table->id();
             $table->text('name');
             $table->integer('batch')->default(0);
-            $table->timestamp();
+            $table->timestamps();
         });
     }
 
