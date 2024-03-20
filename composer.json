@@ -58,6 +58,7 @@
     }
   },
   "scripts": {
-    "start": "php -S localhost:8088 public/index.php"
+    "start": "php -S localhost:8088 public/index.php",
+    "slim": "php cli.php --ansi"
   }
 }

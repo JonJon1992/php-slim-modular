@@ -1,0 +1,187 @@
+<?php
+
+namespace Core\Commands;
+
+use Carbon\Carbon;
+use Core\App\SlimCommand;
+use Core\App\SlimModule;
+use Exception;
+use Illuminate\Database\Capsule\Manager;
+use Illuminate\Database\Connection;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Arr;
+use Throwable;
+
+class MigrateRunCommand extends SlimCommand
+{
+    /**
+     * @return void
+     */
+    protected function configure()
+    {
+        $this->setName('migrate:run');
+        $this->setDescription('Executa todas as migrations que ainda não foram executadas');
+    }
+
+    /**
+     * @return void
+     * @throws Throwable
+     */
+    protected function handler()
+    {
+        foreach (app()->modules() as $module) {
+            try {
+                $db = MigrateRunCommand::getConnection($module);
+
+            } catch (Throwable) {
+                continue;
+            }
+
+            $this->output->writeln("\n#\n#" . get_class($module) . "\n#\n#");
+            $migrations = $module->migrations();
+
+            if (empty($migrations)) {
+                $this->output->writeln("> Modulo não possui migrations");
+                continue;
+            }
+            $this->output->writeln('> Preparando tabela de migrations...');
+            $this->prepareMigrationTable($db);
+
+            $this->output->writeln('> Definindo proximo batch...');
+            $batch = $this->getLastBatch($db) + 1;
+
+            foreach ($migrations as $migration) {
+                $m = new $migration($db);
+                $this->output->writeln("\n> $migration");
+
+                if ($this->alreadyExist($db, $migration)) {
+                    $this->output->writeln('> Já existe!');
+                    continue;
+                }
+
+                try {
+                    $db->beginTransaction();
+                    $this->output->writeln('> Executando...');
+                    $m->up();
+
+                    $this->registerMigration($db, $migration, $batch);
+
+                    $this->output->writeln('> Realizando commmit...');
+                    $db->commit();
+                } catch (Throwable $t) {
+                    $this->output->writeln('> Realizando rollback...');
+                    $db->rollBack();
+                    throw  $t;
+                }
+            }
+
+            $this->output->writeln('\n> Finalizando....');
+
+        }
+    }
+
+    /**
+     * @param string $namespace
+     * @return SlimModule
+     */
+    public static function getModule(string $namespace)
+    {
+        foreach (app()->modules() as $module) {
+            /** @var $module SlimModule */
+            if ($module->namespace() == $namespace) {
+                return $module;
+            }
+        }
+        throw new Exception('Module não encontrado.');
+    }
+
+    /**
+     * @param SlimModule $module
+     * @return Connection
+     */
+    public static function getConnection(SlimModule $module)
+    {
+        try {
+            $manager = new Manager();
+            $config = config("db." . $module->namespace());
+
+            $config['username'] = Arr::get($config, 'username_master', 'usr_ms_master');
+            $config['password'] = Arr::get($config, 'password_master');
+
+            $manager->addConnection($config);
+            $manager->bootEloquent();
+
+            return $manager->getConnection();
+
+        } catch (Throwable $exception) {
+            throw new Exception('Falha ao conectar no database', 0, $exception);
+        }
+    }
+
+    /**
+     * @param Connection $conn
+     * @return void
+     */
+    protected function prepareMigrationTable(Connection $conn)
+    {
+        try {
+            $conn->table('migrations')->exists();
+        } catch (Exception) {
+            $this->createMigrationTable($conn);
+        }
+    }
+
+    /**
+     * @param Connection $conn
+     * @return void
+     */
+    protected function createMigrationTable(Connection $conn)
+    {
+        $conn->getSchemaBuilder()->create('migrations', function (Blueprint $table) {
+            $table->id();
+            $table->text('name');
+            $table->integer('batch')->default(0);
+            $table->timestamp();
+        });
+    }
+
+    /**
+     * @param Connection $conn
+     * @return int
+     */
+    protected function getLastBatch(Connection $conn)
+    {
+        $migration = $conn->query()->from('migrations')
+            ->orderBy('batch', 'desc')
+            ->first();
+        return $migration ? $migration->batch : 0;
+    }
+
+    /**
+     * @param Connection $conn
+     * @param string $name
+     * @return bool
+     */
+    protected function alreadyExist(Connection $conn, string $name)
+    {
+        return $conn->query()->from('migrations')->where('name', $name)->exists();
+    }
+
+    /**
+     * @param Connection $conn
+     * @param string $name
+     * @param int $batch
+     * @return void
+     */
+    protected function registerMigration(Connection $conn, string $name, int $batch)
+    {
+        $now = new Carbon();
+
+        $conn->query()->from('migrations')->insert([
+            'name' => $name,
+            'batch' => $batch,
+            'created_at' => $now->toDateTimeString(),
+            'updated_at' => $now->toDateTimeString()
+        ]);
+    }
+}
