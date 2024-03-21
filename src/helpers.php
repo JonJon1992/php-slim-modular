@@ -14,6 +14,10 @@ function app(): App
     return App::singleton();
 }
 
+function abort(string $message, int $code = 400, Exception $previous = null)
+{
+    throw  new Exception($message, $code, $previous);
+}
 
 /**
  * @param string $key

@@ -41,6 +41,13 @@ class HealtyCheckAction extends SlimAction
                 $response[$key]['status'] == 'dead' ? $dead++ : null;
             }
         }
+        foreach (array_keys(config('storage', [])) as $alias) {
+            $key = "storage.$alias";
+            if ($alias != 'default' && (empty($service) || Str::has($key, $service))) {
+                $response[$key] = $this->checkStorage($alias);
+                $response[$key]['status'] == 'dead' ? $dead++ : null;
+            }
+        }
 
         if ($dead > 0) {
             logger()->critical('healty-check with dead', $response);
@@ -101,6 +108,22 @@ class HealtyCheckAction extends SlimAction
         $info['latency'] = Time::latency($start);
 
         return $info;
+    }
+
+    protected function checkStorage($alias)
+    {
+        $info = $this->info();
+
+        $start = microtime(true);
+        try {
+            $info['status'] = s3($alias)->isExistBucket() ? $info['status'] : 'dead';
+        } catch (Exception) {
+            $info['status'] = 'dead';
+        }
+        $info['latency'] = Time::latency($start);
+
+        return $info;
+
     }
 
 }

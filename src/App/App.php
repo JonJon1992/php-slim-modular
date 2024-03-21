@@ -34,7 +34,7 @@ class App extends \Slim\App
     }
 
     /**
-     * @return array|mixed
+     * @return SlimModule[]
      */
     public function modules(): mixed
     {
@@ -80,7 +80,7 @@ class App extends \Slim\App
     }
 
     /**
-     * @return array
+     * @return SlimCommand[]
      */
     public function commands(): array
     {

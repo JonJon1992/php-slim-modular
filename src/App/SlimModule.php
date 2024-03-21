@@ -11,6 +11,7 @@ use Illuminate\Database\Connection;
 use JsonSerializable;
 use Psr\Log\LoggerInterface;
 use ReflectionClass;
+use S3\Lib\Bucket;
 use Slim\Interfaces\RouteCollectorProxyInterface as Route;
 use Slim\Interfaces\RouteGroupInterface;
 use function DI\autowire;
@@ -205,5 +206,14 @@ abstract class SlimModule implements ISlimModule
     public function redis(): Redis
     {
         return redis($this->namespace());
+    }
+
+    /**
+     * @return Bucket
+     */
+    public function s3()
+    {
+        return s3($this->namespace());
+
     }
 }

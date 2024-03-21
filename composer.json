@@ -1,7 +1,14 @@
 {
   "name": "jonjon1992/php-slim-modular",
   "type": "library",
-  "version": "1.0.85",
+  "version": "1.1.4",
+  "repositories": [
+    {
+      "type": "git",
+      "name": "jonjon1992/s3-php",
+      "url": "https://github.com/JonJon1992/s3-php.git"
+    }
+  ],
   "require": {
     "php": ">= 8.0",
     "ext-fileinfo": "*",
@@ -29,7 +36,8 @@
     "symfony/console": "v6.4.1",
     "symfony/event-dispatcher": "^6.3",
     "vlucas/phpdotenv": "v5.3.0",
-    "zircote/swagger-php": "3.2.3"
+    "zircote/swagger-php": "3.2.3",
+    "jonjon1992/s3-php": "v1.0.8"
   },
   "require-dev": {
     "jangregor/phpstan-prophecy": "1.0.0",
