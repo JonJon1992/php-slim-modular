@@ -38,4 +38,14 @@ class S3
             abort($e->getMessage(), 500);
         }
     }
+
+    /**
+     * @param $file_path
+     * @return string
+     */
+    public function generateUrl($file_path)
+    {
+        return $this->bucket->fileUrl($file_path);
+
+    }
 }
