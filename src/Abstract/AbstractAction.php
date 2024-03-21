@@ -5,6 +5,7 @@ namespace Core\Abstract;
 use Core\App\SlimAction;
 use Core\Contracts\ICrypt;
 use Core\Middleware\CryptMiddleware;
+use Core\Utils\EncodedBase64;
 use Core\Utils\Str;
 use Fig\Http\Message\StatusCodeInterface;
 use Illuminate\Support\Arr;

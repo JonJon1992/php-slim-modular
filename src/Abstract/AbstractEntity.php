@@ -2,15 +2,15 @@
 
 namespace Core\Abstract;
 
-use Core\Traits\Attr\CreatedAt;
-use Core\Traits\Attr\DeletedAt;
+use Core\Traits\Attr\DataCriacao;
+use Core\Traits\Attr\DataExclusao;
 use Core\Traits\Attr\Id;
-use Core\Traits\Attr\UpdatedAt;
+use Core\Traits\Attr\DataAlteracao;
 use Core\Utils\Serializable;
 
 class AbstractEntity extends Serializable
 {
-    use Id, CreatedAt, UpdatedAt, DeletedAt;
+    use Id, DataCriacao, DataAlteracao, DataExclusao;
 
     const DATA_CRIACAO = 'data_criacao';
     const DATA_ALTERACAO = 'data_alteracao';
@@ -66,9 +66,9 @@ class AbstractEntity extends Serializable
         $data = is_array($data) ? (object)$data : $data;
 
         $this->setId($data->id ?? null);
-        $this->setCreatedAt($data->{self::DATA_CRIACAO} ?? null);
-        $this->setUpdatedAt($data->{self::DATA_ALTERACAO} ?? null);
-        $this->setDeletedAt($data->{self::DATA_EXCLUSAO} ?? null);
+        $this->setDataCriacao($data->{self::DATA_CRIACAO} ?? null);
+        $this->setDataAlteracao($data->{self::DATA_ALTERACAO} ?? null);
+        $this->setDataExclusao($data->{self::DATA_EXCLUSAO} ?? null);
         $this->setUserCriacaoId($data->{self::USER_CRIACAO_ID} ?? null);
         $this->setUserAlteracaoId($data->{self::USER_ALTERACAO_ID} ?? null);
         $this->addPropertiesNotSerializable($data->{self::DATA_EXCLUSAO});

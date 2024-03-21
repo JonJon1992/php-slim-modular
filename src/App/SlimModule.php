@@ -214,6 +214,5 @@ abstract class SlimModule implements ISlimModule
     public function s3()
     {
         return s3($this->namespace());
-
     }
 }
