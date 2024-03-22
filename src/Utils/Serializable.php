@@ -9,6 +9,9 @@ abstract class Serializable implements \JsonSerializable
 
     private ?array $propertitiesSerializable = null;
 
+    /**
+     * @return array
+     */
     public function jsonSerialize()
     {
         return $this->toArray(true);
@@ -140,7 +143,11 @@ abstract class Serializable implements \JsonSerializable
         return $this;
     }
 
-    public function toArray($resolveSerializable = false)
+    /**
+     * @param bool $resolveSerializable
+     * @return array
+     */
+    public function toArray(bool $resolveSerializable = false)
     {
         $data = [];
 
