@@ -47,7 +47,7 @@ abstract class AbstractAction extends SlimAction
             if (!is_numeric($key)) {
                 $keyDot = !empty($prefix) ? "{$prefix}.{$key}" : $key;
             }
-            if ($encode && $this->isParamSerializable($keyDot)) {
+            if ($encode && !$this->isParamSerializable($keyDot)) {
                 continue;
             }
             $keyCheck = !is_numeric($key) ? $key : Arr::last(explode('.', $keyDot));

@@ -71,7 +71,6 @@ abstract class Serializable implements JsonSerializable
     private function resolveNameGetterByProperty($value)
     {
         return 'get' . self::transformNamePropertyToCamelCase($value);
-
     }
 
     /**
@@ -80,12 +79,7 @@ abstract class Serializable implements JsonSerializable
      */
     private function transformNamePropertyToCamelCase($value)
     {
-        $name = array_map(function ($str) {
-            return ucfirst($str);
-        }, explode('_', $value));
-
-        return implode('', $name);
-
+        return implode('', array_map(fn($str) => ucfirst($str), explode('_', $value)));
     }
 
     /**
