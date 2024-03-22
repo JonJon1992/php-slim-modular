@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 use Core\App\App;
-use Core\Utils\Config;
+use Core\Utils\{Auth, Config};
 use Illuminate\Database\Connection;
 
 /**
@@ -65,4 +65,9 @@ function redis(string $alias = null): \Core\Utils\Redis
 
 }
 
+function auth(): Auth
+{
+    return Auth::singleton();
+
+}
 

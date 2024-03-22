@@ -4,6 +4,8 @@ namespace Core\Utils;
 
 class Time
 {
+    const _24H = 86400;
+
     /**
      * @param float $start
      * @param int $precision

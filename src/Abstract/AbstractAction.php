@@ -5,6 +5,7 @@ namespace Core\Abstract;
 use Core\App\SlimAction;
 use Core\Contracts\ICrypt;
 use Core\Middleware\CryptMiddleware;
+use Core\Utils\EncodedBase64;
 use Core\Utils\Str;
 use Fig\Http\Message\StatusCodeInterface;
 use Illuminate\Support\Arr;
@@ -46,7 +47,7 @@ abstract class AbstractAction extends SlimAction
             if (!is_numeric($key)) {
                 $keyDot = !empty($prefix) ? "{$prefix}.{$key}" : $key;
             }
-            if ($encode && $this->isParamSerializable($keyDot)) {
+            if ($encode && !$this->isParamSerializable($keyDot)) {
                 continue;
             }
             $keyCheck = !is_numeric($key) ? $key : Arr::last(explode('.', $keyDot));

@@ -2,17 +2,24 @@
 
 namespace Core\Utils;
 
-abstract class Serializable implements \JsonSerializable
+use JsonSerializable;
+use ReflectionClass;
+
+abstract class Serializable implements JsonSerializable
 {
 
     private ?array $propertitiesNotSerializable = null;
 
     private ?array $propertitiesSerializable = null;
 
+    /**
+     * @return array
+     */
     public function jsonSerialize()
     {
-        // TODO: Implement jsonSerialize() method.
+        return $this->toArray(true);
     }
+
 
     /**
      * @param array $data
@@ -64,7 +71,6 @@ abstract class Serializable implements \JsonSerializable
     private function resolveNameGetterByProperty($value)
     {
         return 'get' . self::transformNamePropertyToCamelCase($value);
-
     }
 
     /**
@@ -73,12 +79,7 @@ abstract class Serializable implements \JsonSerializable
      */
     private function transformNamePropertyToCamelCase($value)
     {
-        $name = array_map(function ($str) {
-            return ucfirst($str);
-        }, explode('_', $value));
-
-        return implode('', $name);
-
+        return implode('', array_map(fn($str) => ucfirst($str), explode('_', $value)));
     }
 
     /**
@@ -127,10 +128,7 @@ abstract class Serializable implements \JsonSerializable
         return $this;
     }
 
-    /**
-     * @param array $propertities
-     * @return $this
-     */
+
     public function removePropertiesNotSerializable(array $propertities)
     {
         if ($this->propertitiesNotSerializable) {
@@ -140,5 +138,41 @@ abstract class Serializable implements \JsonSerializable
         return $this;
     }
 
+
+    public function toArray(bool $resolveSerializable = false)
+    {
+        $data = [];
+
+        $reflectionClass = new ReflectionClass(get_class($this));
+        foreach ($reflectionClass->getProperties() as $property) {
+            $nameMethodGetter = $this->resolveNameGetterByProperty($property->getName());
+
+            if ($reflectionClass->hasMethod($nameMethodGetter)) {
+                $methodGetter = $reflectionClass->getMethod($nameMethodGetter);
+                $value = $methodGetter->invoke($this);
+
+                $isArray = $property->getType() && $property->getType()->getName() == 'array';
+                $isArrayEmpty = $isArray && (is_null($value) || count($value) == 0);
+
+                if (!isset($value) || $isArrayEmpty) {
+                    continue;
+                }
+
+                if ($isArray) {
+                    $dataArray = [];
+
+                    foreach ($value as $key => $item) {
+                        $dataArray[$key] = $item instanceof Serializable ? $item->toArray($resolveSerializable) : $item;
+                    }
+                    $data[$property->getName()] = $dataArray;
+
+                } else {
+                    $value = $value instanceof Serializable ? $value->toArray($resolveSerializable) : $value;
+                    $data[$property->getName()] = $value;
+                }
+            }
+        }
+        return $resolveSerializable ? $this->resolveSerializable($data) : $data;
+    }
 
 }
