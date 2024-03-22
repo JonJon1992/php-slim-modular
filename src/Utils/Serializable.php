@@ -12,6 +12,9 @@ abstract class Serializable implements JsonSerializable
 
     private ?array $propertitiesSerializable = null;
 
+    /**
+     * @return array
+     */
     public function jsonSerialize()
     {
         return $this->toArray(true);

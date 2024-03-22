@@ -2,10 +2,7 @@
 
 namespace Core\Abstract;
 
-use Core\Traits\Attr\DataCriacao;
-use Core\Traits\Attr\DataExclusao;
-use Core\Traits\Attr\Id;
-use Core\Traits\Attr\DataAlteracao;
+use Core\Traits\Attr\{DataAlteracao, DataCriacao, DataExclusao, Id};
 use Core\Utils\Serializable;
 
 class AbstractEntity extends Serializable
