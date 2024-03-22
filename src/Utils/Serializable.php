@@ -11,7 +11,7 @@ abstract class Serializable implements \JsonSerializable
 
     public function jsonSerialize()
     {
-        // TODO: Implement jsonSerialize() method.
+        return $this->toArray(true);
     }
 
     /**
@@ -140,5 +140,41 @@ abstract class Serializable implements \JsonSerializable
         return $this;
     }
 
+    public function toArray($resolveSerializable = false)
+    {
+        $data = [];
+
+        $reflectionClass = new \ReflectionClass(get_class($this));
+
+        foreach ($reflectionClass->getProperties() as $property) {
+            $nameMethodGetter = $this->resolveNameGetterByProperty($property->getName());
+
+            if ($reflectionClass->hasMethod($nameMethodGetter)) {
+                $methodGetter = $reflectionClass->getMethod($nameMethodGetter);
+                $value = $methodGetter->invoke($this);
+
+                $isArray = $property->getType() && $property->getType()->getName() == 'array';
+                $isArrayEmpty = $isArray && (is_null($value) || count($value) == 0);
+
+                if (!isset($value) || $isArrayEmpty) {
+                    continue;
+                }
+
+                if ($isArray) {
+                    $dataArray = [];
+
+                    foreach ($value as $key => $item) {
+                        $dataArray[$key] = $item instanceof Serializable ? $item->toArray($resolveSerializable) : $item;
+                    }
+                    $data[$property->getName()] = $dataArray;
+
+                } else {
+                    $value = $value instanceof Serializable ? $value->toArray($resolveSerializable) : $value;
+                    $data[$property->getName()] = $value;
+                }
+            }
+        }
+        return $resolveSerializable ? $this->resolveSerializable($data) : $data;
+    }
 
 }
