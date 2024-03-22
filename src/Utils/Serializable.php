@@ -2,20 +2,21 @@
 
 namespace Core\Utils;
 
-abstract class Serializable implements \JsonSerializable
+use JsonSerializable;
+use ReflectionClass;
+
+abstract class Serializable implements JsonSerializable
 {
 
     private ?array $propertitiesNotSerializable = null;
 
     private ?array $propertitiesSerializable = null;
 
-    /**
-     * @return array
-     */
     public function jsonSerialize()
     {
         return $this->toArray(true);
     }
+
 
     /**
      * @param array $data
@@ -130,10 +131,7 @@ abstract class Serializable implements \JsonSerializable
         return $this;
     }
 
-    /**
-     * @param array $propertities
-     * @return $this
-     */
+
     public function removePropertiesNotSerializable(array $propertities)
     {
         if ($this->propertitiesNotSerializable) {
@@ -143,16 +141,12 @@ abstract class Serializable implements \JsonSerializable
         return $this;
     }
 
-    /**
-     * @param bool $resolveSerializable
-     * @return array
-     */
+
     public function toArray(bool $resolveSerializable = false)
     {
         $data = [];
 
-        $reflectionClass = new \ReflectionClass(get_class($this));
-
+        $reflectionClass = new ReflectionClass(get_class($this));
         foreach ($reflectionClass->getProperties() as $property) {
             $nameMethodGetter = $this->resolveNameGetterByProperty($property->getName());
 
