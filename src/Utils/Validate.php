@@ -4,7 +4,7 @@ namespace Core\Utils;
 
 use Awurth\Validator\Validator;
 use Core\Contracts\IValidate;
-use Core\Exceptions\SlimModuleValidatorException;
+use Core\Exceptions\SlimValidatorException;
 
 class Validate implements IValidate
 {
@@ -45,8 +45,13 @@ class Validate implements IValidate
         $errors = $validation->validate($subject, $rules, $messages);
 
         if ($errors->has(0)) {
-            throw new SlimModuleValidatorException($errors->get(0)->getMessage(), 412);
+            throw new SlimValidatorException($errors->get(0)->getMessage(), 412);
         }
     }
+
+    public static function __callStatic(string $ruleName,array  $arguments): Validator
+     {
+        return Validator::create()->__call($ruleName,$arguments);
+     }
 
 }
