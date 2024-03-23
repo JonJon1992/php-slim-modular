@@ -31,16 +31,21 @@ class Validate implements IValidate
      */
     public static function request(array $data, array $values, string $group = null, array $messages = [], $default = null)
     {
-        // TODO: Implement request() method.
+        self::validate($data, $values, $messages);
     }
 
+    /**
+     * @param  $subject
+     * @param  $rules
+     * @param  $messages
+     */
     private static function validate($subject, $rules, $messages)
     {
         $validation = Validator::create();
         $errors = $validation->validate($subject, $rules, $messages);
 
         if ($errors->has(0)) {
-            throw  new SlimModuleValidatorException($errors->get(0)->getMessage(), 412);
+            throw new SlimModuleValidatorException($errors->get(0)->getMessage(), 412);
         }
     }
 
