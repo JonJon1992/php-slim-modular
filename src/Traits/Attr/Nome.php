@@ -7,7 +7,7 @@ trait Nome
 
     protected $nome;
 
-    public function geNome()
+    public function getNome()
     {
         return $this->nome;
     }

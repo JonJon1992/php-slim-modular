@@ -2,9 +2,10 @@
 
 namespace Core\Utils;
 
-use Awurth\Validator\Validator;
+use Awurth\Validator\Validator as SlimValidator;
 use Core\Contracts\IValidate;
 use Core\Exceptions\SlimValidatorException;
+use Respect\Validation\Validator;
 
 class Validate implements IValidate
 {
@@ -41,7 +42,7 @@ class Validate implements IValidate
      */
     private static function validate($subject, $rules, $messages)
     {
-        $validation = Validator::create();
+        $validation = SlimValidator::create();
         $errors = $validation->validate($subject, $rules, $messages);
 
         if ($errors->has(0)) {

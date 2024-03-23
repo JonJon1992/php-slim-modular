@@ -5,7 +5,7 @@ namespace Core\Exceptions;
 use Exception;
 use Throwable;
 
-class SlimModuleValidatorException extends Exception
+class SlimValidatorException extends Exception
 {
     public function __construct(string $message = "", int $code = 412, Throwable $previous = null)
     {
