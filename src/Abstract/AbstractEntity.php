@@ -8,25 +8,22 @@ use Core\Utils\Serializable;
 class AbstractEntity extends Serializable
 {
     use Id, DataCriacao, DataAlteracao, DataExclusao;
-
     const DATA_CRIACAO = 'data_criacao';
     const DATA_ALTERACAO = 'data_alteracao';
     const DATA_EXCLUSAO = 'data_exclusao';
-
     const USER_CRIACAO_ID = 'user_criacao_id';
-
     const USER_ALTERACAO_ID = 'user_alteracao_id';
 
     /**
      * @var ?int
      */
 
-    protected ?int $user_criacao_id;
+    protected $user_criacao_id;
 
     /**
      * @var ?int
      */
-    protected ?int $user_alteracao_id;
+    protected $user_alteracao_id;
 
     public function __construct()
     {
@@ -68,7 +65,7 @@ class AbstractEntity extends Serializable
         $this->setDataExclusao($data->{self::DATA_EXCLUSAO} ?? null);
         $this->setUserCriacaoId($data->{self::USER_CRIACAO_ID} ?? null);
         $this->setUserAlteracaoId($data->{self::USER_ALTERACAO_ID} ?? null);
-        $this->addPropertiesNotSerializable($data->{self::DATA_EXCLUSAO});
+        $this->addPropertiesNotSerializable(self::DATA_EXCLUSAO);
         $this->addPropertiesNotSerializable('user_criacao_id');
         $this->addPropertiesNotSerializable('user_alteracao_id');
 

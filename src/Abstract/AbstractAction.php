@@ -61,7 +61,7 @@ abstract class AbstractAction extends SlimAction
             }
             $isEncodedBase64 = !is_array($value) && Str::endsWith($key, '_encoded_base64');
 
-            if ((!is_array($value) && $this->attributeSupportHash($keyCheck)) && !$isEncodedBase64) {
+            if ((!is_array($value) && !$this->attributeSupportHash($keyCheck)) && !$isEncodedBase64) {
                 $dataReturn[$key] = $value;
             }
             if (!is_array($value) && $encode && $this->attributeSupportHash($keyCheck)) {
