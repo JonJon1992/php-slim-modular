@@ -13,9 +13,9 @@ abstract class Serializable implements JsonSerializable
     private ?array $propertitiesSerializable = null;
 
     /**
-     * @return array
+     * @return mixed
      */
-    public function jsonSerialize()
+    public function jsonSerialize(): mixed
     {
         return $this->toArray(true);
     }
@@ -27,7 +27,7 @@ abstract class Serializable implements JsonSerializable
      * @return array
      */
 
-    private function resolveSerializable(array $data, string $prefix = '')
+    private function resolveSerializable(array $data, string $prefix = ''): array
     {
         if (is_null($this->propertitiesSerializable) && is_null($this->propertitiesNotSerializable)) {
             return $data;
@@ -49,11 +49,11 @@ abstract class Serializable implements JsonSerializable
      * @param $value
      * @return bool
      */
-    private function isPropertitySerializable($value)
+    private function isPropertitySerializable($value): bool
     {
         $isSerializable = false;
 
-        if (empty($this->propertitiesSerializable) || in_array($value, $this->propertitiesSerializable)) {
+        if (empty ($this->propertitiesSerializable) || in_array($value, $this->propertitiesSerializable)) {
             $isSerializable = true;
         }
         if (!is_null($this->propertitiesNotSerializable) && in_array($value, $this->propertitiesNotSerializable)) {
@@ -154,7 +154,7 @@ abstract class Serializable implements JsonSerializable
                 $isArray = $property->getType() && $property->getType()->getName() == 'array';
                 $isArrayEmpty = $isArray && (is_null($value) || count($value) == 0);
 
-                if (!isset($value) || $isArrayEmpty) {
+                if (!isset ($value) || $isArrayEmpty) {
                     continue;
                 }
 

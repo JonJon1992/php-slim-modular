@@ -114,7 +114,7 @@ class CacheMiddleware
                 if ($data) {
                     $delimiter = strpos($data, '|');
                     $expiration = substr($data, 0, $delimiter);
-                    $data = substr($data, $delimiter, 1);
+                    $data = substr($data, $delimiter + 1);
                     if ($expiration < time()) {
                         redis()->hDel(self::NAMESPACE . ':' . $user_id, $path);
                     } else {
