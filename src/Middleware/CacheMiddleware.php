@@ -26,7 +26,7 @@ class CacheMiddleware
      * @param Handler $handler
      * @return Response
      */
-    public function invoke(Request $request, Handler $handler): Response
+    public function __invoke(Request $request, Handler $handler): Response
     {
         if ($this->inactive || $request->getMethod() != 'GET' || env('CACHE_MIDDLEWARE') != 'true') {
             return $handler->handle($request);
