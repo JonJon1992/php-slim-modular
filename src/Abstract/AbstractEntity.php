@@ -8,6 +8,7 @@ use Core\Utils\Serializable;
 class AbstractEntity extends Serializable
 {
     use Id, DataCriacao, DataAlteracao, DataExclusao;
+
     const DATA_CRIACAO = 'data_criacao';
     const DATA_ALTERACAO = 'data_alteracao';
     const DATA_EXCLUSAO = 'data_exclusao';
@@ -55,7 +56,7 @@ class AbstractEntity extends Serializable
      * @param $data
      * @return $this
      */
-    protected function hydrate($data)
+    protected function hydrate($data): static
     {
         $data = is_array($data) ? (object)$data : $data;
 

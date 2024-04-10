@@ -15,6 +15,11 @@ abstract class AbstractAction extends SlimAction
 {
     protected ICrypt $crypt;
 
+    /**
+     * @param $payload
+     * @param int $status
+     * @return Response
+     */
     protected function respondWithJSON($payload, int $status = StatusCodeInterface::STATUS_OK): Response
     {
         return parent::respondWithJSON($this->preparePayload($payload), $status);
@@ -88,7 +93,7 @@ abstract class AbstractAction extends SlimAction
     /**
      * @return array
      */
-    protected function getParsedBodyDecoded()
+    protected function getParsedBodyDecoded(): array
     {
         if ($body = $this->request->getParsedBody()) {
             $body = $body ? (array)$body : [];
@@ -100,7 +105,7 @@ abstract class AbstractAction extends SlimAction
     /**
      * @return array
      */
-    protected function getQueryParamsDecoded()
+    protected function getQueryParamsDecoded(): array
     {
         return $this->resolvePayload($this->request->getQueryParams(), false);
 
@@ -111,7 +116,7 @@ abstract class AbstractAction extends SlimAction
      * @param $default
      * @return int|mixed|null
      */
-    protected function getArgDecoded(string $key, $default = null)
+    protected function getArgDecoded(string $key, $default = null): mixed
     {
         $arg = $this->arg($key);
         return $arg ? (int)$this->getCrypt()->requestValue($arg) : $default;
@@ -121,7 +126,7 @@ abstract class AbstractAction extends SlimAction
     /**
      * @return ICrypt|mixed
      */
-    protected function getCrypt()
+    protected function getCrypt(): mixed
     {
         $this->crypt = $this->crypt ?? service(ICrypt::class);
         return $this->crypt;
@@ -130,7 +135,7 @@ abstract class AbstractAction extends SlimAction
     /**
      * @return array|string[]
      */
-    public function getParamsNotColumns()
+    public function getParamsNotColumns(): array
     {
         $propertitiesNotSerializable = [];
         $keysNotSerializable = Arr::get($this->request->getQueryParams(), 'not-columns');
@@ -145,7 +150,7 @@ abstract class AbstractAction extends SlimAction
     /**
      * @return array|string[]
      */
-    public function getParamsColumns()
+    public function getParamsColumns(): array
     {
         $propertitiesSerializable = [];
         $keysSerializable = Arr::get($this->request->getQueryParams(), 'columns');
@@ -160,7 +165,7 @@ abstract class AbstractAction extends SlimAction
     /**
      * @return array|string[]
      */
-    public function getCryptKeysDecoded()
+    public function getCryptKeysDecoded(): array
     {
         $propertitiesCryptExcept = [];
         $keysDecodedParams = Arr::get($this->request->getQueryParams(), 'columns-decoded');
@@ -176,7 +181,7 @@ abstract class AbstractAction extends SlimAction
      * @param string $value
      * @return bool
      */
-    protected function attributeSupportHash(string $value)
+    protected function attributeSupportHash(string $value): bool
     {
         return $value == 'id' || str_ends_with($value, '_id') || str_ends_with($value, '_ids');
     }
@@ -186,7 +191,7 @@ abstract class AbstractAction extends SlimAction
      * @param string $key
      * @return bool
      */
-    protected function isParamSerializable(string $key)
+    protected function isParamSerializable(string $key): bool
     {
         $defaultPaginator = ['page', 'per_page', 'total', 'last_page'];
 
@@ -215,7 +220,7 @@ abstract class AbstractAction extends SlimAction
      * @param $value
      * @return string
      */
-    private function encode($value)
+    private function encode($value): string
     {
         return CryptMiddleware::$status ? $this->getCrypt()->encode($value) : $value;
     }
@@ -232,7 +237,7 @@ abstract class AbstractAction extends SlimAction
     /**
      * @return false
      */
-    protected function isResultPaginator()
+    protected function isResultPaginator(): false
     {
         return false;
 

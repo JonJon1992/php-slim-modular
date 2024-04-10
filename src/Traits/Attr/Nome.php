@@ -5,14 +5,21 @@ namespace Core\Traits\Attr;
 trait Nome
 {
 
-    protected $nome;
+    protected ?string $nome;
 
-    public function getNome()
+    /**
+     * @return string
+     */
+    public function getNome(): string
     {
         return $this->nome;
     }
 
-    public function setNome($nome)
+    /**
+     * @param $nome
+     * @return $this
+     */
+    public function setNome($nome): static
     {
         $this->nome = $nome;
         return $this;

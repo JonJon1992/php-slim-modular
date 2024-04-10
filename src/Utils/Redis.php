@@ -15,7 +15,7 @@ class Redis extends \Redis
     /**
      * @return int
      */
-    public function expireAtTheEndDay()
+    public function expireAtTheEndDay(): int
     {
         return strtotime('tomorrow') - time();
     }
@@ -44,7 +44,7 @@ class Redis extends \Redis
      * @param $id
      * @return int
      */
-    public function calcDbIndex($id)
+    public function calcDbIndex($id): int
     {
         return $id <= 0 ? 0 : ($id % 15) + 1;
     }

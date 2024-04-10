@@ -5,15 +5,26 @@ namespace Core\Traits\Attr;
 
 trait CpfCnpj
 {
-    protected $value;
+    /**
+     * @var string $cpfCnpj
+     */
+    protected $cpfCnpj;
 
-    public function getCpfCnpj()
+    /**
+     * @return string
+     */
+    public function getCpfCnpj(): string
     {
-        return $this->value;
+        return $this->cpfCnpj;
     }
-    public function setCpfCnpj($value)
+
+    /**
+     * @param $cpfCnpj
+     * @return $this
+     */
+    public function setCpfCnpj($cpfCnpj): static
     {
-        $this->value = $value;
+        $this->cpfCnpj = $cpfCnpj;
         return $this;
     }
 }

@@ -20,7 +20,7 @@ trait DataExclusao
      * @param mixed $data_exclusao
      * @return DataExclusao
      */
-    public function setDataExclusao($data_exclusao)
+    public function setDataExclusao($data_exclusao): static
     {
         $this->data_exclusao = is_string($data_exclusao) ? new Carbon($data_exclusao) : $data_exclusao;
         return $this;

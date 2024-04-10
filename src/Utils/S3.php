@@ -28,6 +28,7 @@ class S3
     /**
      * @param $file_path
      * @param $file_path_local
+     * @throws Exception
      */
     public function saveS3($file_path, $file_path_local)
     {

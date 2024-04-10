@@ -14,7 +14,7 @@ abstract class AbstractFilters extends Serializable
 
     protected $not_columns;
 
-    protected $with_associations = [];
+    protected ?array $with_associations = [];
 
     protected $order;
 
@@ -52,7 +52,7 @@ abstract class AbstractFilters extends Serializable
     /**
      * @return mixed
      */
-    public function getColumns()
+    public function getColumns(): mixed
     {
         return $this->columns;
     }
@@ -61,7 +61,7 @@ abstract class AbstractFilters extends Serializable
      * @param mixed $columns
      * @return AbstractFilters
      */
-    public function setColumns($columns)
+    public function setColumns($columns): AbstractFilters
     {
         $this->columns = $columns;
         return $this;
@@ -70,7 +70,7 @@ abstract class AbstractFilters extends Serializable
     /**
      * @return mixed
      */
-    public function getNotColumns()
+    public function getNotColumns(): mixed
     {
         return $this->not_columns;
     }
@@ -79,7 +79,7 @@ abstract class AbstractFilters extends Serializable
      * @param mixed $not_columns
      * @return AbstractFilters
      */
-    public function setNotColumns($not_columns)
+    public function setNotColumns($not_columns): AbstractFilters
     {
         $this->not_columns = $not_columns;
         return $this;
@@ -90,7 +90,7 @@ abstract class AbstractFilters extends Serializable
         return $this->with_associations;
     }
 
-    public function setWithAssociations(array $with_associations): AbstractFilters
+    public function setWithAssociations(?array $with_associations): AbstractFilters
     {
         $this->with_associations = $with_associations ?? [];
         return $this;
@@ -99,7 +99,7 @@ abstract class AbstractFilters extends Serializable
     /**
      * @return mixed
      */
-    public function getOrder()
+    public function getOrder(): mixed
     {
         return $this->order;
     }
@@ -108,7 +108,7 @@ abstract class AbstractFilters extends Serializable
      * @param mixed $order
      * @return AbstractFilters
      */
-    public function setOrder($order)
+    public function setOrder($order): AbstractFilters
     {
         $this->order = $order;
         return $this;
@@ -117,7 +117,7 @@ abstract class AbstractFilters extends Serializable
     /**
      * @return mixed
      */
-    public function getOrderDirection()
+    public function getOrderDirection(): mixed
     {
         return $this->order_direction;
     }
@@ -126,13 +126,17 @@ abstract class AbstractFilters extends Serializable
      * @param mixed $order_direction
      * @return AbstractFilters
      */
-    public function setOrderDirection($order_direction)
+    public function setOrderDirection($order_direction): AbstractFilters
     {
         $this->order_direction = $order_direction;
         return $this;
     }
 
-    public function hydrate($data)
+    /**
+     * @param $data
+     * @return AbstractFilters
+     */
+    public function hydrate($data): AbstractFilters
     {
         $data = is_array($data) ? (object)$data : $data;
 

@@ -6,7 +6,11 @@ use Throwable;
 
 class ExceptionFormatter
 {
-    public static function toArray(Throwable $throwable)
+    /**
+     * @param Throwable $throwable
+     * @return array
+     */
+    public static function toArray(Throwable $throwable): array
     {
         $debug = [
             'time' => time(),

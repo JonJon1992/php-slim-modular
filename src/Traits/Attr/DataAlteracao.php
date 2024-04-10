@@ -19,6 +19,7 @@ trait DataAlteracao
 
     /**
      * @param $data_alteracao
+     * @return DataAlteracao
      */
     public function setDataAlteracao($data_alteracao)
     {
