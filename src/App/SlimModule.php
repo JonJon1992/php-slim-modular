@@ -215,4 +215,9 @@ abstract class SlimModule implements ISlimModule
     {
         return s3($this->namespace());
     }
+
+    public function mailer()
+    {
+        return mailer($this->namespace);
+    }
 }

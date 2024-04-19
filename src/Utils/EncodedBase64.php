@@ -8,11 +8,19 @@ class EncodedBase64
 {
     use Create;
 
-    public function encode($str)
+    /**
+     * @param $str
+     * @return string|null
+     */
+    public function encode($str): ?string
     {
         return (!empty($str)) ? base64_encode($str) : null;
     }
 
+    /**
+     * @param string|null $str
+     * @return string|null
+     */
     public function decode(?string $str): ?string
     {
         if (!empty($str) && $decoded = base64_decode($str)) {
