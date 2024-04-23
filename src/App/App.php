@@ -46,9 +46,9 @@ class App extends \Slim\App
     }
 
     /**
-     * @return ?string
+     * @return string|string[]|null
      */
-    public function module(): ?string
+    public function module(): array|string|null
     {
         static $current = '';
         if ($current != '') {
