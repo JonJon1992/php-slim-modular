@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 use Core\App\App;
-use Core\Utils\{Auth, Config};
+use Core\Utils\{Auth, Client, Config};
 use Illuminate\Database\Connection;
 use Slim\Views\PhpRenderer;
 
@@ -81,6 +81,13 @@ function mailer(string $alias = null)
 {
     $alias = $alias ?? app()->module() ?? config('mailer.default', array_key_first(config('mailer')));
     return service("mail.$alias");
+}
 
+/**
+ * @return Client
+ */
+function client(): \Core\Utils\Client
+{
+    return Client::singleton();
 }
 
