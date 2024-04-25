@@ -24,6 +24,6 @@ class Scrambler
         return base64_decode(implode('', array_map(function ($chr) {
             $chr = str_split($chr);
             return chr((($rand = (ord($chr[1]) - 33) - (ord($chr[0]) - (94 * ((int)(ord($chr[0]) / 94))))) < 0 ? 94 + $rand : $rand) + 33);
-        }, str_split(base64_decode(strtr($str, '+/=', '._-')), 2))));
+        }, str_split(base64_decode(strtr($str, '._-','+/=')), 2))));
     }
 }
