@@ -64,10 +64,10 @@ class CacheMiddleware
 
 
     /**
-     * @param $response
-     * @return bool|mixed
+     * @param Response $response
+     * @return bool
      */
-    protected function isEmptyResponse(Response $response)
+    protected function isEmptyResponse(Response $response): bool
     {
         if (method_exists($response, 'isEmpty')) {
             return $response->isEmpty();
@@ -79,7 +79,7 @@ class CacheMiddleware
      * @param Request $request
      * @return bool
      */
-    protected function isHeadRequest(Request $request)
+    protected function isHeadRequest(Request $request): bool
     {
         return strtoupper($request->getMethod()) === 'HEAD';
     }
@@ -88,7 +88,7 @@ class CacheMiddleware
      * @param Request $request
      * @return string
      */
-    protected function key(Request $request)
+    protected function key(Request $request): string
     {
         $key = [];
         $key[] = $this->byUser && auth()->id() ? auth()->id() : '0';
@@ -130,7 +130,6 @@ class CacheMiddleware
     /**
      * @param string $key
      * @param string $data
-     * @return false|mixed
      */
     protected function write(string $key, string $data)
     {
@@ -161,7 +160,7 @@ class CacheMiddleware
      * @param Response $response
      * @return void
      */
-    public function respond(Request $request, Response $response)
+    public function respond(Request $request, Response $response): void
     {
         if (!headers_sent()) {
             foreach ($response->getHeaders() as $header => $values) {
