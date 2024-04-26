@@ -30,6 +30,7 @@ class GatewayMiddleware
      */
     public function __invoke(RequestInterface $request,RequestHandler $handler): Response
     {
+        $this->request = $request;
         return $this->gatewayRequest($handler);
     }
     /**
