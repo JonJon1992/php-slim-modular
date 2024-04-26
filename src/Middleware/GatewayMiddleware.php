@@ -211,7 +211,7 @@ class GatewayMiddleware
     {
         return db('ms-auth')
             ->query()
-            ->from('clients')
+            ->from('auth.clients')
             ->get()
             ->toArray();
     }
@@ -224,7 +224,7 @@ class GatewayMiddleware
     {
         $query = db('ms-auth')
             ->query()
-            ->from('accounts');
+            ->from('auth.accounts');
 
         if (is_numeric($idOrEmail)) {
             $query->where('id', $idOrEmail);
