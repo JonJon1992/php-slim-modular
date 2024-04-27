@@ -1,7 +1,11 @@
 <?php
 
 namespace Core\Contracts;
+use Respect\Validation\StaticValidator;
 
+/**
+ * @mixin StaticValidator
+ */
 interface IValidate
 {
     /**

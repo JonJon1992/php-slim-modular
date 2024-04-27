@@ -21,7 +21,7 @@ trait DataCriacao
      * @param $data_criacao
      * @return $this
      */
-    public function setDataCriacao($data_criacao)
+    public function setDataCriacao($data_criacao): static
     {
         $this->data_criacao = is_string($data_criacao) ? new Carbon($data_criacao) : $data_criacao;
         return $this;

@@ -4,21 +4,24 @@ namespace Core\Traits\Attr;
 
 trait Id
 {
-    protected $id = null;
+    /**
+     * @var mixed
+     */
+    protected $id;
 
     /**
-     * @return null
+     * @return mixed
      */
-    public function getId()
+    public function getId(): mixed
     {
         return $this->id;
     }
 
     /**
-     * @param null $id
+     * @param mixed $id
      * @return Id
      */
-    public function setId($id)
+    public function setId($id): static
     {
         $this->id = $id;
         return $this;

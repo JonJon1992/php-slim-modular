@@ -4,7 +4,10 @@ namespace Core\Traits;
 
 trait Create
 {
-    public static function create()
+    /**
+     * @return mixed
+     */
+    public static function create(): mixed
     {
         $class = get_called_class();
         return new $class();

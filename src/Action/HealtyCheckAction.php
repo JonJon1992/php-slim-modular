@@ -11,7 +11,6 @@ use Illuminate\Filesystem\Filesystem;
 
 class HealtyCheckAction extends SlimAction
 {
-    protected array $services = [];
     const HEALTY_CHECK = '/healty-check.log';
 
 
@@ -110,7 +109,11 @@ class HealtyCheckAction extends SlimAction
         return $info;
     }
 
-    protected function checkStorage($alias)
+    /**
+     * @param $alias
+     * @return array
+     */
+    protected function checkStorage($alias): array
     {
         $info = $this->info();
 

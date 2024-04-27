@@ -4,13 +4,21 @@ namespace Core\Traits\Attr;
 
 trait Status
 {
-    protected $status;
+    protected ?string $status;
 
-    public function getStatus()
+    /**
+     * @return string|null
+     */
+    public function getStatus(): ?string
     {
         return $this->status;
     }
-    public function setStatus($status)
+
+    /**
+     * @param $status
+     * @return $this
+     */
+    public function setStatus($status): static
     {
         $this->status = $status;
         return $this;

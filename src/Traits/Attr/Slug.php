@@ -4,13 +4,21 @@ namespace Core\Traits\Attr;
 
 trait Slug
 {
-    protected $slug;
+    protected ?string $slug;
 
-    public function getSlug()
+    /**
+     * @return string|null
+     */
+    public function getSlug(): ?string
     {
         return $this->slug;
     }
-    public function setSlug($slug)
+
+    /**
+     * @param $slug
+     * @return $this
+     */
+    public function setSlug($slug): static
     {
         $this->slug = $slug;
         return $this;

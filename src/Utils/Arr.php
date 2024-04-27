@@ -9,7 +9,7 @@ class Arr extends \Illuminate\Support\Arr
      * @param $arr2
      * @return array
      */
-    public static function merge($arr1, $arr2)
+    public static function merge($arr1, $arr2): array
     {
         return array_merge($arr1, $arr2);
     }

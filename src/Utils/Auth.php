@@ -24,7 +24,7 @@ class Auth implements IAuth
     /**
      * @return array|null
      */
-    public function data()
+    public function data(): ?array
     {
         return $this->data ?? null;
     }
@@ -32,7 +32,7 @@ class Auth implements IAuth
     /**
      * @return string
      */
-    public function raw()
+    public function raw(): string
     {
         return $this->raw;
 
@@ -42,8 +42,74 @@ class Auth implements IAuth
      * @param string $key
      * @return mixed|null
      */
-    public function attr(string $key)
+    public function attr(string $key): mixed
     {
         return $this->data[$key] ?? null;
+    }
+
+
+    /**
+     * @return $this
+     */
+    public function logout(): static
+    {
+        $this->data = null;
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function on(): bool
+    {
+        return isset($this->data);
+    }
+
+    /**
+     * @return bool
+     */
+    public function off(): bool
+    {
+        return !$this->on();
+    }
+
+    /**
+     * @return string
+     */
+    public function ip($default = 'UNKNOWN'): string
+    {
+        $keys = [
+            'HTTP_CF_CONNECTING_IP',
+            'HTTP_CLIENT_IP',
+            'HTTP_X_FORWARDED_FOR',
+            'HTTP_X_FORWARDED',
+            'HTTP_FORWARDED_FOR',
+            'HTTP_FORWARDED',
+            'REMOTE_ADDR'
+        ];
+        foreach ($keys as $key) {
+            if (isset($_SERVER[$key]) && $_SERVER[$key]) {
+                return $_SERVER[$key];
+            }
+        }
+        return $default;
+    }
+
+    /**
+     * @param string $data
+     */
+    public function login(string $data): static
+    {
+        $this->raw = $data;
+        $this->data = json_decode(base64_decode($data), true);
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function agent(): string
+    {
+        return $_SERVER['HTTP_USER_AGENT'] ?? '';
     }
 }
