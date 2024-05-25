@@ -1,6 +1,6 @@
 <?php
 
-namespace middlewares;
+namespace Core\Middleware;
 
 use Core\Contracts\IClient;
 use Psr\Http\Message\ResponseInterface;

@@ -2,6 +2,7 @@
 
 namespace Core\Exceptions;
 
+use Core\Utils\Env;
 use Core\Utils\Trace;
 use Psr\Http\Message\ResponseInterface;
 use Slim\Exception\HttpMethodNotAllowedException;
@@ -62,80 +63,58 @@ class ErrorHandler extends SlimErrorHandler
             return $response->withStatus(200);
         }
         $data = [
-            'code' => $this->statusCode,
+            'trace-id' => Trace::uuid(),
             'message' => 'Falha inesperada.',
-            'trace' => Trace::uuid(),
-            'debug' => $this->debug()
+            'status' => $this->statusCode
         ];
 
         if (isset($this->exception) && array_key_exists($this->exception->getCode(), self::HTTP_STATUS_CODES)) {
-            $data['code'] = $this->statusCode = $this->exception->getCode();
+            $data['status'] = $this->statusCode = $this->exception->getCode();
             $data['message'] = $this->exception->getMessage();
         }
-        logger()->error('ErrorHandler', $data);
+
+        $extras = $this->extras();
+
+        logger()->log(
+            $this->statusCode >= 500 ? 'error' : 'info',
+            $this->exception ? $this->exception->getMessage() : $data['message'],
+            $extras
+        );
+        if (Env::Local()) {
+            $data['extras'] = $extras;
+        }
+
 
         $response->getBody()->write(json_encode($data, JSON_PRETTY_PRINT));
-
-        return $response->withHeader('Content-Type', 'application/json')->withStatus($this->statusCode);
+        return $response
+            ->withHeader('Content-Type', 'application/json')
+            ->withStatus($this->statusCode);
     }
-
-
     /**
      * @return array
      */
-    protected function debug(): array
+    protected function extras(): array
     {
-        $debug = [];
+        $request = [];
+        $request['use-id'] = auth()->id();
+        $request['status'] = $this->statusCode;
+        $request['method'] = filter_input(INPUT_SERVER, 'REQUEST_METHOD');
+        $request['agent'] = filter_input(INPUT_SERVER, 'HTTP_USER_AGENT');
+        $request['host'] = filter_input(INPUT_SERVER, 'HTTP_HOST');
+        $request['uri'] = filter_input(INPUT_SERVER, 'REQUEST_URI');
 
         if ($this->exception instanceof HttpMethodNotAllowedException) {
-            $debug['allow'] = $this->exception->getAllowedMethods();
+            $request['allow'] = $this->exception->getAllowedMethods();
         }
-
         if ($this->exception instanceof Throwable) {
-            $debug['code'] = $this->exception->getCode();
-            $debug['message'] = $this->exception->getMessage();
-            $debug['class'] = get_class($this->exception);
-            $debug['file'] = $this->exception->getFile();
-            $debug['line'] = $this->exception->getLine();
-            $debug['trace'] = $this->statusCode == 500 ? explode("\n", $this->exception->getTraceAsString()) : [];
-
+            $request['code'] = $this->exception->getCode();
+            $request['class'] = get_class($this->exception);
+            $request['file'] = $this->exception->getFile();
+            $request['line'] = $this->exception->getLine();
+            $request['stack-trace'] = explode("\n", $this->exception->getTraceAsString());
         }
-        $debug['request'] = self::metadata();
 
-        return $debug;
-
-    }
-
-    /**
-     * @return array
-     */
-    public static function metadata(): array
-    {
-        $input = file_get_contents('php://input');
-
-        $request = [
-            '$_GET' => $_GET,
-            '$_POST' => $_POST,
-            '$_INPUT' => $input,
-            '$_SERVER' => [
-                'APP_ENV' => env('APP_ENV'),
-                'APP_NAME' => env('APP_NAME'),
-                'APP_SITE' => env('APP_SITE'),
-                'REQUEST_METHOD' => filter_input(INPUT_SERVER, 'REQUEST_METHOD'),
-                'REQUEST_URI' => filter_input(INPUT_SERVER, 'REQUEST_URI'),
-                'QUERY_STRING' => filter_input(INPUT_SERVER, 'QUERY_STRING'),
-                'HTTP_HOST' => filter_input(INPUT_SERVER, 'HTTP_HOST'),
-                'HTTP_USER_AGENT' => filter_input(INPUT_SERVER, 'HTTP_USER_AGENT'),
-                'HTTP_CONTENT_TYPE' => filter_input(INPUT_SERVER, 'HTTP_CONTENT_TYPE'),
-                'CONTENT_TYPE' => filter_input(INPUT_SERVER, 'CONTENT_TYPE')
-            ],
-        ];
-
-        foreach (array_keys($_SERVER) as $key) {
-            if (str_starts_with($key, 'HTTP_X_')) {
-                $request['$_SERVER'][$key] = filter_input(INPUT_SERVER, $key);
-            }
-        }
         return $request;
+
     }
 }

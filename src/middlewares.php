@@ -2,10 +2,8 @@
 
 use Core\App\App;
 use Core\Exceptions\ErrorHandler;
-use Core\Middleware\CryptMiddleware;
-use Core\Middleware\GatewayMiddleware;
-use Core\Middleware\RequestMiddleware;
-use Core\Middleware\TraceMiddleware;
+use Core\Middleware\{CryptMiddleware, GatewayMiddleware, RequestMiddleware};
+
 use Slim\Middleware\MethodOverrideMiddleware;
 
 return function (App $app) {
@@ -14,7 +12,6 @@ return function (App $app) {
     $app->add(RequestMiddleware::class);
     $app->add(GatewayMiddleware::class);
     $app->add(CryptMiddleware::class);
-    $app->add(TraceMiddleware::class);
     $app->addRoutingMiddleware();
     $app->addErrorMiddleware('app.debug', config('app.error'), config('app.details'))
         ->setDefaultErrorHandler(new ErrorHandler($app->getCallableResolver(), $app->getResponseFactory()));

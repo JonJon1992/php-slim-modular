@@ -2,20 +2,24 @@
 
 namespace Core\Middleware;
 
-use Psr\Http\Message\RequestInterface as Request;
-use Psr\Http\Message\ResponseInterface as Response;
-use Psr\Http\Server\RequestHandlerInterface as Handler;
+
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 
 class RequestMiddleware
 {
-    public static Request $request;
+    public static ServerRequestInterface $request;
 
     /**
-     * @param Request $request
-     * @param Handler $handler
-     * @return Response
+     * @param ServerRequestInterface $request
+     * @param RequestHandlerInterface $handler
+     * @return ResponseInterface
      */
-    public function __invoke(Request $request, Handler $handler): Response
+    public function __invoke(
+        ServerRequestInterface  $request,
+        RequestHandlerInterface $handler
+    ): ResponseInterface
     {
         return $handler->handle(self::$request = $request);
     }

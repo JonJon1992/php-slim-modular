@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-use Core\Utils\{Arr, Config, Redis};
+use Core\Utils\{Arr, Config, Redis, Trace};
 use DI\ContainerBuilder;
 use Illuminate\Container\Container;
 use Illuminate\Database\Capsule\Manager;
@@ -27,10 +27,7 @@ return function (ContainerBuilder $builder) {
             $handler->setFormatter(new JsonFormatter());
 
             $logger = new Logger($alias);
-            $logger->pushProcessor(function ($record) {
-                return $record;
-            });
-
+            $logger->pushProcessor(fn($record) => Trace::processor($record));
             $logger->pushHandler($handler);
             return $logger;
         };
@@ -62,12 +59,12 @@ return function (ContainerBuilder $builder) {
         };
     }
 
-    $default = $configs->get('storage.default','');
-    $storages = Arr::except($configs->get('storage',[]),['default',$default]);
-    $storages = Arr::merge([$default => $configs->get("storage.$default",[])],$storages);
+    $default = $configs->get('storage.default', '');
+    $storages = Arr::except($configs->get('storage', []), ['default', $default]);
+    $storages = Arr::merge([$default => $configs->get("storage.$default", [])], $storages);
 
-    foreach ($storages as $alias => $settings){
-        S3::singleton()->use($alias,$settings);
+    foreach ($storages as $alias => $settings) {
+        S3::singleton()->use($alias, $settings);
     }
 
     $builder->addDefinitions($bindings);

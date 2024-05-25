@@ -1,6 +1,7 @@
 <?php
 
 use Core\Exceptions\ErrorHandler;
+use Core\Utils\Env;
 use Core\Utils\Str;
 use Core\Utils\Trace;
 use Monolog\Formatter\JsonFormatter;
@@ -14,29 +15,37 @@ ob_start(function ($buffer) {
         $trace = explode("\n", $error['message']);
 
         $data = [
-            'code' => 500,
-            'message' => array_shift($trace),
-            'uuid' => Str::uuid(),
-            'debug' => [
-                'type' => $error['type'],
-                'file' => $error['file'],
-                'line' => $error['line'],
-                'trace' => $trace,
-                'request' => ErrorHandler::metadata()
-            ]
+            'trace-id' => Trace::uuid(),
+            'status' => 500,
+            'message' => array_shift($trace)
         ];
 
+        $extras = [
+            'user-id' => null,
+            'status' => $data['status'],
+            'method' => filter_input(INPUT_SERVER, 'REQUEST_METHOD'),
+            'agent' => filter_input(INPUT_SERVER, 'HTTP_USER_AGENT'),
+            'host' => filter_input(INPUT_SERVER, 'HTTP_HOST'),
+            'uri' => filter_input(INPUT_SERVER, 'REQUEST_URI'),
+            'code' => 0,
+            'class' => $error['file'],
+            'type' => $error['type'],
+            'file' => $error['file'],
+            'line' => $error['line'],
+            'stack-trace' => $trace,
+        ];
         $handler = new StreamHandler(config('log.main.path'), config('app.log_level'));
         $handler->setFormatter(new JsonFormatter());
 
-        $logger = new Logger('Slim Modular');
+        $logger = new Logger('Slim');
 
-        $logger->pushProcessor(function ($record) {
-            $record['extra']['trace'] = Trace::metadata();
-            return $record;
-        });
+        $logger->pushProcessor(fn($record) => Trace::processor($record));
         $logger->pushHandler($handler);
-        $logger->error('ErrorHandler', $data);
+        $logger->error($data['message'], $extras);
+
+        if (Env::local()) {
+            $data['extras'] = $extras;
+        }
 
         header('Content-type: application/json');
         http_response_code(500);

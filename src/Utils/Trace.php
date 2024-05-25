@@ -2,35 +2,26 @@
 
 namespace Core\Utils;
 
-use Core\Middleware\TraceMiddleware;
 use GuzzleHttp\Client;
 
 class Trace
 {
-    private static int $sequence = 0;
-
-    private static float $global_started_at;
-
-    private static float $last_logger_at;
-
-
     /**
-     * @param $global_started_at
      * @return void
      */
-    public static function bootstrap($global_started_at): void
+    public static function bootstrap(): void
     {
-        self::$global_started_at = $global_started_at;
-
-        if (empty($_SERVER['HTTP_X_TRACE'])) {
-            $_SERVER['HTTP_X_TRACE'] = Str::uuid();
+        if (empty($_SERVER['HTTP_TRACE_ID'])) {
+            $_SERVER['HTTP_TRACE_ID'] = empty($_SERVER['HTTP_X_TRACE']) ? Str::uuid() : $_SERVER['HTTP_X_TRACE'];
         }
     }
 
-
-    public static function uuid()
+    /**
+     * @return mixed
+     */
+    public static function uuid(): mixed
     {
-        return $_SERVER['HTTP_X_TRACE'];
+        return $_SERVER['HTTP_TRACE_ID'];
     }
 
     /**
@@ -42,47 +33,56 @@ class Trace
         if (empty($config['headers'])) {
             $config['headers'] = [];
         }
-        $config['headers']['x-trace'] = self::uuid();
+        $config['headers']['trace-id'] = self::uuid();
         return new  Client($config);
 
     }
 
-    /**
-     * @param $value
-     * @return string
-     */
-    private static function format($value): string
-    {
-        return number_format($value, 10);
 
+    /**
+     * @param $record
+     * @return array
+     */
+    public static function processor($record): array
+    {
+        $extras = $record['context'];
+
+        $extras['user-id'] = auth()->id();
+
+        $data = [
+            'timestamp' => self::timestamp(),
+            'severity' => $record['level_name'],
+            'env' => self::env(),
+            'appname' => self::appname(),
+            'extras' => $extras,
+            'trace-id' => self::uuid()
+        ];
+
+        $data['level'] = $record['level'];
+        return $data;
     }
 
     /**
-     * @return array
+     * @return string
      */
-    public static function metadata(): array
+    private static function env(): string
     {
-        self::$sequence++;
+        return Env::prod() ? 'PRD' : (Env::stg() ? 'STG' : 'DEV');
+    }
 
-        $logged_at = microtime(true);
-        $partial_duration = isset(self::$last_logger_at) ? self::format($logged_at - self::$last_logger_at) : null;
-        $middelware_started_at = TraceMiddleware::startedAt();
+    /**
+     * @return string
+     */
+    private static function appname(): string
+    {
+        return env('APP_NAME', 'APP_NAME') . '/' . (app()->module() ?? 'main');
+    }
 
-        $metadata = [
-            'uuid' => self::uuid(),
-            'sequence' => self::$sequence,
-            'logged_at' => $logged_at,
-            'partial_duration' => $partial_duration,
-            'global' => [
-                'started_at' => self::$global_started_at,
-                'duration' => self::format($logged_at - self::$global_started_at)
-            ]
-            , 'middleware' => [
-                'started_at' => $middelware_started_at,
-                'duration' => $middelware_started_at ? self::format($logged_at - $middelware_started_at) : null
-            ]
-        ];
-        self::$last_logger_at = $logged_at;
-        return $metadata;
+    /**
+     * @return string
+     */
+    private static function timestamp(): string
+    {
+        return (new \DateTime())->format('Y-m-d\TH:i:s.uP');
     }
 }
