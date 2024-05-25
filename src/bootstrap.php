@@ -8,12 +8,10 @@ use DI\ContainerBuilder;
 use Dotenv\Dotenv;
 use function DI\autowire;
 
-$global_started_at = microtime(true);
-
-Trace::bootstrap($global_started_at);
+Trace::bootstrap();
 Dotenv::createImmutable(Path::root())->load();
 
-require  'cors.php';
+require 'cors.php';
 require 'exception.php';
 
 
