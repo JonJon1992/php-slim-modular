@@ -18,7 +18,7 @@ class MigrateCreateCommand extends SlimCommand
     /**
      * @return void
      */
-    protected function configure()
+    protected function configure(): void
     {
         $this->setName('migrate:create');
         $this->addArgument('module', InputArgument::REQUIRED, 'Nome do modulo');
@@ -29,7 +29,7 @@ class MigrateCreateCommand extends SlimCommand
     /**
      * @return void
      */
-    protected function handler()
+    protected function handler(): void
     {
         $module = MigrateRunCommand::getModule($this->input->getArgument('module'));
 
@@ -57,7 +57,7 @@ class MigrateCreateCommand extends SlimCommand
     /**
      * @return array|string|string[]|null
      */
-    protected function timestamp()
+    protected function timestamp(): array|string|null
     {
         return str_replace(' ', '_', preg_replace('/[^0-9^\s]/', '', (new Carbon())->toDateTimeString()));
 
@@ -68,7 +68,7 @@ class MigrateCreateCommand extends SlimCommand
      * @param $className
      * @return string
      */
-    protected function template(SlimModule $module, $className)
+    protected function template(SlimModule $module, $className): string
     {
         $namespace = new \ReflectionClass($module);
 

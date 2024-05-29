@@ -77,7 +77,7 @@ abstract class Serializable implements JsonSerializable
      * @param $value
      * @return string
      */
-    private function transformNamePropertyToCamelCase($value)
+    private function transformNamePropertyToCamelCase($value): string
     {
         return implode('', array_map(fn($str) => ucfirst($str), explode('_', $value)));
     }
@@ -129,7 +129,7 @@ abstract class Serializable implements JsonSerializable
     }
 
 
-    public function removePropertiesNotSerializable(array $propertities)
+    public function removePropertiesNotSerializable(array $propertities): static
     {
         if ($this->propertitiesNotSerializable) {
             $this->propertitiesNotSerializable = array_diff($this->propertitiesNotSerializable, $propertities);

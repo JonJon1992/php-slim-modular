@@ -8,13 +8,17 @@ use Core\Utils\Str;
 use Core\Utils\Time;
 use Exception;
 use Illuminate\Filesystem\Filesystem;
+use Psr\Http\Message\ResponseInterface;
 
 class HealtyCheckAction extends SlimAction
 {
     const HEALTY_CHECK = '/healty-check.log';
 
+    /**
+     * @return array|ResponseInterface|string[]
+     */
 
-    protected function action()
+    protected function action(): array|ResponseInterface
     {
         $fs = new Filesystem();
 

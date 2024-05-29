@@ -2,8 +2,6 @@
 
 namespace Core\Utils;
 
-use Ramsey\Uuid\UuidInterface;
-
 class Str extends \Illuminate\Support\Str
 {
     /**

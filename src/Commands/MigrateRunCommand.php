@@ -17,7 +17,7 @@ class MigrateRunCommand extends SlimCommand
     /**
      * @return void
      */
-    protected function configure()
+    protected function configure(): void
     {
         $this->setName('migrate:run');
         $this->setDescription('Executa todas as migrations que ainda não foram executadas');
@@ -27,7 +27,7 @@ class MigrateRunCommand extends SlimCommand
      * @return void
      * @throws Throwable
      */
-    protected function handler()
+    protected function handler(): void
     {
         foreach (app()->modules() as $module) {
             try {
@@ -82,7 +82,7 @@ class MigrateRunCommand extends SlimCommand
      * @param string $namespace
      * @return SlimModule
      */
-    public static function getModule(string $namespace)
+    public static function getModule(string $namespace): SlimModule
     {
         foreach (app()->modules() as $module) {
             /** @var $module SlimModule */
@@ -97,7 +97,7 @@ class MigrateRunCommand extends SlimCommand
      * @param SlimModule $module
      * @return Connection
      */
-    public static function getConnection(SlimModule $module)
+    public static function getConnection(SlimModule $module): Connection
     {
         try {
             $manager = new Manager();
@@ -119,7 +119,7 @@ class MigrateRunCommand extends SlimCommand
      * @param Connection $conn
      * @return void
      */
-    protected function prepareMigrationTable(Connection $conn)
+    protected function prepareMigrationTable(Connection $conn): void
     {
         try {
             $conn->table('migrations')->exists();
@@ -132,7 +132,7 @@ class MigrateRunCommand extends SlimCommand
      * @param Connection $conn
      * @return void
      */
-    protected function createMigrationTable(Connection $conn)
+    protected function createMigrationTable(Connection $conn): void
     {
         $conn->getSchemaBuilder()->create('migrations', function (Blueprint $table) {
             $table->id();
@@ -146,7 +146,7 @@ class MigrateRunCommand extends SlimCommand
      * @param Connection $conn
      * @return int
      */
-    protected function getLastBatch(Connection $conn)
+    protected function getLastBatch(Connection $conn): int
     {
         $migration = $conn->query()->from('migrations')
             ->orderBy('batch', 'desc')
@@ -159,7 +159,7 @@ class MigrateRunCommand extends SlimCommand
      * @param string $name
      * @return bool
      */
-    protected function alreadyExist(Connection $conn, string $name)
+    protected function alreadyExist(Connection $conn, string $name): bool
     {
         return $conn->query()->from('migrations')->where('name', $name)->exists();
     }
@@ -170,7 +170,7 @@ class MigrateRunCommand extends SlimCommand
      * @param int $batch
      * @return void
      */
-    protected function registerMigration(Connection $conn, string $name, int $batch)
+    protected function registerMigration(Connection $conn, string $name, int $batch): void
     {
         $now = new Carbon();
 

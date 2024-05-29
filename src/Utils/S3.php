@@ -44,7 +44,7 @@ class S3
      * @param $file_path
      * @return string
      */
-    public function generateUrl($file_path)
+    public function generateUrl($file_path): string
     {
         return $this->bucket->fileUrl($file_path);
 
