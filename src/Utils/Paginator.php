@@ -77,7 +77,7 @@ class Paginator implements \JsonSerializable
     /**
      * @return int|null
      */
-    public function count()
+    public function count(): ?int
     {
         return count($this->items);
 

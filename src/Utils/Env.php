@@ -49,6 +49,9 @@ class Env extends \Illuminate\Support\Env
         return self::name() == 'local';
     }
 
+    /**
+     * @return bool
+     */
     public static function real(): bool
     {
         return self::prod() || self::stg();

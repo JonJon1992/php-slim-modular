@@ -3,6 +3,7 @@
 namespace Core\Middleware;
 
 use Core\Contracts\IClient;
+use Exception;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
@@ -18,7 +19,7 @@ class ClientMiddleware
     {
         $client = $request->hasHeader('x-client') ? $request->getHeaderLine('x-client') : '';
         if (empty($client)) {
-            throw new \Exception('Client header missing', 400);
+            throw new Exception('Client header missing', 400);
         }
         $this->client->use($client);
         return $handler->handle($request);
