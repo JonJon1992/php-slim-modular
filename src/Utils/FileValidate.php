@@ -182,7 +182,7 @@ class FileValidate
      * @param string $label
      * @return FileValidate
      */
-    private static function create(IValidate $validator, string $name, string $label): FileValidate
+    public static function create(IValidate $validator, string $name, string $label): FileValidate
     {
         $fileValidate = new FileValidate($validator);
         return $fileValidate->setName($name)->setLabel($label);
