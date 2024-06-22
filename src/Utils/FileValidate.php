@@ -202,7 +202,7 @@ class FileValidate
         }
         if ($file) {
             if (!empty($this->getMediaTypesSupported())) {
-                $this->validateByValue($file->getFilePath(), $this->validator::oneOf(...array_map(
+                $this->validateByValue($file->getClientMediaType(), $this->validator::oneOf(...array_map(
                     fn($item) => $this->validator::mimetype($item),
                     $this->getMediaTypesSupported()
                 ))->setTemplate(self::TYPE_FILE_ISVALID)
@@ -211,7 +211,7 @@ class FileValidate
 
             if ($this->getMin() || $this->getMax()) {
                 $this->validateByValue(
-                    $file->getFilePath(),
+                    $file->getSize(),
                     $this->validator::size($this->getMin(), $this->getMax())
                         ->setTemplate(self::MESSAGE_SIZE_BETWEEN)
                         ->setName($this->label)
