@@ -2,25 +2,28 @@
 
 namespace Core\Traits;
 
+use Core\Abstract\AbstractEntity;
 use Illuminate\Support\Carbon;
 
 trait DataAlteracao
 {
-    protected ?Carbon $data_alteracao;
+    /**
+     * @var mixed
+     */
+    protected mixed $data_alteracao;
 
     /**
-     * @return Carbon|null
+     * @return mixed
      */
-    public function getDataAlteracao(): ?Carbon
+    public function getDataAlteracao(): mixed
     {
-        return $this->data_alteracao;
+        return $this->data_alteracao ?? null;
     }
 
     /**
-     * @param Carbon|null $data_alteracao
-     * @return DataAlteracao
+     * @param mixed $data_alteracao
      */
-    public function setDataAlteracao(?Carbon $data_alteracao): DataAlteracao
+    public function setDataAlteracao(mixed $data_alteracao): self
     {
         $this->data_alteracao = $data_alteracao;
         return $this;
