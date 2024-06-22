@@ -193,7 +193,7 @@ class FileValidate
      * @return void
      * @throws Throwable
      */
-    private function validate(?UploadedFile $file): void
+    public function validate(?UploadedFile $file): void
     {
         if ($this->required) {
             $this->validateByValue($file, $this->validator::notEmpty()
