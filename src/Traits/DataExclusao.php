@@ -6,21 +6,21 @@ use Illuminate\Support\Carbon;
 
 trait DataExclusao
 {
-    protected ?Carbon $data_exclusao;
+    protected mixed $data_exclusao;
 
     /**
-     * @return Carbon|null
+     * @return mixed
      */
-    public function getDataExclusao(): ?Carbon
+    public function getDataExclusao(): mixed
     {
-        return $this->data_exclusao;
+        return $this->data_exclusao ?? null;
     }
 
+
     /**
-     * @param Carbon|null $data_exclusao
-     * @return DataExclusao
+     * @param mixed $data_exclusao
      */
-    public function setDataExclusao(?Carbon $data_exclusao): DataExclusao
+    public function setDataExclusao(mixed $data_exclusao)
     {
         $this->data_exclusao = $data_exclusao;
         return $this;

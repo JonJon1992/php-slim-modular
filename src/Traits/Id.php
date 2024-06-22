@@ -1,31 +1,28 @@
 <?php
 
 namespace Core\Traits;
-
-use Core\Utils\Str;
-
 trait Id
 {
 
-    protected $id;
+    /**
+     * @var mixed
+     */
+    protected mixed $id;
 
     /**
      * @return mixed
      */
     public function getId(): mixed
     {
-        return $this->id;
+        return $this->id ?? null;
     }
 
     /**
      * @param mixed $id
-     * @return Id
      */
-    public function setId($id): static
+    public function setId(mixed $id)
     {
-        $this->id = $id ? Str::uuid() : $id;
+        $this->id = $id;
         return $this;
     }
-
-
 }

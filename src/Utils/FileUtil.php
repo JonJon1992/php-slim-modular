@@ -9,7 +9,7 @@ class FileUtil
      * @param string $prefix
      * @return string
      */
-    protected static function generateNameRandom(string $fileName, string $prefix = ''): string
+    public static function generateNameRandom(string $fileName, string $prefix = ''): string
     {
         $timeStamp = strtotime(date('Y-m-d H:i:s'));
         $ext = pathinfo($fileName, PATHINFO_EXTENSION);

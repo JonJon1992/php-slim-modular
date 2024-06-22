@@ -6,22 +6,21 @@ use Illuminate\Support\Carbon;
 
 trait DataCriacao
 {
-    protected ?Carbon $data_criacao;
+    protected mixed $data_criacao;
 
 
     /**
-     * @return Carbon|null
+     * @return mixed
      */
-    public function getDataCriacao(): ?Carbon
+    public function getDataCriacao(): mixed
     {
-        return $this->data_criacao;
+        return $this->data_criacao ?? null;
     }
 
     /**
      * @param  $data_criacao
-     * @return DataCriacao
      */
-    public function setDataCriacao($data_criacao): DataCriacao
+    public function setDataCriacao($data_criacao): self
     {
         $this->data_criacao = $data_criacao;
         return $this;
