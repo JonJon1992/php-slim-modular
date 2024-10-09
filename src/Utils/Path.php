@@ -24,7 +24,7 @@ class Path
     public static function root($path = null): string
     {
         $reflection = new ReflectionClass(ClassLoader::class);
-        return self::resolve(dirname($reflection->getFileName() ) . '/../..', $path);
+        return self::resolve(dirname($reflection->getFileName()) . '/../..', $path);
     }
 
     /**

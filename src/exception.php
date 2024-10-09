@@ -1,8 +1,6 @@
 <?php
 
-use Core\Exceptions\ErrorHandler;
 use Core\Utils\Env;
-use Core\Utils\Str;
 use Core\Utils\Trace;
 use Monolog\Formatter\JsonFormatter;
 use Monolog\Handler\StreamHandler;

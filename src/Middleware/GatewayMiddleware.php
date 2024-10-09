@@ -2,10 +2,12 @@
 
 namespace Core\Middleware;
 
+use Core\Exceptions\SlimAutenticacaoIncorretalidaException;
 use Core\Utils\Scrambler;
+use Core\Utils\Time;
 use Exception;
-use Psr\Http\Message\ServerRequestInterface as RequestInterface;
 use Psr\Http\Message\ResponseInterface as Response;
+use Psr\Http\Message\ServerRequestInterface as RequestInterface;
 use Psr\Http\Server\RequestHandlerInterface as RequestHandler;
 
 class GatewayMiddleware
@@ -20,7 +22,7 @@ class GatewayMiddleware
     private $auth;
 
     private $client;
-    private int $tolerance = 300;
+    private int $tolerance = Time::_5M;
 
     /**
      * @param RequestInterface $request
@@ -28,11 +30,12 @@ class GatewayMiddleware
      * @return Response
      * @throws Exception
      */
-    public function __invoke(RequestInterface $request,RequestHandler $handler): Response
+    public function __invoke(RequestInterface $request, RequestHandler $handler): Response
     {
         $this->request = $request;
         return $this->gatewayRequest($handler);
     }
+
     /**
      * @param RequestHandler $handler
      * @return Response
@@ -64,15 +67,18 @@ class GatewayMiddleware
         $token = json_decode(base64_decode($token));
 
         if (empty($token->u)) {
-            throw new Exception('Authentication is invalid.', 401);
+            throw new SlimAutenticacaoIncorretalidaException();
         }
         if (empty($token->s)) {
-            throw new Exception('Authentication is invalid.', 401);
+            throw new SlimAutenticacaoIncorretalidaException();
         }
-        $session = redis('ms-auth')->get('ms-auth:sessions:' . $token->u);
+
+        $session = redis('ms-auth')->get('ms-auth:session:' . $token->u);
+
         if (empty($session)) {
-            throw new Exception('Session is expired.', 401);
+            throw new Exception('Sessão expirada.', 401);
         }
+
         $session = json_decode($session);
 
         $signature = sodium_crypto_aead_chacha20poly1305_decrypt(
@@ -81,37 +87,33 @@ class GatewayMiddleware
             sodium_base642bin($session->nonce, SODIUM_BASE64_VARIANT_URLSAFE_NO_PADDING),
             sodium_base642bin($session->secret, SODIUM_BASE64_VARIANT_URLSAFE_NO_PADDING)
         );
+
         if (empty($signature)) {
-            throw new Exception('Authentication is invalid.', 401);
+            throw new SlimAutenticacaoIncorretalidaException();
         }
         $signature = json_decode(Scrambler::decode($signature));
         if (empty($signature)) {
-            throw new Exception('Authentication is invalid.', 401);
+            throw new SlimAutenticacaoIncorretalidaException();
         }
 
-        if (isset($signature->on) && ($signature->on === false) || $signature->on === false) {
-            throw new Exception('Authentication is invalid.', 401);
-        }
-        if (empty($signature->uuid)) {
-            throw new Exception('Authentication is invalid.', 401);
-        }
-        if ($session->uuid !== $signature->uuid) {
-            throw new Exception('Authentication is invalid.', 401);
-        }
-        if (empty($signature->fingerprint)) {
-            throw new Exception('Authentication is invalid.', 401);
-        }
-        if ($session->fingerprint !== $signature->fingerprint) {
-            throw new Exception('Authentication is invalid.', 401);
-        }
-        if ($session->client !== $this->client->id) {
-            throw new Exception('Authentication is invalid.', 401);
+        if (
+            !isset($signature->on) ||
+            $signature->on === false ||
+            empty($signature->uuid) ||
+            $session->uuid !== $signature->uuid ||
+            empty($signature->fingerprint) ||
+            $session->fingerprint !== $signature->fingerprint ||
+            $session->client !== $this->client->id
+        ) {
+            throw new SlimAutenticacaoIncorretalidaException();
         }
 
         $uk = hash('sha512', 'ms-auth:utilization:' . $token->s);
+
         if (redis('ms-auth')->exists($uk)) {
-            throw new Exception('Authentication is invalid.', 401);
+            throw new SlimAutenticacaoIncorretalidaException();
         }
+
         redis('ms-auth')->set($uk, 1, ['exp' => $this->tolerance]);
 
         $this->auth = $session->account;
@@ -136,18 +138,21 @@ class GatewayMiddleware
      */
     private function getClients(): array
     {
-        $items = redis('ms-auth')->get('ms-auth:clients');
+        $items = redis('ms-auth')->get('ms-auth:client');
 
         if (!empty($items)) {
             return (array)json_decode($items);
         }
+
         $clients = $this->fetchClientDB();
+
         $clients = array_reduce($clients, function ($clients, $client) {
             $clients[$client->key] = $client;
             return $clients;
         }, []);
 
-        redis('ms-auth')->set('ms-auth:clients', json_encode($clients), ['exp' => 600]);
+        redis('ms-auth')->set('ms-auth:client', json_encode($clients), ['exp' => Time::_10M]);
+
         return $clients;
     }
 
@@ -160,7 +165,7 @@ class GatewayMiddleware
     {
         $clients = $this->getClients();
         if (!key_exists($key, $clients)) {
-            throw new Exception('Client not found.');
+            throw new Exception('Client não encontrado.', 401);
         }
         return $clients[$key];
     }
@@ -175,8 +180,6 @@ class GatewayMiddleware
         }
         $params = $this->request->getQueryParams();
         return isset($params[self::CLIENT_PARAM]) ? trim($params[self::CLIENT_PARAM]) : null;
-
-
     }
 
     /**
@@ -196,11 +199,11 @@ class GatewayMiddleware
      */
     private function getAccountByIdOrEmail($idOrEmail)
     {
-        $account = redis('ms-auth')->get('ms-auth:account:' . $idOrEmail);
-        if (!empty($account)) {
-            return json_decode($account);
+        $usuario = redis('ms-auth')->get('ms-auth:usuario:' . $idOrEmail);
+        if (!empty($usuario)) {
+            return json_decode($usuario);
         }
-        return $this->fetchAccountDB($idOrEmail);
+        return $this->fetchUsuario($idOrEmail);
 
     }
 
@@ -211,7 +214,7 @@ class GatewayMiddleware
     {
         return db('ms-auth')
             ->query()
-            ->from('auth.clients')
+            ->from('public.clients')
             ->get()
             ->toArray();
     }
@@ -220,11 +223,11 @@ class GatewayMiddleware
      * @param $idOrEmail
      * @return object
      */
-    private function fetchAccountDB($idOrEmail): object
+    private function fetchUsuario($idOrEmail): object
     {
         $query = db('ms-auth')
             ->query()
-            ->from('auth.accounts');
+            ->from('public.usuarios');
 
         if (is_numeric($idOrEmail)) {
             $query->where('id', $idOrEmail);
@@ -233,9 +236,9 @@ class GatewayMiddleware
         }
         $result = $query->first();
         if (!empty($result)) {
-            throw new Exception('Account not found.');
+            throw new Exception('Usuário não encontrado.', 401);
         }
-        redis('ms-auth')->set('ms-auth:account:' . $idOrEmail, json_encode($result), ['exp' => 600]);
+        redis('ms-auth')->set('ms-auth:usuario:' . $idOrEmail, json_encode($result), ['exp' => Time::_24H]);
         return $result;
 
     }

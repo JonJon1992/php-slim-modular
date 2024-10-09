@@ -2,9 +2,6 @@
 
 namespace Core\Traits;
 
-use Core\Abstract\AbstractEntity;
-use Illuminate\Support\Carbon;
-
 trait DataAlteracao
 {
     /**

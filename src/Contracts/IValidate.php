@@ -1,6 +1,7 @@
 <?php
 
 namespace Core\Contracts;
+
 use Respect\Validation\StaticValidator;
 
 /**

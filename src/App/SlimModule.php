@@ -162,6 +162,15 @@ abstract class SlimModule implements ISlimModule
         return $this->dispatcher;
     }
 
+    public function eventSubscribers(App $app): void
+    {
+        $container = $app->getContainer();
+        foreach ($this->subscribers as $subscriber) {
+            $sub = $container->get($subscriber);
+            $this->dispatcher->addSubscriber($container->get($sub));
+        }
+    }
+
     /**
      * @param JsonSerializable|null $obj
      * @param $message

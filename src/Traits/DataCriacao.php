@@ -2,8 +2,6 @@
 
 namespace Core\Traits;
 
-use Illuminate\Support\Carbon;
-
 trait DataCriacao
 {
     protected mixed $data_criacao;

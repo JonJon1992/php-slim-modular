@@ -3,7 +3,6 @@
 use Core\App\App;
 use Core\Exceptions\ErrorHandler;
 use Core\Middleware\{CryptMiddleware, GatewayMiddleware, RequestMiddleware};
-
 use Slim\Middleware\MethodOverrideMiddleware;
 
 return function (App $app) {

@@ -30,6 +30,8 @@ interface ISlimModule
 
     function event(): IEventDispatcher;
 
+    function eventSubscribers(App $app): void;
+
     function log(JsonSerializable $obj = null, $message = null): LoggerInterface;
 
     function redis(): Redis;

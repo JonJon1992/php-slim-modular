@@ -2,11 +2,6 @@
 
 namespace Core\Traits;
 
-use Core\Utils\Auth;
-use Core\Utils\Client;
-use Core\Utils\Config;
-use Core\Utils\Crypt;
-
 trait Singleton
 {
     private static ?self $singleton = null;

@@ -3,6 +3,8 @@
 namespace Core\App;
 
 use DI\Container;
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\NotFoundExceptionInterface;
 use Slim\Factory\AppFactory;
 use Throwable;
 
@@ -27,8 +29,11 @@ class App extends \Slim\App
 
     /**
      * @param string $key
+     * @return mixed
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      */
-    public function service(string $key)
+    public function service(string $key): mixed
     {
         return $this->getContainer()->get($key);
     }

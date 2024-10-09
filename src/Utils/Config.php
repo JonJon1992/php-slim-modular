@@ -19,7 +19,7 @@ class Config
             if (in_array($config, ['.', '..'])) {
                 continue;
             }
-            $this->configs[substr($config, 0, -4,)] = require Path::configs() . "/$config";
+            $this->configs[substr($config, 0, -4)] = require Path::configs() . "/$config";
         }
     }
 
