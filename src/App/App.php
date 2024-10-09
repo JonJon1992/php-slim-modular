@@ -33,7 +33,7 @@ class App extends \Slim\App
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
      */
-    public function service(string $key)
+    public function service(string $key): mixed
     {
         return $this->getContainer()->get($key);
     }

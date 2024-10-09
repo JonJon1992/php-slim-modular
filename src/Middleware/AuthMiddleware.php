@@ -3,7 +3,6 @@
 namespace Core\Middleware;
 
 use Core\Contracts\IAuth;
-use Core\Contracts\IClient;
 use Exception;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;

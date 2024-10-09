@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-use Core\Utils\{Arr, Config, Redis, Trace};
+use Core\Utils\{Arr, Config, Redis, SqsClient, Trace};
 use DI\ContainerBuilder;
 use Illuminate\Container\Container;
 use Illuminate\Database\Capsule\Manager;
@@ -67,5 +67,14 @@ return function (ContainerBuilder $builder) {
         S3::singleton()->use($alias, $settings);
     }
 
+    foreach ($configs->get('queue', []) as $alias => $settings) {
+        if ($alias == 'default') {
+            continue;
+        }
+
+        $bindings["queue.$alias"] = function () use ($settings) {
+            return new SqsClient($settings);
+        };
+    }
     $builder->addDefinitions($bindings);
 };

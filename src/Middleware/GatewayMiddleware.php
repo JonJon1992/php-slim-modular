@@ -6,10 +6,8 @@ use Core\Exceptions\SlimAutenticacaoIncorretalidaException;
 use Core\Utils\Scrambler;
 use Core\Utils\Time;
 use Exception;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Query\Builder;
-use Psr\Http\Message\ServerRequestInterface as RequestInterface;
 use Psr\Http\Message\ResponseInterface as Response;
+use Psr\Http\Message\ServerRequestInterface as RequestInterface;
 use Psr\Http\Server\RequestHandlerInterface as RequestHandler;
 
 class GatewayMiddleware

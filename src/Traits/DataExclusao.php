@@ -2,8 +2,6 @@
 
 namespace Core\Traits;
 
-use Illuminate\Support\Carbon;
-
 trait DataExclusao
 {
     protected mixed $data_exclusao;

@@ -90,6 +90,7 @@ class ErrorHandler extends SlimErrorHandler
             ->withHeader('Content-Type', 'application/json')
             ->withStatus($this->statusCode);
     }
+
     /**
      * @return array
      */
