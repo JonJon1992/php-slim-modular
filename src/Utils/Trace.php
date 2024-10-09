@@ -2,6 +2,7 @@
 
 namespace Core\Utils;
 
+use DateTime;
 use GuzzleHttp\Client;
 
 class Trace
@@ -83,6 +84,6 @@ class Trace
      */
     private static function timestamp(): string
     {
-        return (new \DateTime())->format('Y-m-d\TH:i:s.uP');
+        return (new DateTime())->format('Y-m-d\TH:i:s.uP');
     }
 }

@@ -15,6 +15,9 @@ class ClientMiddleware
 
     }
 
+    /**
+     * @throws Exception
+     */
     public function __invoke(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         $client = $request->hasHeader('x-client') ? $request->getHeaderLine('x-client') : '';

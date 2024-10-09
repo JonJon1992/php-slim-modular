@@ -16,13 +16,16 @@ class AuthMiddleware
 
     }
 
+    /**
+     * @throws Exception
+     */
     public function __invoke(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
-        $client = $request->hasHeader('x-auth-token') ? $request->getHeaderLine('x-auth-token') : '';
-        if (empty($client)) {
-            throw new Exception('User not authenticated.', 401);
+        $auth = $request->hasHeader('x-auth') ? $request->getHeaderLine('x-auth') : '';
+        if (empty($auth)) {
+            throw new Exception('Usuário não autenticado.', 401);
         }
-        $this->auth->login($client);
+        $this->auth->login($auth);
         return $handler->handle($request);
     }
 }

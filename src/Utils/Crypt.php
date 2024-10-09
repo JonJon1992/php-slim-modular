@@ -78,7 +78,7 @@ class Crypt implements ICrypt
      * @param array $keys
      * @param bool $encode
      */
-    public function transform(array $data = [], array $keys = [], bool $encode = true)
+    public function transform(array $data = [], array $keys = [], bool $encode = true): array
     {
         $key = array_shift($keys);
 
@@ -160,7 +160,7 @@ class Crypt implements ICrypt
 
     }
 
-    private function doTransform(array $data, array $keys, bool $encode = true)
+    private function doTransform(array $data, array $keys, bool $encode = true): array
     {
         foreach ($keys as $key) {
             $data = $this->transform($data, explode('.', $key), $encode);

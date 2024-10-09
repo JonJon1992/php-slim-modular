@@ -106,6 +106,7 @@ class ErrorHandler extends SlimErrorHandler
         if ($this->exception instanceof HttpMethodNotAllowedException) {
             $request['allow'] = $this->exception->getAllowedMethods();
         }
+
         if ($this->exception instanceof Throwable) {
             $request['code'] = $this->exception->getCode();
             $request['class'] = get_class($this->exception);
