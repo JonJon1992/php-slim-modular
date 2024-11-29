@@ -11,7 +11,6 @@ trait Create
     {
         $class = get_called_class();
         return new $class();
-
     }
 
 }

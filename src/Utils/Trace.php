@@ -35,7 +35,7 @@ class Trace
             $config['headers'] = [];
         }
         $config['headers']['trace-id'] = self::uuid();
-        return new  Client($config);
+        return new Client($config);
 
     }
 

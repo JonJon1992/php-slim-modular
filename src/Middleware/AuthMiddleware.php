@@ -22,7 +22,7 @@ class AuthMiddleware
     {
         $auth = $request->hasHeader('x-auth') ? $request->getHeaderLine('x-auth') : '';
         if (empty($auth)) {
-            throw new Exception('Usuário não autenticado.', 401);
+            throw new Exception('O usuário não está autenticado.', 401);
         }
         $this->auth->login($auth);
         return $handler->handle($request);

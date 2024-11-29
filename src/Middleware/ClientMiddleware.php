@@ -22,7 +22,7 @@ class ClientMiddleware
     {
         $client = $request->hasHeader('x-client') ? $request->getHeaderLine('x-client') : '';
         if (empty($client)) {
-            throw new Exception('Client header missing', 400);
+            throw new Exception('O client não encontrado no header.', 400);
         }
         $this->client->use($client);
         return $handler->handle($request);

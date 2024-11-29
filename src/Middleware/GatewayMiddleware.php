@@ -9,6 +9,7 @@ use Exception;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as RequestInterface;
 use Psr\Http\Server\RequestHandlerInterface as RequestHandler;
+use function str_replace;
 
 class GatewayMiddleware
 {
@@ -73,10 +74,10 @@ class GatewayMiddleware
             throw new SlimAutenticacaoIncorretalidaException();
         }
 
-        $session = redis('ms-auth')->get('ms-auth:session:' . $token->u);
+        $session = redis()->get('auth:session:' . $token->u);
 
         if (empty($session)) {
-            throw new Exception('Sessão expirada.', 401);
+            throw new Exception('A sessão está expirada.', 401);
         }
 
         $session = json_decode($session);
@@ -108,13 +109,13 @@ class GatewayMiddleware
             throw new SlimAutenticacaoIncorretalidaException();
         }
 
-        $uk = hash('sha512', 'ms-auth:utilization:' . $token->s);
+        $uk = hash('sha512', 'auth:utilization:' . $token->s);
 
-        if (redis('ms-auth')->exists($uk)) {
+        if (redis()->exists($uk)) {
             throw new SlimAutenticacaoIncorretalidaException();
         }
 
-        redis('ms-auth')->set($uk, 1, ['exp' => $this->tolerance]);
+        redis()->set($uk, 1, ['exp' => $this->tolerance]);
 
         $this->auth = $session->account;
     }
@@ -138,10 +139,10 @@ class GatewayMiddleware
      */
     private function getClients(): array
     {
-        $items = redis('ms-auth')->get('ms-auth:client');
+        $items = redis()->get('auth:client');
 
         if (!empty($items)) {
-            return (array)json_decode($items);
+            return (array) json_decode($items);
         }
 
         $clients = $this->fetchClientDB();
@@ -151,7 +152,7 @@ class GatewayMiddleware
             return $clients;
         }, []);
 
-        redis('ms-auth')->set('ms-auth:client', json_encode($clients), ['exp' => Time::_10M]);
+        redis()->set('auth:client', json_encode($clients), ['exp' => Time::_10M]);
 
         return $clients;
     }
@@ -165,7 +166,7 @@ class GatewayMiddleware
     {
         $clients = $this->getClients();
         if (!key_exists($key, $clients)) {
-            throw new Exception('Client não encontrado.', 401);
+            throw new Exception('O client key não foi encontrado.', 401);
         }
         return $clients[$key];
     }
@@ -199,7 +200,7 @@ class GatewayMiddleware
      */
     private function getAccountByIdOrEmail($idOrEmail)
     {
-        $usuario = redis('ms-auth')->get('ms-auth:usuario:' . $idOrEmail);
+        $usuario = redis()->get('auth:user:' . $idOrEmail);
         if (!empty($usuario)) {
             return json_decode($usuario);
         }
@@ -212,7 +213,7 @@ class GatewayMiddleware
      */
     private function fetchClientDB(): array
     {
-        return db('ms-auth')
+        return db()
             ->query()
             ->from('public.clients')
             ->get()
@@ -225,9 +226,9 @@ class GatewayMiddleware
      */
     private function fetchUsuario($idOrEmail): object
     {
-        $query = db('ms-auth')
+        $query = db()
             ->query()
-            ->from('public.usuarios');
+            ->from('users');
 
         if (is_numeric($idOrEmail)) {
             $query->where('id', $idOrEmail);
@@ -236,9 +237,9 @@ class GatewayMiddleware
         }
         $result = $query->first();
         if (!empty($result)) {
-            throw new Exception('Usuário não encontrado.', 401);
+            throw new Exception('O usuário não encontrado.', 401);
         }
-        redis('ms-auth')->set('ms-auth:usuario:' . $idOrEmail, json_encode($result), ['exp' => Time::_24H]);
+        redis()->set('auth:users:' . $idOrEmail, json_encode($result), ['exp' => Time::_24H]);
         return $result;
 
     }
