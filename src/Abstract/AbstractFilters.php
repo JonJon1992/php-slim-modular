@@ -6,131 +6,146 @@ use Core\Utils\Serializable;
 
 abstract class AbstractFilters extends Serializable
 {
-    protected $page;
+    protected int $page;
 
-    protected $per_page;
+    protected int $per_page;
 
-    protected $columns;
+    protected ?array $columns;
 
-    protected $not_columns;
+    protected ?array $not_columns;
 
     protected ?array $with_associations = [];
 
-    protected $order;
+    protected ?string $order;
 
-    protected $order_direction;
+    protected ?string $order_direction;
 
-    public function __construct(?int $pageDefault = 1, ?int $perPageDefault = 30)
-    {
-
-        $this->page = $pageDefault;
-        $this->per_page = $perPageDefault;
-    }
-
-    public function getPage(): ?int
+    /**
+     * @return int
+     */
+    public function getPage(): int
     {
         return $this->page;
     }
 
-    public function setPage(?int $page): AbstractFilters
+    /**
+     * @param int $page
+     * @return AbstractFilters
+     */
+    public function setPage(int $page): AbstractFilters
     {
         $this->page = $page;
         return $this;
     }
 
-    public function getPerPage(): ?int
+    /**
+     * @return int
+     */
+    public function getPerPage(): int
     {
         return $this->per_page;
     }
 
-    public function setPerPage(?int $per_page): AbstractFilters
+    /**
+     * @param int $per_page
+     * @return AbstractFilters
+     */
+    public function setPerPage(int $per_page): AbstractFilters
     {
         $this->per_page = $per_page;
         return $this;
     }
 
     /**
-     * @return mixed
+     * @return array|null
      */
-    public function getColumns(): mixed
+    public function getNotColumns(): ?array
+    {
+        return $this->not_columns;
+    }
+
+    /**
+     * @param array|null $not_columns
+     * @return AbstractFilters
+     */
+    public function setNotColumns(?array $not_columns): AbstractFilters
+    {
+        $this->not_columns = $not_columns;
+        return $this;
+    }
+
+    /**
+     * @return array|null
+     */
+    public function getColumns(): ?array
     {
         return $this->columns;
     }
 
     /**
-     * @param mixed $columns
+     * @param array|null $columns
      * @return AbstractFilters
      */
-    public function setColumns($columns): AbstractFilters
+    public function setColumns(?array $columns): AbstractFilters
     {
         $this->columns = $columns;
         return $this;
     }
 
     /**
-     * @return mixed
+     * @return array|null
      */
-    public function getNotColumns(): mixed
-    {
-        return $this->not_columns;
-    }
-
-    /**
-     * @param mixed $not_columns
-     * @return AbstractFilters
-     */
-    public function setNotColumns($not_columns): AbstractFilters
-    {
-        $this->not_columns = $not_columns;
-        return $this;
-    }
-
-    public function getWithAssociations(): array
+    public function getWithAssociations(): ?array
     {
         return $this->with_associations;
     }
 
+    /**
+     * @param array|null $with_associations
+     * @return AbstractFilters
+     */
     public function setWithAssociations(?array $with_associations): AbstractFilters
     {
-        $this->with_associations = $with_associations ?? [];
+        $this->with_associations = $with_associations;
         return $this;
     }
 
     /**
-     * @return mixed
+     * @return string|null
      */
-    public function getOrder(): mixed
+    public function getOrder(): ?string
     {
         return $this->order;
     }
 
     /**
-     * @param mixed $order
+     * @param string|null $order
      * @return AbstractFilters
      */
-    public function setOrder($order): AbstractFilters
+    public function setOrder(?string $order): AbstractFilters
     {
         $this->order = $order;
         return $this;
     }
 
     /**
-     * @return mixed
+     * @return string|null
      */
-    public function getOrderDirection(): mixed
+    public function getOrderDirection(): ?string
     {
         return $this->order_direction;
     }
 
     /**
-     * @param mixed $order_direction
+     * @param string|null $order_direction
      * @return AbstractFilters
      */
-    public function setOrderDirection($order_direction): AbstractFilters
+    public function setOrderDirection(?string $order_direction): AbstractFilters
     {
         $this->order_direction = $order_direction;
         return $this;
     }
+
 
     /**
      * @param $data

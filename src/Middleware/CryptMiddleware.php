@@ -2,20 +2,23 @@
 
 namespace Core\Middleware;
 
-use Psr\Http\Message\RequestInterface as Request;
-use Psr\Http\Message\ResponseInterface as Response;
-use Psr\Http\Server\RequestHandlerInterface as Handler;
+use Exception;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface as RequestInterface;
+use Psr\Http\Server\RequestHandlerInterface as HandlerInterface;
 
 class CryptMiddleware
 {
     public static bool $status = false;
 
     /**
-     * @param Request $request
-     * @param Handler $handler
-     * @return Response
+     * @param RequestInterface $request
+     * @param HandlerInterface $handler
+     *
+     * @return ResponseInterface
+     * @throws Exception
      */
-    public function __invoke(Request $request, Handler $handler): Response
+    public function __invoke(RequestInterface $request, HandlerInterface $handler): ResponseInterface
     {
         if ($request->hasHeader('X-Crypt') && $request->getHeader('X-Crypt') == ['true']) {
             self::$status = true;

@@ -3,7 +3,7 @@
 namespace Core\App;
 
 use Core\Contracts\Event\IEventDispatcher;
-use Core\Contracts\ISlimModule;
+use Core\Contracts\IModule;
 use Core\Event\EventDispatcher;
 use Core\Utils\Path;
 use Core\Utils\Redis;
@@ -16,7 +16,7 @@ use Slim\Interfaces\RouteCollectorProxyInterface as Route;
 use Slim\Interfaces\RouteGroupInterface;
 use function DI\autowire;
 
-abstract class SlimModule implements ISlimModule
+abstract class Module implements IModule
 {
     /**
      * @var string
@@ -211,7 +211,7 @@ abstract class SlimModule implements ISlimModule
     /**
      * @return Bucket
      */
-    public function s3()
+    public function s3(): Bucket
     {
         return s3($this->namespace());
     }

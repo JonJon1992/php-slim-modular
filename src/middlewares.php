@@ -10,7 +10,6 @@ return function (App $app) {
     $app->addBodyParsingMiddleware();
     $app->add(MethodOverrideMiddleware::class);
     $app->add(RequestMiddleware::class);
-    $app->add(GatewayMiddleware::class);
     $app->add(CryptMiddleware::class);
     $app->addRoutingMiddleware();
     $app->addErrorMiddleware('app.debug', config('app.error'), config('app.details'))

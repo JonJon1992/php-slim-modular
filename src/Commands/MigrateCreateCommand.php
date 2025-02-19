@@ -3,8 +3,9 @@
 namespace Core\Commands;
 
 use Carbon\Carbon;
+use Core\Abstract\AbstractCommand;
 use Core\App\SlimCommand;
-use Core\App\SlimModule;
+use Core\App\Module;
 use Core\Utils\Path;
 use Core\Utils\Str;
 use Exception;
@@ -12,7 +13,7 @@ use Illuminate\Filesystem\Filesystem;
 use Symfony\Component\Console\Input\InputArgument;
 use Throwable;
 
-class MigrateCreateCommand extends SlimCommand
+class MigrateCreateCommand extends AbstractCommand
 {
 
     /**
@@ -50,7 +51,7 @@ class MigrateCreateCommand extends SlimCommand
         } catch (Throwable $throwable) {
             throw  new Exception('Não foi possivel criar migration', 0, $throwable);
         }
-        $this->output->writeln('> Migration criadda com sucesso: ' . $dir . '/' . $className . '.php');
+        $this->output->writeln('> Migration criada com sucesso: ' . $dir . '/' . $className . '.php');
 
     }
 
@@ -64,19 +65,19 @@ class MigrateCreateCommand extends SlimCommand
     }
 
     /**
-     * @param SlimModule $module
+     * @param Module $module
      * @param $className
      * @return string
      */
-    protected function template(SlimModule $module, $className): string
+    protected function template(Module $module, $className): string
     {
         $namespace = new \ReflectionClass($module);
 
         $template = "<?php\n\n";
         $template .= "namespace " . $namespace->getNamespaceName() . str_replace('/', '\\', $module->migrationFolder()) . ";\n\n";
-        $template .= "use Core\App\SlimMigration;\n";
+        $template .= "use Core\Abstract;\n";
         $template .= "use Illuminate\Database\Schema\Blueprint;\n\n";
-        $template .= "class " . $className . " extends SlimMigration\n";
+        $template .= "class " . $className . " extends AbstractMigration\n";
         $template .= "{\n";
         $template .= "\tpublic function up()\n";
         $template .= "\t{\n\n";

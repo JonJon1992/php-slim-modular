@@ -1,9 +1,9 @@
 <?php
 declare(strict_types=1);
 
-use Core\Action\HealtyCheckAction;
+use Core\Action\ImAliveAction;
 use Core\App\App;
-use Core\App\SlimModule;
+use Core\App\Module;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
@@ -14,7 +14,7 @@ return function (App $app) {
         return [];
     });
 
-    $app->get('/healty-check[/{service:.*}]', HealtyCheckAction::class);
+    $app->get('/healty-check[/{service:.*}]', ImAliveAction::class);
 
-    array_map(fn(SlimModule $module) => $module->routes($app), $app->modules());
+    array_map(fn(Module $module) => $module->routes($app), $app->modules());
 };

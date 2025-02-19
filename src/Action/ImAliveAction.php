@@ -2,6 +2,7 @@
 
 namespace Core\Action;
 
+use Core\App\Action;
 use Core\App\SlimAction;
 use Core\Utils\Path;
 use Core\Utils\Str;
@@ -10,9 +11,9 @@ use Exception;
 use Illuminate\Filesystem\Filesystem;
 use Psr\Http\Message\ResponseInterface;
 
-class HealtyCheckAction extends SlimAction
+class ImAliveAction extends Action
 {
-    const HEALTY_CHECK = '/healty-check.log';
+    const HEALTY_CHECK = '/im-alive.log';
 
     /**
      * @return array|ResponseInterface|string[]
@@ -53,7 +54,7 @@ class HealtyCheckAction extends SlimAction
         }
 
         if ($dead > 0) {
-            logger()->critical('healty-check with dead', $response);
+            logger()->critical('im-alive with dead', $response);
             $this->response->getBody()->write(json_encode($response));
 
             return $this->response->withHeader('Content-Type', 'application/json')

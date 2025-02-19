@@ -2,7 +2,7 @@
 
 namespace Core\Abstract;
 
-use Core\App\SlimAction;
+use Core\App\Action;
 use Core\Contracts\ICrypt;
 use Core\Middleware\CryptMiddleware;
 use Core\Utils\EncodedBase64;
@@ -11,7 +11,7 @@ use Fig\Http\Message\StatusCodeInterface;
 use Illuminate\Support\Arr;
 use Psr\Http\Message\ResponseInterface as Response;
 
-abstract class AbstractAction extends SlimAction
+abstract class AbstractAction extends Action
 {
     protected ICrypt $crypt;
 

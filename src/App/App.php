@@ -2,14 +2,17 @@
 
 namespace Core\App;
 
+use Core\Abstract\AbstractCommand;
 use DI\Container;
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\NotFoundExceptionInterface;
 use Slim\Factory\AppFactory;
 use Throwable;
 
 class App extends \Slim\App
 {
 
-    protected ?SlimCommand $command = null;
+    protected ?AbstractCommand $command = null;
 
     /**
      * @param Container|null $container
@@ -27,6 +30,9 @@ class App extends \Slim\App
 
     /**
      * @param string $key
+     * @return mixed
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      */
     public function service(string $key)
     {
@@ -34,7 +40,7 @@ class App extends \Slim\App
     }
 
     /**
-     * @return SlimModule[]
+     * @return Module[]
      */
     public function modules(): mixed
     {
@@ -71,16 +77,16 @@ class App extends \Slim\App
     }
 
     /**
-     * @param SlimCommand $command
+     * @param AbstractCommand $command
      * @return void
      */
-    public function command(SlimCommand $command): void
+    public function command(AbstractCommand $command): void
     {
         $this->command = $command;
     }
 
     /**
-     * @return SlimCommand[]
+     * @return AbstractCommand[]
      */
     public function commands(): array
     {

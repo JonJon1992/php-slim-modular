@@ -1,7 +1,7 @@
 {
   "name": "jonjon1992/php-slim-modular",
   "type": "library",
-  "version": "1.5.1",
+  "version": "1.6.0",
   "repositories": [
     {
       "type": "git",
@@ -17,7 +17,7 @@
     "ext-redis": "*",
     "ext-sodium": "*",
     "aws/aws-sdk-php": "3.295.0",
-    "awurth/slim-validation": "5.0.0",
+    "awurth/slim-validation": "3.4.0",
     "hashids/hashids": "5.0.2",
     "illuminate/database": "v10.37.3",
     "illuminate/events": "v10.37.3",
@@ -31,7 +31,7 @@
     "predis/predis": "v1.1.6",
     "ramsey/uuid": "4.7.5",
     "slim/php-view": "3.1.0",
-    "slim/psr7": "1.6.1",
+    "slim/psr7": "1.4",
     "slim/slim": "4.8.1",
     "symfony/console": "v6.4.1",
     "symfony/event-dispatcher": "^6.3",

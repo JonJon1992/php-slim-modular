@@ -1,8 +1,8 @@
 <?php
 
 use Core\App\App;
-use Core\App\SlimModule;
+use Core\App\Module;
 
 return function (App $app) {
-    array_map(fn(SlimModule $module) => $module->subscribers($app), $app->modules());
+    array_map(fn(Module $module) => $module->subscribers($app), $app->modules());
 };

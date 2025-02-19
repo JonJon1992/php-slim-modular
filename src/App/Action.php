@@ -7,7 +7,7 @@ use Illuminate\Support\Arr;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
-abstract class SlimAction
+abstract class Action
 {
     protected Request $request;
     protected Response $response;

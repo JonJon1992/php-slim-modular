@@ -3,16 +3,18 @@
 namespace Core\Commands;
 
 use Carbon\Carbon;
+use Core\Abstract\AbstractCommand;
 use Core\App\SlimCommand;
-use Core\App\SlimModule;
+use Core\App\Module;
 use Exception;
 use Illuminate\Database\Capsule\Manager;
 use Illuminate\Database\Connection;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Collection;
 use Throwable;
 
-class MigrateRunCommand extends SlimCommand
+class MigrateRunCommand extends AbstractCommand
 {
     /**
      * @return void
@@ -37,13 +39,13 @@ class MigrateRunCommand extends SlimCommand
             }
 
             $this->output->writeln("\n#\n#" . get_class($module) . "\n#\n#");
-            $migrations = $module->migrations();
+            $migrations = $this->getIdleMigration($db, $module->migrations());
 
             if (empty($migrations)) {
                 $this->output->writeln("> Modulo não possui migrations");
                 continue;
             }
-            $this->output->writeln('> Preparando tabela de migrations...');
+            $this->output->writeln('> Preparando tabela de migração...');
             $this->prepareMigrationTable($db);
 
             $this->output->writeln('> Definindo proximo batch...');
@@ -80,12 +82,12 @@ class MigrateRunCommand extends SlimCommand
 
     /**
      * @param string $namespace
-     * @return SlimModule
+     * @return Module
      */
-    public static function getModule(string $namespace): SlimModule
+    public static function getModule(string $namespace): Module
     {
         foreach (app()->modules() as $module) {
-            /** @var $module SlimModule */
+            /** @var $module Module */
             if ($module->namespace() == $namespace) {
                 return $module;
             }
@@ -94,10 +96,10 @@ class MigrateRunCommand extends SlimCommand
     }
 
     /**
-     * @param SlimModule $module
+     * @param Module $module
      * @return Connection
      */
-    public static function getConnection(SlimModule $module): Connection
+    public static function getConnection(Module $module): Connection
     {
         try {
             $manager = new Manager();
@@ -180,5 +182,27 @@ class MigrateRunCommand extends SlimCommand
             'created_at' => $now->toDateTimeString(),
             'updated_at' => $now->toDateTimeString()
         ]);
+    }
+
+    protected function getIdleMigration(Connection $connection, array $migrations)
+    {
+        if (empty($migrations)) {
+            return [];
+        }
+
+        $size = 100;
+
+        $migrations = array_combine($migrations, $migrations);
+
+        $connection->query()->from('migrations')
+            ->orderBy('id')
+            ->chunk($size, function (Collection $db_migrations) use (&$migrations) {
+                foreach ($db_migrations as $db_migration) {
+                    unset($migrations[$db_migration->name]);
+                }
+            });
+
+        return array_values($migrations);
+
     }
 }

@@ -10,7 +10,7 @@ use JsonSerializable;
 use Psr\Log\LoggerInterface;
 use Slim\Interfaces\RouteGroupInterface;
 
-interface ISlimModule
+interface IModule
 {
     function namespace(): string;
 

@@ -2,3 +2,5 @@
 /.vscode/
 /vendor/
 .env
+docker-compose.yml
+Dockerfile

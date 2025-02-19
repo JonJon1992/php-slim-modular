@@ -1,12 +1,12 @@
 <?php
 
 
-namespace Core\App;
+namespace Core\Abstract;
 
 use Illuminate\Database\Connection;
 use Illuminate\Database\Schema\Builder;
 
-abstract class SlimMigration
+abstract class AbstractMigration
 {
     protected Connection $db;
 

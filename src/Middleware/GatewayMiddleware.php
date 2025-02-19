@@ -10,7 +10,7 @@ use Psr\Http\Server\RequestHandlerInterface as RequestHandler;
 
 class GatewayMiddleware
 {
-    const AUTH_HEADER = 'x-auth-token';
+    const AUTH_HEADER = 'x-auth';
     const AUTH_PARAM = 'xauth';
     const CLIENT_HEADER = 'x-client';
     const CLIENT_PARAM = 'xclient';
