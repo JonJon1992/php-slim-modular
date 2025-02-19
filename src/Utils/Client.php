@@ -22,7 +22,7 @@ class Client implements IClient
     }
 
     /**
-     * @return string|null
+     * @return array|null
      */
     public function data(): ?array
     {

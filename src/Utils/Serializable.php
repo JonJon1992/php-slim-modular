@@ -13,9 +13,9 @@ abstract class Serializable implements JsonSerializable
     private ?array $propertitiesSerializable = null;
 
     /**
-     * @return mixed
+     * @return array
      */
-    public function jsonSerialize(): mixed
+    public function jsonSerialize(): array
     {
         return $this->toArray(true);
     }
@@ -68,7 +68,7 @@ abstract class Serializable implements JsonSerializable
      * @param $value
      * @return string
      */
-    private function resolveNameGetterByProperty($value)
+    private function resolveNameGetterByProperty($value): string
     {
         return 'get' . self::transformNamePropertyToCamelCase($value);
     }
@@ -122,7 +122,7 @@ abstract class Serializable implements JsonSerializable
      * @param string $propertitie
      * @return $this
      */
-    public function addPropertiesNotSerializable(string $propertitie)
+    public function addPropertiesNotSerializable(string $propertitie): static
     {
         $this->propertitiesNotSerializable[] = $propertitie;
         return $this;
@@ -139,7 +139,7 @@ abstract class Serializable implements JsonSerializable
     }
 
 
-    public function toArray(bool $resolveSerializable = false)
+    public function toArray(bool $resolveSerializable = false): array
     {
         $data = [];
 

@@ -27,8 +27,9 @@ abstract class AbstractAction extends Action
 
     /**
      * @param $payload
+     * @return array|mixed
      */
-    private function preparePayload($payload)
+    private function preparePayload($payload): mixed
     {
         $data = json_decode(json_encode($payload, JSON_PRETTY_PRINT), true);
         return $data ? $this->resolvePayload($data) : $data;

@@ -2,6 +2,7 @@
 
 namespace Core\Utils;
 
+use DateTime;
 use GuzzleHttp\Client;
 
 class Trace
@@ -34,7 +35,7 @@ class Trace
             $config['headers'] = [];
         }
         $config['headers']['trace-id'] = self::uuid();
-        return new  Client($config);
+        return new Client($config);
 
     }
 
@@ -83,6 +84,6 @@ class Trace
      */
     private static function timestamp(): string
     {
-        return (new \DateTime())->format('Y-m-d\TH:i:s.uP');
+        return (new DateTime())->format('Y-m-d\TH:i:s.uP');
     }
 }

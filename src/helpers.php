@@ -86,7 +86,7 @@ function mailer(string $alias = null)
 /**
  * @return Client
  */
-function client(): \Core\Utils\Client
+function client(): Client
 {
     return Client::singleton();
 }

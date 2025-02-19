@@ -84,9 +84,9 @@ class Paginator implements \JsonSerializable
     }
 
     /**
-     * @return mixed
+     * @return array
      */
-    public function jsonSerialize(): mixed
+    public function jsonSerialize(): array
     {
         return [
             'page' => $this->page,

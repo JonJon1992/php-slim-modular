@@ -9,6 +9,10 @@ class Time
     const REMINDER_LIFETIME = 24 * 60 * 60 * 30;
     const _24H = 86400;
 
+    const _5M = 300;
+
+    const _10M = 600;
+
     /**
      * @param float $start
      * @param int $precision
