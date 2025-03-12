@@ -2,9 +2,9 @@
 
 namespace Core\Utils;
 
-
 use Core\Contracts\IValidate;
 use Core\Exceptions\ValidatorException;
+use Awurth\Validator\Validator as AwurthValidator;
 use Respect\Validation\Validator;
 
 class Validate implements IValidate
@@ -16,15 +16,11 @@ class Validate implements IValidate
      * @param string $key
      * @param string|null $group
      * @param array $messages
+     * @throws ValidatorException
      */
     public static function value($value, array $rules, string $key, string $group = null, array $messages = []): void
     {
-        {
-            $validation = (new \Awurth\SlimValidation\Validator())->value($value, $rules, $key, $group, $messages);
-            if (!$validation->isValid()) {
-                throw new ValidatorException('Erro na validação dos dados,', $validation->getErrors());
-            }
-        }
+        self::validate($value, $rules, $messages);
     }
 
     /**
@@ -32,18 +28,32 @@ class Validate implements IValidate
      * @param array $rules
      * @param string|null $group
      * @param array $messages
-     * @param $default
+     * @param null $default
+     * @throws ValidatorException
      */
     public
     static function request(array $data, array $rules, string $group = null, array $messages = [], $default = null): void
     {
-        $messages = array_merge(self::defaultMessages(), $messages);
-        $validation = (new \Awurth\SlimValidation\Validator())->array($data, $rules, $group, $messages, $default);
-        if (!$validation->isValid()) {
-            throw new ValidatorException('Erro na validação dos dados,', $validation->getErrors());
-        }
+        self::validate($data, $rules, $messages);
     }
 
+    /**
+     * @param $subject
+     * @param array $rules
+     * @param array $messages
+     * @return void
+     * @throws ValidatorException
+     */
+    private static function validate($subject, array $rules, array $messages = []): void
+    {
+        $validation = AwurthValidator::create();
+        $errors = $validation->validate($subject, $rules, $messages);
+
+        if ($errors->has(0)) {
+            throw new ValidatorException($errors->get(0)->getMessage(), 412);
+        }
+
+    }
 
     /**
      * @param string $ruleName
@@ -56,15 +66,4 @@ class Validate implements IValidate
         return Validator::create()->__call($ruleName, $arguments);
     }
 
-    private static function defaultMessages()
-    {
-        return [
-            'notEmpty' => 'O campo {{name}} é obrigatorio',
-            'notOptional' => 'O campo {{name}} é opcional',
-            'intType' => 'O campo {{name}} deve conter um  numero inteiro',
-            'intVal' => 'O campo {{name}} deve ser um numero inteiro',
-            'booType' => 'O campo {{name}} deve ser um booleano',
-            'email' => 'O campo {{name}} informado é invalido',
-        ];
-    }
 }

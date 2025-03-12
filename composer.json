@@ -1,7 +1,7 @@
 {
   "name": "jonjon1992/php-slim-modular",
   "type": "library",
-  "version": "1.6.0",
+  "version": "1.6.1",
   "repositories": [
     {
       "type": "git",
@@ -17,7 +17,7 @@
     "ext-redis": "*",
     "ext-sodium": "*",
     "aws/aws-sdk-php": "3.295.0",
-    "awurth/slim-validation": "3.4.0",
+    "awurth/slim-validation": "5.0.0",
     "hashids/hashids": "5.0.2",
     "illuminate/database": "v10.37.3",
     "illuminate/events": "v10.37.3",
@@ -65,8 +65,5 @@
     "allow-plugins": {
       "phpstan/extension-installer": false
     }
-  },
-  "scripts": {
-    "start": "php -S localhost:8088 public/index.php"
   }
 }
