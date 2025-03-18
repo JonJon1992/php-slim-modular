@@ -30,11 +30,11 @@ class FileValidate
      */
     private $required = true;
     /**
-     * @var ?int
+     * @var ?string
      */
     private $min = null;
     /**
-     * @var ?int
+     * @var ?string
      */
     private $max = null;
     /**
@@ -104,36 +104,36 @@ class FileValidate
     }
 
     /**
-     * @return int|null
+     * @return string|null
      */
-    public function getMin(): ?int
+    public function getMin(): ?string
     {
         return $this->min;
     }
 
     /**
-     * @param int|null $min
+     * @param string|null $min
      * @return FileValidate
      */
-    public function setMin(?int $min): FileValidate
+    public function setMin(?string $min): FileValidate
     {
         $this->min = $min;
         return $this;
     }
 
     /**
-     * @return int|null
+     * @return string|null
      */
-    public function getMax(): ?int
+    public function getMax(): ?string
     {
         return $this->max;
     }
 
     /**
-     * @param int|null $max
+     * @param string|null $max
      * @return FileValidate
      */
-    public function setMax(?int $max): FileValidate
+    public function setMax(?string $max): FileValidate
     {
         $this->max = $max;
         return $this;

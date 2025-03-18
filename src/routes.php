@@ -14,7 +14,11 @@ return function (App $app) {
         return [];
     });
 
-    $app->get('/healty-check[/{service:.*}]', ImAliveAction::class);
+    $app->get('/im-alive[/{service:.*}]', ImAliveAction::class);
 
     array_map(fn(Module $module) => $module->routes($app), $app->modules());
+
+    $app->map(['*'], '/{routes:.+}', function ($request, $response) {
+        throw new HttpNotFoundException($request);
+    });
 };

@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 use Core\App\App;
-use Core\Utils\{Auth, Client, Config};
+use Core\Utils\{Auth, Client, Config, Render\IRendebleAdapter};
 use Illuminate\Database\Connection;
 use Slim\Views\PhpRenderer;
 
@@ -89,5 +89,16 @@ function mailer(string $alias = null)
 function client(): Client
 {
     return Client::singleton();
+}
+function keystore(string $name): string
+{
+    $file = realpath(Path::root('/keystore/') . "$name");
+    return file_get_contents($file);
+}
+
+function renderAdapter(string $alias = null): IRendebleAdapter
+{
+    $alias = $alias ?: config('view.folder');
+    return service("view." . $alias);
 }
 

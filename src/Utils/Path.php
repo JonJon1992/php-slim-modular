@@ -89,4 +89,9 @@ class Path
     {
         return self::resolve(self::root('/var'), $path);
     }
+
+    public static function views($path = null): string
+    {
+        return self::resolve(self::root('/views'), $path);
+    }
 }

@@ -5,8 +5,10 @@ namespace Core\App;
 use Core\Contracts\Event\IEventDispatcher;
 use Core\Contracts\IModule;
 use Core\Event\EventDispatcher;
+use Core\Utils\Email;
 use Core\Utils\Path;
 use Core\Utils\Redis;
+use Core\Utils\Render\IRendebleAdapter;
 use Illuminate\Database\Connection;
 use JsonSerializable;
 use Psr\Log\LoggerInterface;
@@ -225,8 +227,24 @@ abstract class Module implements IModule
         return s3($this->namespace());
     }
 
+    public function mail(): Email
+    {
+        return Email::create()
+            ->setMailer($this->mailer())
+            ->setAdapter($this->renderAdapter())
+            ->setFrom(
+                config("mailer.{$this->namespace()}.from_address"),
+                config("mailer.{$this->namespace()}.from_name"));
+
+    }
+
     public function mailer()
     {
         return mailer($this->namespace);
+    }
+
+    public function renderAdapter(): IRendebleAdapter
+    {
+        return renderAdapter($this->namespace());
     }
 }

@@ -9,7 +9,9 @@ use Illuminate\Events\Dispatcher;
 use Monolog\Formatter\JsonFormatter;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
+use Nette\Mail\SmtpMailer;
 use S3\Lib\S3;
+use function Slim\Views\PhpRenderer;
 
 
 return function (ContainerBuilder $builder) {
@@ -74,6 +76,21 @@ return function (ContainerBuilder $builder) {
 
         $bindings["queue.$alias"] = function () use ($settings) {
             return new SqsClient($settings);
+        };
+    }
+
+    $bindings['view'] = function () use ($configs) {
+        return PhpRenderer($configs->get('app.view.folder'));
+    };
+
+
+    foreach ($configs->get('mailer', []) as $alias => $settings) {
+        if ($alias == 'default') {
+            continue;
+        }
+
+        $bindings["mailer.$alias"] = function () use ($settings, $configs, $alias) {
+            return new SmtpMailer($settings);
         };
     }
     $builder->addDefinitions($bindings);
