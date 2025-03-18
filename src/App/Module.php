@@ -231,16 +231,13 @@ abstract class Module implements IModule
     {
         return Email::create()
             ->setMailer($this->mailer())
-            ->setAdapter($this->renderAdapter())
-            ->setFrom(
-                config("mailer.{$this->namespace()}.from_address"),
-                config("mailer.{$this->namespace()}.from_name"));
+            ->setRender($this->renderAdapter());
 
     }
 
     public function mailer()
     {
-        return mailer($this->namespace);
+        return mailer($this->namespace());
     }
 
     public function renderAdapter(): IRendebleAdapter

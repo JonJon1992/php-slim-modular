@@ -2,7 +2,7 @@
 
 namespace Core\Traits\Attr;
 
-class UpdatedAt
+trait DataAlteracao
 {
     /**
      * @var mixed

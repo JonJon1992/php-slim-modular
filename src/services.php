@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-use Core\Utils\{Arr, Config, Redis, SqsClient, Trace};
+use Core\Utils\{Arr, Config, Path, Redis, Render\SlimPhpRenderAdapter, SqsClient, Trace};
 use DI\ContainerBuilder;
 use Illuminate\Container\Container;
 use Illuminate\Database\Capsule\Manager;
@@ -82,6 +82,16 @@ return function (ContainerBuilder $builder) {
     $bindings['view'] = function () use ($configs) {
         return PhpRenderer($configs->get('app.view.folder'));
     };
+    foreach (config('app.modules', []) as $class) {
+
+        $module = new $class();
+        $alias = $module->namespace();
+        $dir = Path::modules('/' . $module->namespace() . $module->viewsFolder());
+
+        $bindings["view.$alias"] = function () use ($dir) {
+            return new SlimPhpRenderAdapter($dir);
+        };
+    }
 
 
     foreach ($configs->get('mailer', []) as $alias => $settings) {

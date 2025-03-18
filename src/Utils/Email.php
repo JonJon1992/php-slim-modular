@@ -13,7 +13,7 @@ class Email extends Message
 
     protected SmtpMailer $mailer;
 
-    protected IRendebleAdapter $adapter;
+    protected IRendebleAdapter $render;
 
     /**
      * @param SmtpMailer $mailer
@@ -26,12 +26,12 @@ class Email extends Message
     }
 
     /**
-     * @param IRendebleAdapter $adapter
+     * @param IRendebleAdapter $render
      * @return $this
      */
-    public function setAdapter(IRendebleAdapter $adapter): Email
+    public function setRender(IRendebleAdapter $render): Email
     {
-        $this->adapter = $adapter;
+        $this->render = $render;
         return $this;
     }
 

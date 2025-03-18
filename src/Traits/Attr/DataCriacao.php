@@ -2,7 +2,7 @@
 
 namespace Core\Traits\Attr;
 
-trait CreatedAt
+trait DataCriacao
 {
     /**
      * @var mixed

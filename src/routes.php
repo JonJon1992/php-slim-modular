@@ -6,12 +6,13 @@ use Core\App\App;
 use Core\App\Module;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
+use Slim\Exception\HttpNotFoundException;
 
 return function (App $app) {
     $app->options('/{routes:.+}', fn($request, $response, $args) => $response);
 
     $app->get('/', function (Request $request, Response $response) {
-        return [];
+        return view()->render($response,'index.phtml');
     });
 
     $app->get('/im-alive[/{service:.*}]', ImAliveAction::class);

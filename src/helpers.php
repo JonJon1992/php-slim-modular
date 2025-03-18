@@ -80,7 +80,7 @@ function view(): PhpRenderer
 function mailer(string $alias = null)
 {
     $alias = $alias ?? app()->module() ?? config('mailer.default', array_key_first(config('mailer')));
-    return service("mail.$alias");
+    return service("mailer.$alias");
 }
 
 /**

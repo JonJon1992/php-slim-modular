@@ -2,7 +2,7 @@
 
 namespace Core\Traits\Attr;
 
-class DeletedAt
+trait DataExclusao
 {
     /**
      * @var mixed
