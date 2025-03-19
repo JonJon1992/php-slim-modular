@@ -23,6 +23,9 @@ class Date extends ValueObject
         $this->date = (string)$value;
     }
 
+    /**
+     * @return DateTime
+     */
     public function getDateTime(): \DateTime
     {
         return DateTime::createFromFormat(self::DEFAULT_DATE_FORMAT, $this->date);

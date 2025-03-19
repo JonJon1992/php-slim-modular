@@ -1,7 +1,14 @@
 <?php
 declare(strict_types=1);
 
-use Core\Utils\{Arr, Config, Path, Redis, Render\SlimPhpRenderAdapter, SqsClient, Trace};
+use Core\Utils\{Arr,
+    Config,
+    Path,
+    Redis,
+    Render\SlimPhpRenderAdapter,
+    SqsClient,
+    Trace
+};
 use DI\ContainerBuilder;
 use Illuminate\Container\Container;
 use Illuminate\Database\Capsule\Manager;
@@ -11,7 +18,7 @@ use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
 use Nette\Mail\SmtpMailer;
 use S3\Lib\S3;
-use function Slim\Views\PhpRenderer;
+use Slim\Views\PhpRenderer;
 
 
 return function (ContainerBuilder $builder) {
@@ -23,6 +30,7 @@ return function (ContainerBuilder $builder) {
             continue;
         }
         $bindings["log.$alias"] = function () use ($alias, $settings) {
+
             $path = Arr::get($settings, 'path');
 
             $handler = new StreamHandler($path, config('app.log_level'));
@@ -80,19 +88,23 @@ return function (ContainerBuilder $builder) {
     }
 
     $bindings['view'] = function () use ($configs) {
-        return PhpRenderer($configs->get('app.view.folder'));
+        return new PhpRenderer($configs->get('app.view.folder'));
     };
+
     foreach (config('app.modules', []) as $class) {
 
         $module = new $class();
         $alias = $module->namespace();
         $dir = Path::modules('/' . $module->namespace() . $module->viewsFolder());
 
+        if (!is_dir($dir)) {
+            continue;
+        }
+        
         $bindings["view.$alias"] = function () use ($dir) {
             return new SlimPhpRenderAdapter($dir);
         };
     }
-
 
     foreach ($configs->get('mailer', []) as $alias => $settings) {
         if ($alias == 'default') {
@@ -103,5 +115,6 @@ return function (ContainerBuilder $builder) {
             return new SmtpMailer($settings);
         };
     }
+
     $builder->addDefinitions($bindings);
 };

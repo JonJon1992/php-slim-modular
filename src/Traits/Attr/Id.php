@@ -19,6 +19,7 @@ trait Id
 
     /**
      * @param mixed $id
+     * @return Id
      */
     public function setId(mixed $id)
     {

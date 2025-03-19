@@ -7,7 +7,9 @@ use Stringable;
 
 abstract class ValueObject extends Stringable implements IValueObject
 {
-
+    /**
+     * @var mixed
+     */
     protected $value;
 
     protected array $roles = [];
@@ -22,6 +24,9 @@ abstract class ValueObject extends Stringable implements IValueObject
         $this->value = $value;
     }
 
+    /**
+     * @param $value
+     */
     protected function sanitize($value)
     {
         return $value;
@@ -43,6 +48,9 @@ abstract class ValueObject extends Stringable implements IValueObject
         return $this->value;
     }
 
+    /**
+     * @return array
+     */
     protected function roles(): array
     {
         return $this->roles;

@@ -60,6 +60,11 @@ abstract class Module implements IModule
      */
     protected array $subscribers = [];
 
+    /**
+     * @var string
+     */
+    protected string $views_folder = '/Views';
+
     public function __construct()
     {
         $this->dispatcher = new EventDispatcher();
@@ -71,6 +76,11 @@ abstract class Module implements IModule
     public function namespace(): string
     {
         return $this->namespace;
+    }
+
+    public function viewsFolder(): string
+    {
+        return $this->views_folder;
     }
 
     /**

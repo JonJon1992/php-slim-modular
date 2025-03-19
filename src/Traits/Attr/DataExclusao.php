@@ -7,23 +7,22 @@ trait DataExclusao
     /**
      * @var mixed
      */
-    protected $deleted_at;
+    protected $data_exclusao;
 
     /**
      * @return mixed
      */
-    public function getDeletedAt()
+    public function getDataExclusao()
     {
-        return $this->deleted_at ?? null;
+        return $this->data_exclusao ?? null;
     }
 
     /**
-     * @param mixed $deleted_at
-     * @return self
+     * @param mixed $data_exclusao
      */
-    public function setDeletedAt($deleted_at): self
+    public function setDataExclusao($data_exclusao): self
     {
-        $this->deleted_at = $deleted_at;
+        $this->data_exclusao = $data_exclusao;
         return $this;
     }
 }

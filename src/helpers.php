@@ -3,8 +3,10 @@
 declare(strict_types=1);
 
 use Core\App\App;
-use Core\Utils\{Auth, Client, Config, Render\IRendebleAdapter};
+use Core\Utils\{Auth, Client, Config, Render\IRendebleAdapter, Trace};
+use Core\Middleware\RequestMiddleware;
 use Illuminate\Database\Connection;
+use Psr\Http\Message\ServerRequestInterface;
 use Slim\Views\PhpRenderer;
 
 /**
@@ -66,17 +68,27 @@ function redis(string $alias = null): \Core\Utils\Redis
 
 }
 
+/**
+ * @return Auth
+ */
 function auth(): Auth
 {
     return Auth::singleton();
 }
 
+/**
+ * @return PhpRenderer
+ */
 function view(): PhpRenderer
 {
     return service('view');
 
 }
 
+/**
+ * @param string|null $alias
+ * @return mixed
+ */
 function mailer(string $alias = null)
 {
     $alias = $alias ?? app()->module() ?? config('mailer.default', array_key_first(config('mailer')));
@@ -90,15 +102,42 @@ function client(): Client
 {
     return Client::singleton();
 }
+
+/**
+ * @param string $name
+ * @return string
+ */
 function keystore(string $name): string
 {
     $file = realpath(Path::root('/keystore/') . "$name");
     return file_get_contents($file);
 }
 
+/**
+ * @param string|null $alias
+ * @return IRendebleAdapter
+ */
 function renderAdapter(string $alias = null): IRendebleAdapter
 {
     $alias = $alias ?: config('view.folder');
     return service("view." . $alias);
+}
+
+/**
+ * @return ServerRequestInterface
+ */
+function request(): ServerRequestInterface
+{
+    return RequestMiddleware::$request;
+}
+
+/**
+ * @param array $config
+ * @return \GuzzleHttp\Client
+ */
+function http(array $config = []): \GuzzleHttp\Client
+{
+    return Trace::http($config);
+
 }
 

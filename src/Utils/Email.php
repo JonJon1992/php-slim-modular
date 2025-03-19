@@ -55,4 +55,27 @@ class Email extends Message
         $this->setHtmlBody($html->getBody());
         return $this;
     }
+
+    /**
+     * @param string $fileName
+     * @param array $data
+     * @param string $template
+     * @return $this
+     */
+    public function setBodyByTemplate(
+        string $fileName,
+        array  $data = [],
+        string $template = "../../../views/Layout.phtml"
+    ): self
+    {
+
+        $this->render->setLayout($template);
+
+        $body = $this->render->renderToString($fileName, $data);
+
+        $this->setHtmlBody($body);
+
+        return $this;
+    }
+
 }
