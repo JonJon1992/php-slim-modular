@@ -205,7 +205,11 @@ class Redis extends \Redis
     public function __construct(array $config)
     {
         parent::__construct();
-        $this->connect($config['host'], $config['port'], $config['timeout']);
+        $host = isset($config['scheme']) ? "{$config['scheme']}://{$config['host']}" : $config['host'];
+        $this->connect($host, $config['port'], $config['timeout']);
+        if (!empty($config['password'])) {
+            $this->auth($config['password']);
+        }
     }
 
     /**
