@@ -12,6 +12,9 @@ class Env extends \Illuminate\Support\Env
         return env('APP_ENV', 'production');
     }
 
+    /**
+     * @return bool
+     */
     public static function prod(): bool
     {
         return self::name() == 'production';

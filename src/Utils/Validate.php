@@ -56,9 +56,11 @@ class Validate implements IValidate
     }
 
     /**
-     * @param string $ruleName
-     * @param array $arguments
-     * @return Validator
+     * Creates a new Validator instance with a rule that was called on the static method.
+     *
+     * @param mixed[] $arguments
+     *
+     * @throws ComponentException
      */
     public
     static function __callStatic(string $ruleName, array $arguments): Validator

@@ -3,7 +3,7 @@
 namespace Core\App;
 
 use Fig\Http\Message\StatusCodeInterface;
-use HttpException;
+use Slim\Exception\HttpException;
 use Illuminate\Support\Arr;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;

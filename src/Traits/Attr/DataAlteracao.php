@@ -7,23 +7,22 @@ trait DataAlteracao
     /**
      * @var mixed
      */
-    protected $updated_at;
+    protected $data_alteracao;
 
     /**
      * @return mixed
      */
-    public function getUpdatedAt()
+    public function getDataAlteracao()
     {
-        return $this->updated_at ?? null;
+        return $this->data_alteracao ?? null;
     }
 
     /**
-     * @param mixed $updated_at
-     * @return self
+     * @param mixed $data_alteracao
      */
-    public function setUpdatedAt($updated_at): self
+    public function setDataAlteracao($data_alteracao): self
     {
-        $this->updated_at = $updated_at;
+        $this->data_alteracao = $data_alteracao;
         return $this;
     }
 }

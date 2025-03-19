@@ -7,23 +7,22 @@ trait DataCriacao
     /**
      * @var mixed
      */
-    protected $created_at;
+    protected $data_criacao;
 
     /**
      * @return mixed
      */
-    public function getCreatedAt()
+    public function getDataCriacao()
     {
-        return $this->created_at ?? null;
+        return $this->data_criacao ?? null;
     }
 
     /**
-     * @param mixed $created_at
-     * @return self
+     * @param mixed $data_criacao
      */
-    public function setCreatedAt($created_at): self
+    public function setDataCriacao($data_criacao): self
     {
-        $this->created_at = $created_at;
+        $this->data_criacao = $data_criacao;
         return $this;
     }
 }
