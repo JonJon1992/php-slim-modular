@@ -41,12 +41,15 @@ class MigrateRunCommand extends AbstractCommand
             $this->output->writeln("\n#\n#" . get_class($module) . "\n#\n#");
             $migrations = $this->getIdleMigration($db, $module->migrations());
 
+            if (!$this->existTableMigration($db)) {
+                $this->output->writeln('> Preparando tabela de migração...');
+                $this->createTableMigrations($db);
+            }
+
             if (empty($migrations)) {
                 $this->output->writeln("> Modulo não possui migrations");
                 continue;
             }
-            $this->output->writeln('> Preparando tabela de migração...');
-            $this->prepareMigrationTable($db);
 
             $this->output->writeln('> Definindo proximo batch...');
             $batch = $this->getLastBatch($db) + 1;
@@ -119,15 +122,18 @@ class MigrateRunCommand extends AbstractCommand
 
     /**
      * @param Connection $conn
-     * @return void
      */
-    protected function prepareMigrationTable(Connection $conn): void
+    protected function createTableMigrations(Connection $conn)
     {
         try {
-            $conn->table('migrations')->exists();
-        } catch (Exception) {
             $this->createMigrationTable($conn);
+        } catch (Throwable $e) {
+            throw new Exception('Falha ao conectar no database', 0, $e);
         }
+    }
+    protected function existTableMigration(Connection $conn): bool
+    {
+        return $conn->table('migrations')->exists();
     }
 
     /**
