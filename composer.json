@@ -16,7 +16,7 @@
     "ext-openssl": "*",
     "ext-redis": "*",
     "ext-sodium": "*",
-    "aws/aws-sdk-php": "3.295.0",
+    "aws/aws-sdk-php": "3.324.0",
     "awurth/slim-validation": "5.0.0",
     "hashids/hashids": "5.0.2",
     "illuminate/database": "v10.37.3",
