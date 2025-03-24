@@ -10,11 +10,11 @@ interface IClient
 
     public function use(string $data): self;
 
-    public function id(): ?int;
+    public function id(): ?string;
 
     public function key(): ?string;
 
-    public function sessionGroupId(): ?int;
+    public function sessionGroupId(): ?string;
 
     public function version(): ?string;
 }

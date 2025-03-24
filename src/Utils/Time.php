@@ -15,6 +15,7 @@ class Time
     const _60S = 60;
 
     const _1M = 60;
+    const _5M = 300;
     const _10M = 600;
     const _20M = 1200;
     const _30M = 1800;

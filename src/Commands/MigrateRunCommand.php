@@ -41,7 +41,9 @@ class MigrateRunCommand extends AbstractCommand
             $this->output->writeln("\n#\n#" . get_class($module) . "\n#\n#");
             $migrations = $this->getIdleMigration($db, $module->migrations());
 
-            if (!$this->existTableMigration($db)) {
+            try {
+                $this->existTableMigration($db);
+            } catch (Exception) {
                 $this->output->writeln('> Preparando tabela de migração...');
                 $this->createTableMigrations($db);
             }

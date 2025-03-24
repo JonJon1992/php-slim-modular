@@ -41,9 +41,9 @@ class Client implements IClient
     }
 
     /**
-     * @return int|null
+     * @return string|null
      */
-    public function id(): ?int
+    public function id(): ?string
     {
         return $this->data['id'] ?? null;
     }
@@ -57,9 +57,9 @@ class Client implements IClient
     }
 
     /**
-     * @return int|null
+     * @return string|null
      */
-    public function sessionGroupId(): ?int
+    public function sessionGroupId(): ?string
     {
         return $this->data['session_group_id'] ?? null;
     }

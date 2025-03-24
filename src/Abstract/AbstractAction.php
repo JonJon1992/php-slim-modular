@@ -79,7 +79,7 @@ abstract class AbstractAction extends Action
             }
             if (!$encode && $isEncodedBase64) {
                 $keyWithoutSuffix = substr($key, strlen($key) - strlen('_encoded_base64'));
-                $dataReturn[$keyWithoutSuffix] = EncodedBase64::create()->decoded($value);
+                $dataReturn[$keyWithoutSuffix] = EncodedBase64::create()->decode($value);
             }
             if (!is_array($value) && !$encode && $hasSuffixDecoded) {
                 $dataReturn[$keyWithoutSuffixDecoded] = $value;

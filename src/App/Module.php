@@ -96,11 +96,9 @@ abstract class Module implements IModule
      */
     function bindings(): array
     {
-        $list = [];
-        foreach ($this->bindings as $key => $value) {
-            $list[$key] = autowire($value);
-        }
-        return $list;
+        return array_map(function ($value) {
+            return autowire($value);
+        }, $this->bindings);
     }
 
     /**
