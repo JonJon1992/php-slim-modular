@@ -39,7 +39,6 @@ class MigrateRunCommand extends AbstractCommand
             }
 
             $this->output->writeln("\n#\n#" . get_class($module) . "\n#\n#");
-            $migrations = $this->getIdleMigration($db, $module->migrations());
 
             try {
                 $this->existTableMigration($db);
@@ -47,6 +46,8 @@ class MigrateRunCommand extends AbstractCommand
                 $this->output->writeln('> Preparando tabela de migração...');
                 $this->createTableMigrations($db);
             }
+
+            $migrations = $this->getIdleMigration($db, $module->migrations());
 
             if (empty($migrations)) {
                 $this->output->writeln("> Modulo não possui migrations");
@@ -133,6 +134,7 @@ class MigrateRunCommand extends AbstractCommand
             throw new Exception('Falha ao conectar no database', 0, $e);
         }
     }
+
     protected function existTableMigration(Connection $conn): bool
     {
         return $conn->table('migrations')->exists();

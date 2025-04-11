@@ -37,16 +37,4 @@ abstract class AbstractMigration
         $table->softDeletes('data_exclusao');
 
     }
-
-    protected function aplicarGrantToTable(string $table, $user = null)
-    {
-        /**
-         * @var Module $module
-         */
-        $module = service(Module::class);
-        $user = $user ?? config("db.{$module->namespace()}.username");
-
-        $this->db->statement("GRANT SELECT,INSERT,UPDATE,DELETE ON {$table} TO {$user}");
-        $this->db->statement("GRANT SELECT,UPDATE ON {$table}_id_seq TO {$user}");
-    }
 }
