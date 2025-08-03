@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.2.3] - 2024-12-19
+
+### Fixed
+- Resolvido conflito adicional de dependências com `slim/psr7` e `slim/slim`
+- Atualizado `slim/psr7` de `1.6.1` para `^1.7` para suportar `psr/http-message ^2.0`
+- Atualizado `slim/slim` de `4.8.1` para `^4.9` para melhor compatibilidade
+- Corrigidos todos os conflitos de dependências PSR HTTP Message
+
 ## [2.2.2] - 2024-12-19
 
 ### Fixed
