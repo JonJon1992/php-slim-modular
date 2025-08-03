@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.2.8] - 2024-12-19
+
+### Changed
+- **Atualização de dependência**: Atualizado `jonjon1992/php-dynamo` de `v3.0.2` para `v3.1.0`
+- **Melhorias de compatibilidade**: Nova versão do pacote DynamoDB com melhorias de performance e correções de bugs
+
 ## [2.2.7] - 2024-12-19
 
 ### Added
