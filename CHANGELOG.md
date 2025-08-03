@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.2.4] - 2024-12-19
+
+### Fixed
+- Corrigido uso de `HttpException` para `HttpInternalServerErrorException` no `Action.php`
+- Criadas classes de exceção personalizadas para melhor tratamento de erros:
+  - `AuthenticationException` para erros de autenticação
+  - `InvalidRequestException` para erros de validação de requisição
+  - `CommandException` para erros de execução de comandos
+  - `AppException` para erros gerais da aplicação
+- Atualizado uso de `Exception` genérica para exceções específicas em todo o framework
+- Melhorada segurança de tipos e tratamento de erros
+
 ## [2.2.3] - 2024-12-19
 
 ### Fixed
