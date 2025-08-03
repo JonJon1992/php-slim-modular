@@ -2,6 +2,15 @@
   "name": "jonjon1992/php-slim-modular",
   "type": "library",
   "version": "2.2.0",
+  "description": "Um framework PHP modular baseado no Slim Framework com suporte completo para AWS, autenticação, criptografia e sistema de módulos",
+  "keywords": ["slim", "framework", "modular", "aws", "s3", "sqs", "php", "api"],
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "JonJon1992",
+      "email": "jonjon1992@example.com"
+    }
+  ],
   "repositories": [
     {
       "type": "git",
@@ -48,6 +57,11 @@
     "phpunit/phpunit": "10.5.3",
     "squizlabs/php_codesniffer": "3.8.0",
     "symfony/var-dumper": "v7.0.0"
+  },
+  "homepage": "https://github.com/JonJon1992/php-slim-modular",
+  "support": {
+    "issues": "https://github.com/JonJon1992/php-slim-modular/issues",
+    "source": "https://github.com/JonJon1992/php-slim-modular"
   },
   "autoload": {
     "psr-4": {
