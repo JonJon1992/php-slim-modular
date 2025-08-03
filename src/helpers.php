@@ -163,3 +163,13 @@ function queue(string $alias = null)
     return service("queue.$alias");
 }
 
+/**
+ * @param string|null $alias
+ * @return \Core\Utils\Dynamo
+ */
+function dynamo(string $alias = null): \Core\Utils\Dynamo
+{
+    $alias = $alias ?? app()->module() ?? config('dynamo.default', array_key_first(config('dynamo')));
+    return service("dynamo.$alias");
+}
+

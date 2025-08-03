@@ -5,6 +5,25 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.2.7] - 2024-12-19
+
+### Added
+- **Novo helper DynamoDB**: Implementado helper `dynamo()` em `src/helpers.php` seguindo o padrão dos outros helpers
+- **Integração com sistema de serviços**: Adicionado suporte para configurações do DynamoDB em `src/services.php`
+- **Suporte a múltiplas configurações**: Helper suporta alias para diferentes ambientes (local, produção, etc.)
+- **Documentação específica**: Criado `docs/utils/dynamo-helper.md` com documentação completa do helper
+- **Exemplo de uso**: Atualizado `examples/dynamo-example.php` com exemplos do helper
+- **Testes unitários**: Criado `tests/Utils/DynamoHelperTest.php` para validar o helper
+
+### Changed
+- **Padrão consistente**: Helper `dynamo()` segue o mesmo padrão dos outros helpers (redis, s3, db, etc.)
+- **Integração com DI**: Helper integra automaticamente com o sistema de injeção de dependência
+- **Configuração flexível**: Suporte a variáveis de ambiente e configurações customizadas
+
+### Fixed
+- **Consistência de helpers**: Todos os helpers agora seguem o mesmo padrão de implementação
+- **Documentação atualizada**: @TODO atualizado com detalhes da implementação do helper
+
 ## [2.2.6] - 2024-08-03
 
 ### Fixed

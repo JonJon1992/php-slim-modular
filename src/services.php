@@ -1,14 +1,7 @@
 <?php
 declare(strict_types=1);
 
-use Core\Utils\{Arr,
-    Config,
-    Path,
-    Redis,
-    Render\SlimPhpRenderAdapter,
-    SqsClient,
-    Trace
-};
+use Core\Utils\{Arr, Config, Path, Redis, Render\SlimPhpRenderAdapter, S3, SqsClient, Trace, Dynamo};
 use DI\ContainerBuilder;
 use Illuminate\Container\Container;
 use Illuminate\Database\Capsule\Manager;
@@ -17,7 +10,6 @@ use Monolog\Formatter\JsonFormatter;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
 use Nette\Mail\SmtpMailer;
-use S3\Lib\S3;
 use Slim\Views\PhpRenderer;
 
 
@@ -84,6 +76,16 @@ return function (ContainerBuilder $builder) {
 
         $bindings["queue.$alias"] = function () use ($settings) {
             return new SqsClient($settings);
+        };
+    }
+
+    foreach ($configs->get('dynamo', []) as $alias => $settings) {
+        if ($alias == 'default') {
+            continue;
+        }
+
+        $bindings["dynamo.$alias"] = function () use ($settings) {
+            return Dynamo::create($settings);
         };
     }
 

@@ -2,6 +2,8 @@
 
 namespace Core\Utils;
 
+use Aws\Result;
+use Core\Exceptions\AppException;
 use Exception;
 use S3\Lib\Bucket;
 
@@ -28,7 +30,8 @@ class S3
     /**
      * @param $file_path
      * @param $file_path_local
-     * @throws Exception
+     * @return Result|void
+     * @throws AppException
      */
     public function saveS3($file_path, $file_path_local)
     {

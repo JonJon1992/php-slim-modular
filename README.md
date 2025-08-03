@@ -160,6 +160,31 @@ $result = $queue->sendMessage([
 ]);
 ```
 
+### Usando AWS DynamoDB
+
+```php
+// Configuração automática
+$dynamo = Dynamo::create();
+
+// Ou configuração manual
+$dynamo = Dynamo::createWithCredentials(
+    'your-access-key',
+    'your-secret-key',
+    'us-east-1'
+);
+
+// Salvar item
+$user = new User();
+$user->setEmail('john@example.com')->setName('John Doe');
+$result = $dynamo->save($user);
+
+// Buscar item
+$user = $dynamo->find('users', ['PK' => 'USER#john@example.com', 'SK' => 'PROFILE#john@example.com'], User::class);
+
+// Query
+$users = $dynamo->query('users', 'PK = :pk', [':pk' => 'USER#john@example.com'], null, null, null, [], User::class);
+```
+
 ## 🔧 Comandos Disponíveis
 
 ### Migrações
