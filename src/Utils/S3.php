@@ -33,7 +33,10 @@ class S3
     public function saveS3($file_path, $file_path_local)
     {
         try {
-            $info['ContentType'] = mime_content_type($file_path_local);
+            $info = [];
+            if (function_exists('mime_content_type')) {
+                $info['ContentType'] = mime_content_type($file_path_local);
+            }
             return $this->bucket->putFile($file_path, $file_path_local, $info);
         } catch (Exception $e) {
             abort($e->getMessage(), 500);

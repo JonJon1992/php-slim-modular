@@ -42,7 +42,7 @@ class MigrateRunCommand extends AbstractCommand
 
             try {
                 $this->existTableMigration($db);
-            } catch (Exception) {
+            } catch (\Exception) {
                 $this->output->writeln('> Preparando tabela de migração...');
                 $this->createTableMigrations($db);
             }

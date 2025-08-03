@@ -17,9 +17,9 @@ function app(): App
     return App::singleton();
 }
 
-function abort(string $message, int $code = 400, Exception $previous = null)
+function abort(string $message, int $code = 400, \Exception $previous = null)
 {
-    throw  new Exception($message, $code, $previous);
+    throw  new \Exception($message, $code, $previous);
 }
 
 /**
@@ -139,5 +139,25 @@ function http(array $config = []): \GuzzleHttp\Client
 {
     return Trace::http($config);
 
+}
+
+/**
+ * @param string|null $alias
+ * @return \S3\Lib\Bucket
+ */
+function s3(string $alias = null)
+{
+    $alias = $alias ?? app()->module() ?? config('storage.default', array_key_first(config('storage')));
+    return \S3\Lib\S3::singleton()->bucket($alias);
+}
+
+/**
+ * @param string|null $alias
+ * @return \Core\Utils\SqsClient
+ */
+function queue(string $alias = null)
+{
+    $alias = $alias ?? app()->module() ?? config('queue.default', array_key_first(config('queue')));
+    return service("queue.$alias");
 }
 

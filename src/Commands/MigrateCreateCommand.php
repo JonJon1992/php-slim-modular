@@ -8,7 +8,7 @@ use Core\App\SlimCommand;
 use Core\App\Module;
 use Core\Utils\Path;
 use Core\Utils\Str;
-use Exception;
+use \Exception;
 use Illuminate\Filesystem\Filesystem;
 use Symfony\Component\Console\Input\InputArgument;
 use Throwable;

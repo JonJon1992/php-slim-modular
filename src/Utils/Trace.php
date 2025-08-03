@@ -2,6 +2,8 @@
 
 namespace Core\Utils;
 
+use Core\Utils\Str;
+
 class Trace
 {
     public static function processor($record): array

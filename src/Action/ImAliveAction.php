@@ -7,7 +7,7 @@ use Core\App\SlimAction;
 use Core\Utils\Path;
 use Core\Utils\Str;
 use Core\Utils\Time;
-use Exception;
+use \Exception;
 use Illuminate\Filesystem\Filesystem;
 use Psr\Http\Message\ResponseInterface;
 
@@ -30,6 +30,7 @@ class ImAliveAction extends Action
         }
         $response = [];
         $dead = 0;
+        $service = $this->queryParam('service');
 
         foreach (array_keys(config('cache', [])) as $alias) {
             $key = "cache.$alias";
@@ -87,7 +88,7 @@ class ImAliveAction extends Action
         $start = microtime(true);
         try {
             redis($alias)->ping();
-        } catch (Exception) {
+        } catch (\Exception) {
             $info['status'] = 'dead';
         }
         $info['latency'] = Time::latency($start);
@@ -106,7 +107,7 @@ class ImAliveAction extends Action
         $start = microtime(true);
         try {
             db($alias)->getPdo();
-        } catch (Exception) {
+        } catch (\Exception) {
             $info['status'] = 'dead';
         }
         $info['latency'] = Time::latency($start);
@@ -125,7 +126,7 @@ class ImAliveAction extends Action
         $start = microtime(true);
         try {
             $info['status'] = s3($alias)->isExistBucket() ? $info['status'] : 'dead';
-        } catch (Exception) {
+        } catch (\Exception) {
             $info['status'] = 'dead';
         }
         $info['latency'] = Time::latency($start);

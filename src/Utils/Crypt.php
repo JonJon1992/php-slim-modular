@@ -51,7 +51,7 @@ class Crypt implements ICrypt
     {
         try {
             return $this->bcrypt->check($value, $hash);
-        } catch (Exception) {
+        } catch (\Exception) {
             return false;
         }
     }

@@ -1,7 +1,7 @@
 {
   "name": "jonjon1992/php-slim-modular",
   "type": "library",
-  "version": "2.1.0",
+  "version": "2.2.0",
   "repositories": [
     {
       "type": "git",
@@ -16,7 +16,7 @@
     "ext-openssl": "*",
     "ext-redis": "*",
     "ext-sodium": "*",
-    "aws/aws-sdk-php": "3.324.0",
+    "aws/aws-sdk-php": "^3.350",
     "awurth/slim-validation": "5.0.0",
     "hashids/hashids": "5.0.2",
     "illuminate/database": "v10.37.3",

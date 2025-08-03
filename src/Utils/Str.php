@@ -44,4 +44,42 @@ class Str extends \Illuminate\Support\Str
     {
         return preg_replace('/[^0-9]/', '', (string)$value);
     }
+
+    /**
+     * @param string $value
+     * @param string $cap
+     * @return bool
+     */
+    public static function endsWith(string $value, string $cap): bool
+    {
+        return str_ends_with($value, $cap);
+    }
+
+    /**
+     * @param string $value
+     * @return string
+     */
+    public static function camel(string $value): string
+    {
+        return lcfirst(static::studly($value));
+    }
+
+    /**
+     * @param string $value
+     * @return string
+     */
+    public static function ucfirst(string $value): string
+    {
+        return ucfirst($value);
+    }
+
+    /**
+     * @param string $value
+     * @return string
+     */
+    public static function studly(string $value): string
+    {
+        $value = ucwords(str_replace(['-', '_'], ' ', $value));
+        return str_replace(' ', '', $value);
+    }
 }
