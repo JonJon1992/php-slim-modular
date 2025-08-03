@@ -6,7 +6,7 @@ use Carbon\Carbon;
 use Core\Abstract\AbstractCommand;
 use Core\App\SlimCommand;
 use Core\App\Module;
-use Exception;
+use Core\Exceptions\CommandException;
 use Illuminate\Database\Capsule\Manager;
 use Illuminate\Database\Connection;
 use Illuminate\Database\Schema\Blueprint;
@@ -98,7 +98,7 @@ class MigrateRunCommand extends AbstractCommand
                 return $module;
             }
         }
-        throw new Exception('Module não encontrado.');
+        throw new CommandException('Module não encontrado.');
     }
 
     /**
@@ -119,7 +119,7 @@ class MigrateRunCommand extends AbstractCommand
 
             return $manager->getConnection();
         } catch (Throwable $exception) {
-            throw new Exception('Falha ao conectar no database', 0, $exception);
+            throw new CommandException('Falha ao conectar no database', 0, $exception);
         }
     }
 
@@ -131,7 +131,7 @@ class MigrateRunCommand extends AbstractCommand
         try {
             $this->createMigrationTable($conn);
         } catch (Throwable $e) {
-            throw new Exception('Falha ao conectar no database', 0, $e);
+            throw new CommandException('Falha ao conectar no database', 0, $e);
         }
     }
 

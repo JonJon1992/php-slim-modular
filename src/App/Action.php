@@ -3,7 +3,6 @@
 namespace Core\App;
 
 use Fig\Http\Message\StatusCodeInterface;
-use Slim\Exception\HttpException;
 use Illuminate\Support\Arr;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
@@ -52,7 +51,7 @@ abstract class Action
         $json = json_encode($payload, JSON_PRETTY_PRINT);
 
         if (json_last_error() !== JSON_ERROR_NONE) {
-            throw new HttpException($this->request, 'Malformed JSON', StatusCodeInterface::STATUS_INTERNAL_SERVER_ERROR);
+            throw new \Slim\Exception\HttpInternalServerErrorException($this->request, 'Malformed JSON');
         }
         $this->response->getBody()->write($json);
 

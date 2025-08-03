@@ -4,7 +4,7 @@ namespace Core\Middleware;
 
 use Core\Utils\Env;
 use Core\Utils\Time;
-use Exception;
+use Core\Exceptions\InvalidRequestException;
 use InvalidArgumentException;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface as RequestInterface;
@@ -79,17 +79,17 @@ class ApiGatewayMiddleware
         $token = json_decode(base64_decode($token));
 
         if (empty($token->u)) {
-            throw new Exception('Requisição inválida.');
+            throw new InvalidRequestException('Requisição inválida.');
         }
 
         if (empty($token->s)) {
-            throw new Exception('Requisição inválida');
+            throw new InvalidRequestException('Requisição inválida');
         }
 
         $session = json_decode(redis('ms-auth')->get('ms-auth:sessions:' . $token->u));
 
         if (empty($session)) {
-            throw new Exception('Requisição inválida');
+            throw new InvalidRequestException('Requisição inválida');
         }
 
         $signature = sodium_crypto_aead_chacha20poly1305_decrypt(
@@ -100,7 +100,7 @@ class ApiGatewayMiddleware
         );
 
         if (empty($signature)) {
-            throw new Exception('Requisição inválida');
+            throw new InvalidRequestException('Requisição inválida');
         }
 
         $signature = json_decode($this->decode($signature));
@@ -108,52 +108,52 @@ class ApiGatewayMiddleware
         if (!Env::prod()) {
             $current_time = time();
             if (empty($signature->time)) {
-                throw new Exception('Requisição inválida');
+                throw new InvalidRequestException('Requisição inválida');
             }
 
             if ($signature->time < ($current_time - Time::_5M)) {
-                throw new Exception('Requisição inválida. Por favor, ajuste seu relógio!');
+                throw new InvalidRequestException('Requisição inválida. Por favor, ajuste seu relógio!');
             }
 
             if ($signature->time > ($current_time + Time::_5M)) {
-                throw new Exception('Requisição inválida. Por favor, ajuste seu relógio!');
+                throw new InvalidRequestException('Requisição inválida. Por favor, ajuste seu relógio!');
             }
 
             if ($this->isIpAllowed($session->ip, $this->getIp()) !== true) {
-                throw new Exception('Requisição inválida');
+                throw new InvalidRequestException('Requisição inválida');
             }
 
         }
         if (isset($signature->on) && ($signature->on === false || $signature->on === 'false')) {
-            throw new Exception('Requisição inválida');
+            throw new InvalidRequestException('Requisição inválida');
         }
 
         if (empty($signature->uuid)) {
-            throw new Exception('Requisição inválida');
+            throw new InvalidRequestException('Requisição inválida');
         }
         if ($session->uuid != $signature->uuid) {
-            throw new Exception('Requisição inválida');
+            throw new InvalidRequestException('Requisição inválida');
         }
 
         if (empty($signature->fingerprint)) {
-            throw new Exception('Requisição inválida');
+            throw new InvalidRequestException('Requisição inválida');
         }
         if ($session->fingerprint != $signature->fingerprint) {
-            throw new Exception('Requisição inválida');
+            throw new InvalidRequestException('Requisição inválida');
         }
 
         if ($session->client != $this->module['id']) {
-            throw new Exception('Requisição inválida');
+            throw new InvalidRequestException('Requisição inválida');
         }
 
         if ($session->agent != $this->getAgent()) {
-            throw new Exception('Requisição inválida');
+            throw new InvalidRequestException('Requisição inválida');
         }
 
         $uk = hash('sha512', 'ms-auth:utilization:' . $token->s);
 
         if (Env::prod() && redis('ms-auth')->exists($uk)) {
-            throw new Exception('Requisição inválida');
+            throw new InvalidRequestException('Requisição inválida');
         }
 
         redis('ms-auth')->set($uk, 1, Time::_5M);

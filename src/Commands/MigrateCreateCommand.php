@@ -8,7 +8,7 @@ use Core\App\SlimCommand;
 use Core\App\Module;
 use Core\Utils\Path;
 use Core\Utils\Str;
-use \Exception;
+use Core\Exceptions\CommandException;
 use Illuminate\Filesystem\Filesystem;
 use Symfony\Component\Console\Input\InputArgument;
 use Throwable;
@@ -49,7 +49,7 @@ class MigrateCreateCommand extends AbstractCommand
             fclose($fh);
 
         } catch (Throwable $throwable) {
-            throw  new Exception('Não foi possivel criar migration', 0, $throwable);
+            throw new CommandException('Não foi possivel criar migration', 0, $throwable);
         }
         $this->output->writeln('> Migration criada com sucesso: ' . $dir . '/' . $className . '.php');
 

@@ -4,7 +4,7 @@ namespace Core\Middleware;
 
 use Core\Contracts\IAuth;
 use Core\Contracts\IClient;
-use Exception;
+use Core\Exceptions\AuthenticationException;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
@@ -23,7 +23,7 @@ class AuthMiddleware
         $auth = $request->hasHeader('x-auth') ? $request->getHeaderLine('x-auth') : '';
 
         if (empty($auth)) {
-            throw new Exception('Usuário não autenticado.', 401);
+            throw new AuthenticationException();
         }
 
         $this->auth->login($auth);
