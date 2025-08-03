@@ -99,4 +99,4 @@ composer update jonjon1992/php-slim-modular
 ---
 
 **Última atualização**: 19 de Dezembro de 2024
-**Versão**: 2.2.0 
+**Versão**: 2.2.1 

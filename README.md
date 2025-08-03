@@ -1,6 +1,6 @@
 # PHP Slim Modular Framework
 
-[![Version](https://img.shields.io/badge/version-2.2.0-blue.svg)](https://github.com/JonJon1992/php-slim-modular)
+[![Version](https://img.shields.io/badge/version-2.2.1-blue.svg)](https://github.com/JonJon1992/php-slim-modular)
 [![PHP](https://img.shields.io/badge/php-%3E%3D8.2-blue.svg)](https://php.net)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 
@@ -235,4 +235,4 @@ Para suporte, entre em contato através das issues do GitHub ou envie um email p
 
 ---
 
-**Versão 2.2.0** - Atualizado em 19 de Dezembro de 2024 
+**Versão 2.2.1** - Atualizado em 19 de Dezembro de 2024 
