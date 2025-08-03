@@ -1,0 +1,68 @@
+---
+alwaysApply: true
+---
+# Implementação Incremental e Controle de Escopo
+
+## Princípios Fundamentais
+
+1. **Implementação Gradual**
+   - Sempre implemente uma funcionalidade por vez
+   - Divida funcionalidades complexas em partes menores e gerenciáveis
+   - Priorize a entrega de valor incremental
+
+2. **Controle de Escopo**
+   - Confirme o escopo antes de iniciar a implementação
+   - Divida prompts grandes em partes menores e específicas
+   - Documente claramente o que será implementado em cada etapa
+
+3. **Validação de Entendimento**
+   - Antes de gerar código, confirme o entendimento dos requisitos
+   - Faça perguntas clarificadoras quando necessário
+   - Documente decisões técnicas importantes
+
+## Processo Recomendado
+
+1. **Análise Inicial**
+   - Entenda completamente o requisito
+   - Identifique dependências e riscos
+   - Defina critérios de aceitação
+
+2. **Planejamento**
+   - Divida a implementação em etapas menores
+   - Estabeleça prioridades
+   - Defina marcos de entrega
+
+3. **Implementação**
+   - Implemente uma funcionalidade por vez
+   - Valide cada etapa antes de prosseguir
+   - Mantenha o código limpo e organizado
+
+4. **Revisão**
+   - Verifique se a implementação atende aos requisitos
+   - Confirme que não há efeitos colaterais indesejados
+   - Documente alterações significativas
+
+## Exemplos de Boas Práticas
+
+✅ **Correto:**
+- "Vamos implementar primeiro a autenticação básica e depois adicionar o 2FA"
+- "Primeiro vamos criar a estrutura base da API, depois implementamos os endpoints"
+- "Vamos começar com o fluxo principal e depois adicionar os casos de erro"
+
+❌ **Incorreto:**
+- "Vamos implementar todo o sistema de autenticação de uma vez"
+- "Vou gerar todo o código da API agora"
+- "Vamos fazer todas as alterações necessárias em um único commit"
+
+## Referências Importantes
+
+- [README.md](mdc:README.md) - Documentação principal do projeto
+- [CONTRIBUTING.md](mdc:CONTRIBUTING.md) - Guia de contribuição
+- [CHANGELOG.md](mdc:CHANGELOG.md) - Registro de alterações
+
+## Observações
+
+- Mantenha o foco em uma funcionalidade por vez
+- Evite mudanças em escopo durante a implementação
+- Documente decisões técnicas importantes
+- Mantenha a comunicação clara e objetiva

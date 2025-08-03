@@ -50,7 +50,7 @@ class Str extends \Illuminate\Support\Str
      * @param string $cap
      * @return bool
      */
-    public static function endsWith(string $value, string $cap): bool
+    public static function endsWith($value, $cap): bool
     {
         return str_ends_with($value, $cap);
     }
@@ -59,7 +59,7 @@ class Str extends \Illuminate\Support\Str
      * @param string $value
      * @return string
      */
-    public static function camel(string $value): string
+    public static function camel($value): string
     {
         return lcfirst(static::studly($value));
     }
@@ -68,7 +68,7 @@ class Str extends \Illuminate\Support\Str
      * @param string $value
      * @return string
      */
-    public static function ucfirst(string $value): string
+    public static function ucfirst($value): string
     {
         return ucfirst($value);
     }
@@ -77,7 +77,7 @@ class Str extends \Illuminate\Support\Str
      * @param string $value
      * @return string
      */
-    public static function studly(string $value): string
+    public static function studly($value): string
     {
         $value = ucwords(str_replace(['-', '_'], ' ', $value));
         return str_replace(' ', '', $value);

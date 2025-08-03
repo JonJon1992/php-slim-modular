@@ -145,10 +145,12 @@ function http(array $config = []): \GuzzleHttp\Client
  * @param string|null $alias
  * @return \S3\Lib\Bucket
  */
-function s3(string $alias = null)
-{
-    $alias = $alias ?? app()->module() ?? config('storage.default', array_key_first(config('storage')));
-    return \S3\Lib\S3::singleton()->bucket($alias);
+if (!function_exists('s3')) {
+    function s3(string $alias = null)
+    {
+        $alias = $alias ?? app()->module() ?? config('storage.default', array_key_first(config('storage')));
+        return \S3\Lib\S3::singleton()->bucket($alias);
+    }
 }
 
 /**

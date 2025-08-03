@@ -1,7 +1,7 @@
 {
   "name": "jonjon1992/php-slim-modular",
   "type": "library",
-  "version": "2.2.4",
+  "version": "2.2.6",
   "description": "Um framework PHP modular baseado no Slim Framework com suporte completo para AWS, autenticação, criptografia e sistema de módulos",
   "keywords": ["slim", "framework", "modular", "aws", "s3", "sqs", "php", "api"],
   "license": "MIT",
@@ -16,6 +16,11 @@
       "type": "git",
       "name": "jonjon1992/s3-php",
       "url": "https://github.com/JonJon1992/s3-php.git"
+    },
+    {
+      "type": "git",
+      "name": "jonjon1992/php-dynamo",
+      "url": "https://github.com/JonJon1992/php-dynamo.git"
     }
   ],
   "require": {
@@ -46,6 +51,7 @@
     "symfony/event-dispatcher": "^6.3",
     "vlucas/phpdotenv": "v5.3.0",
     "jonjon1992/s3-php": "v2.1.0",
+    "jonjon1992/php-dynamo": "v3.0.2",
     "nette/mail": "v3.1.11"
   },
   "require-dev": {

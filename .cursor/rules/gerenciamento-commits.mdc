@@ -1,0 +1,71 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+# Gerenciamento de Commits e Rastreamento de Código
+
+## Princípios Fundamentais
+
+1. **Cada Mudança = Um Commit**
+   - Cada tarefa e ajuste relevante deve resultar em um commit
+   - Mantenha commits pequenos e focados em uma única alteração
+   - Evite commits com múltiplas funcionalidades não relacionadas
+
+2. **Mensagens Padronizadas (GitFlow)**
+   - Sempre siga o formato: `tipo: [descrição da ação]`
+   - Escreva mensagens claras, concisas e descritivas
+   - Use o presente do indicativo (ex: "adiciona" em vez de "adicionou")
+
+3. **Tipos de Commit**
+   | Tipo | Descrição | Exemplo |
+   |------|-----------|---------|
+   | `feat` | Nova funcionalidade | `feat: adiciona autenticação por email` |
+   | `fix` | Correção de bug | `fix: corrige erro no cálculo de desconto` |
+   | `docs` | Documentação | `docs: atualiza instruções de instalação` |
+   | `style` | Formatação de código | `style: ajusta indentação no módulo de pedidos` |
+   | `refactor` | Refatoração sem mudança funcional | `refactor: simplifica lógica de processamento` |
+   | `test` | Adição/modificação de testes | `test: adiciona testes para módulo de pagamento` |
+   | `chore` | Manutenção do projeto | `chore: atualiza dependências` |
+   | `wip` | Trabalho em progresso | `wip: inicia implementação do checkout` |
+   | `project` | Alterações na estrutura do projeto | `project: reorganiza arquivos de configuração` |
+
+## Boas Práticas
+
+1. **Frequência de Commits**
+   - Faça commits frequentes para manter histórico detalhado
+   - Finalize cada sessão de trabalho com um commit
+   - Evite acumular muitas alterações entre commits
+
+2. **Commits Semânticos**
+   - Cada commit deve representar uma mudança lógica completa
+   - Mantenha contexto suficiente para entender a alteração
+   - Garanta que o código esteja funcional após cada commit
+
+3. **Rastreamento e Restauração**
+   - Use branches para funcionalidades específicas
+   - Faça referência a issues/tasks nos commits quando relevante
+   - Mantenha o histórico limpo e organizado
+
+## Exemplos Práticos
+
+✅ **Boas Mensagens de Commit:**
+- `feat: implementa validação de CPF no cadastro`
+- `fix: corrige cálculo de juros no parcelamento`
+- `docs: adiciona documentação da API de pagamentos`
+- `refactor: simplifica lógica de processamento de pedidos`
+- `wip: inicia implementação do módulo de relatórios`
+
+❌ **Mensagens de Commit Inadequadas:**
+- `modificações` (muito genérico)
+- `corrigido` (sem contexto)
+- `WIP` (sem descrição do que está em progresso)
+- `várias correções e melhorias` (muito abrangente)
+- `feat: implementa cadastro de clientes, sistema de pedidos e integração com pagamento` (muito amplo)
+
+## Observações Finais
+
+- Commits são uma forma de documentação do projeto
+- Mensagens bem escritas facilitam revisões de código
+- Um bom histórico permite restaurar estados anteriores com confiança
+- Commits padronizados permitem gerar changelogs automatizados

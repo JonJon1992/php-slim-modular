@@ -5,6 +5,35 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.2.6] - 2024-08-03
+
+### Fixed
+- **Resolvido conflito de função `s3()`**: Adicionado `if (!function_exists('s3'))` em `src/helpers.php` para evitar redeclaração da função
+- **Corrigidas assinaturas incompatíveis na classe `Str`**: Removidos type hints `string` dos métodos `endsWith()`, `camel()`, `ucfirst()` e `studly()` para manter compatibilidade com `Illuminate\Support\Str`
+- **Compatibilidade com pacotes**: Resolvidos conflitos entre `jonjon1992/php-slim-modular`, `jonjon1992/s3-php` e `illuminate/support` v10.48.28
+
+### Changed
+- Melhorada compatibilidade com dependências externas
+- Mantida funcionalidade completa da biblioteca
+
+## [2.2.5] - 2024-12-19
+
+### Added
+- **Novo util DynamoDB**: Implementado `Core\Utils\Dynamo` para integração com Amazon DynamoDB
+- Suporte completo para operações CRUD no DynamoDB
+- Configuração automática para ambiente local (LocalStack) e produção (AWS)
+- Operações em lote (batch operations)
+- Suporte a queries e scans
+- Gerenciamento de tabelas (criar, listar, descrever, remover)
+- Conversão flexível de dados (objetos, arrays, stdClass)
+- Documentação completa em `docs/utils/dynamo.md`
+- Exemplo de uso em `examples/dynamo-example.php`
+- Integração com a package `jonjon1992/php-dynamo` v3.0.2
+
+### Changed
+- Atualizado README.md com seção de uso do DynamoDB
+- Melhorada documentação de utils do framework
+
 ## [2.2.4] - 2024-12-19
 
 ### Fixed
