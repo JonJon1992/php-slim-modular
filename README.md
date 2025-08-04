@@ -199,16 +199,75 @@ php cli.php migrate:run
 
 ## 📊 Health Check
 
-O framework inclui um endpoint de health check que verifica:
+O framework inclui um endpoint de health check avançado que verifica:
 
-- Conexões de banco de dados
+- Conexões de banco de dados (MySQL, PostgreSQL, etc.)
 - Conexões de cache (Redis)
 - Conexões de storage (S3)
-- Conexões de queue (SQS)
+- Conexões DynamoDB
+- Métricas detalhadas de performance
+
+### Uso Básico
 
 ```bash
+# Verificação completa de todos os serviços
 GET /im-alive
+
+# Verificação específica de um serviço
+GET /im-alive?service=cache.redis
+
+# Forçar verificação completa (ignorando cache)
+GET /im-alive?force=1
 ```
+
+### Resposta de Exemplo
+
+```json
+{
+    "cache.redis": {
+        "status": "alive",
+        "latency": 1.23,
+        "checked_at": 1691234567,
+        "details": "Redis connection successful"
+    },
+    "db.mysql": {
+        "status": "alive",
+        "latency": 5.67,
+        "checked_at": 1691234567,
+        "details": "Database connection successful",
+        "driver": "mysql"
+    },
+    "dynamo.main": {
+        "status": "alive",
+        "latency": 8.90,
+        "checked_at": 1691234567,
+        "details": "DynamoDB connection successful",
+        "tables_count": 5
+    },
+    "_metrics": {
+        "total_services": 3,
+        "dead_services": 0,
+        "healthy_services": 3,
+        "total_time": 15.80,
+        "timestamp": 1691234567,
+        "status": "healthy"
+    }
+}
+```
+
+### Status HTTP Codes
+
+- **200**: Todos os serviços saudáveis
+- **503**: Pelo menos um serviço com falha
+- **500**: Erro interno na aplicação
+
+### Funcionalidades
+
+- **Cache Inteligente**: Evita verificações desnecessárias
+- **Métricas Detalhadas**: Latência e status de cada serviço
+- **Logs Estruturados**: Logs de sucesso e falha
+- **Verificação Seletiva**: Verifica apenas serviços específicos
+- **Suporte ao DynamoDB**: Inclui verificação de tabelas
 
 ## 🔒 Segurança
 
