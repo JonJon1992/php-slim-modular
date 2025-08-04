@@ -5,6 +5,35 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.4.0] - 2025-08-05
+
+### Added
+- **Health Check Avançado**: Refatoração completa do `ImAliveAction` com funcionalidades avançadas
+- **Suporte ao DynamoDB**: Verificação de conectividade e tabelas do DynamoDB no health check
+- **Métricas Detalhadas**: Latência, status e contadores de serviços no health check
+- **Cache Inteligente**: Sistema de cache para evitar verificações desnecessárias
+- **Logs Estruturados**: Logs de sucesso e falha com contexto completo
+- **Verificação Seletiva**: Parâmetro `service` para verificar serviços específicos
+- **Forçar Verificação**: Parâmetro `force` para ignorar cache
+- **Tipagem Forte**: Implementação completa de `declare(strict_types=1)`
+- **Documentação Completa**: PHPDoc detalhado em todas as classes e métodos
+- **Exemplo Completo**: Arquivo `examples/health-check-example.php` com demonstrações
+
+### Changed
+- **Correção de Erro**: `HEALTY_CHECK` → `HEALTHY_CHECK` (correção de digitação)
+- **Refatoração da Lógica**: Separação de responsabilidades em métodos privados
+- **Estrutura de Resposta**: JSON estruturado com informações detalhadas por serviço
+- **Tratamento de Erros**: Captura específica de exceções com mensagens detalhadas
+- **Status HTTP**: 503 para falhas de serviços, 200 para sucesso
+- **Limitação de Logs**: Máximo de 100 entradas no arquivo de log
+- **Documentação Atualizada**: README.md com seção completa do health check
+
+### Fixed
+- **Tipagem**: Adicionada tipagem forte em todos os métodos
+- **Organização**: Código mais limpo e organizado
+- **Performance**: Cache reduz verificações desnecessárias
+- **Observabilidade**: Métricas detalhadas para monitoramento
+
 ## [2.3.0] - 2025-08-04
 
 ### Added

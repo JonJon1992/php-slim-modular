@@ -43,6 +43,12 @@
 - [ ] Implementar integração com CloudWatch para monitoramento
 
 ## Concluído
+- [x] Nova versão 2.4.0 e release (05/08/2025)
+  - [x] Atualização da versão no composer.json para 2.4.0
+  - [x] Atualização do CHANGELOG.md com nova versão
+  - [x] Atualização do README.md com nova versão
+  - [x] Commit das alterações e push para o repositório
+  - [x] Criação e push da tag v2.4.0
 - [x] Melhorar arquivo ImAliveAction.php (05/08/2025)
   - [x] Corrigir erro de digitação (HEALTY_CHECK → HEALTHY_CHECK)
   - [x] Adicionar tipagem forte com declare(strict_types=1)
