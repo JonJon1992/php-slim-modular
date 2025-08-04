@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "7849de1d0b338e609cc051a846c77441",
+    "content-hash": "7605a9185931e95fd40fadf2012ddeb2",
     "packages": [
         {
             "name": "aws/aws-crt-php",
@@ -62,16 +62,16 @@
         },
         {
             "name": "aws/aws-sdk-php",
-            "version": "3.352.0",
+            "version": "3.352.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/aws/aws-sdk-php.git",
-                "reference": "7f3ad0da2545b24259273ea7ab892188bae7d91b"
+                "reference": "d25aec970dbf6af823b30d11d5c8cd73ef8a0a4c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/7f3ad0da2545b24259273ea7ab892188bae7d91b",
-                "reference": "7f3ad0da2545b24259273ea7ab892188bae7d91b",
+                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/d25aec970dbf6af823b30d11d5c8cd73ef8a0a4c",
+                "reference": "d25aec970dbf6af823b30d11d5c8cd73ef8a0a4c",
                 "shasum": ""
             },
             "require": {
@@ -153,9 +153,9 @@
             "support": {
                 "forum": "https://github.com/aws/aws-sdk-php/discussions",
                 "issues": "https://github.com/aws/aws-sdk-php/issues",
-                "source": "https://github.com/aws/aws-sdk-php/tree/3.352.0"
+                "source": "https://github.com/aws/aws-sdk-php/tree/3.352.1"
             },
-            "time": "2025-08-01T18:04:23+00:00"
+            "time": "2025-08-04T18:19:17+00:00"
         },
         {
             "name": "awurth/slim-validation",
@@ -1649,16 +1649,16 @@
         },
         {
             "name": "jonjon1992/php-dynamo",
-            "version": "3.0.2",
+            "version": "3.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/JonJon1992/php-dynamo.git",
-                "reference": "e5bd871954c12b0a7c392a17cf74b6145f49b933"
+                "reference": "480f7665be10b1a999dc214ae2c9742c27a0a85a"
             },
             "require": {
                 "aws/aws-sdk-php": "^3.350",
                 "ext-json": "*",
-                "php": ">=8.1"
+                "php": ">=8.2"
             },
             "require-dev": {
                 "phpdocumentor/phpdocumentor": "^3.4",
@@ -1747,7 +1747,7 @@
                 "source": "https://github.com/jonjon/php-dynamo",
                 "docs": "https://github.com/jonjon/php-dynamo/blob/main/README.md"
             },
-            "time": "2025-08-03T17:47:12+00:00"
+            "time": "2025-08-03T18:37:36+00:00"
         },
         {
             "name": "jonjon1992/s3-php",

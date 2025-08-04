@@ -5,6 +5,22 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.3.0] - 2024-12-19
+
+### Added
+- **Atualização de dependências**: Atualizado `jonjon1992/s3-php` de v2.1.0 para v2.4.0
+- **Melhorias de compatibilidade**: Suporte a novas funcionalidades do S3 PHP
+- **Otimizações de performance**: Melhorias gerais no framework
+
+### Changed
+- **Versão atualizada**: Framework atualizado para versão 2.3.0
+- **Dependências atualizadas**: Composer.lock atualizado com novas versões
+- **Estrutura de projeto**: Melhor organização dos arquivos e diretórios
+
+### Fixed
+- **Consistência de código**: Padronização de estilo e formatação
+- **Documentação**: Correções e melhorias na documentação existente
+
 ## [2.2.9] - 2024-12-19
 
 ### Added
