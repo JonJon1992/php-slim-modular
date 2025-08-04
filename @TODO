@@ -25,6 +25,8 @@
   - [x] Implementar interface IExceptionHandler para testabilidade
   - [x] Adicionar tipagem forte e documentação completa
   - [x] Implementar logging estruturado e fallback seguro
+  - [x] Refatorar ErrorHandler para integrar com ExceptionHandler
+  - [x] Melhorar integração com Slim Framework usando PSR-7
   - [x] Criar documentação detalhada em docs/EXCEPTION_HANDLING.md
 
 ## Backlog (Prioridade Normal)
@@ -84,6 +86,7 @@
 ### Sistema de Exceções Melhorado
 - **Arquivo Principal**: `src/exception.php` (refatorado)
 - **Classe Principal**: `src/Exceptions/ExceptionHandler.php`
+- **ErrorHandler**: `src/Exceptions/ErrorHandler.php` (refatorado)
 - **Interface**: `src/Contracts/Exception/IExceptionHandler.php`
 - **Documentação**: `docs/EXCEPTION_HANDLING.md`
 - **Padrão**: Segue princípios SOLID e melhores práticas PHP 8.2+
@@ -95,6 +98,9 @@
   - Tratamento de erros fatais
   - Fallback seguro para logging
   - Interface para testabilidade
+  - Integração melhorada com Slim Framework
+  - Uso de métodos PSR-7 em vez de filter_input()
+  - Detecção inteligente de IP do cliente
   - Documentação completa
 
 ### Util DynamoDB Implementado

@@ -1,7 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Core\Exceptions;
 
+use Core\Contracts\Exception\IExceptionHandler;
 use Core\Utils\Env;
 use Core\Utils\Trace;
 use Psr\Http\Message\ResponseInterface;
@@ -10,113 +13,152 @@ use Slim\Exception\HttpNotFoundException;
 use Slim\Handlers\ErrorHandler as SlimErrorHandler;
 use Throwable;
 
+/**
+ * Error Handler for Slim Framework
+ * 
+ * Extends Slim's ErrorHandler to provide consistent error handling
+ * with the application's exception handling system.
+ */
 class ErrorHandler extends SlimErrorHandler
 {
-    const HTTP_STATUS_CODES = [
-        400 => 'Bad Request',
-        401 => 'Unauthorized',
-        402 => 'Payment Required',
-        403 => 'Forbidden',
-        404 => 'Not Found',
-        405 => 'Method Not Allowed',
-        406 => 'Not Acceptable',
-        407 => 'Proxy Authentication Required',
-        408 => 'Request Timeout',
-        409 => 'Conflict',
-        410 => 'Gone',
-        411 => 'Length Required',
-        412 => 'Precondition Failed',
-        413 => 'Payload Too Large',
-        414 => 'URI Too Long',
-        415 => 'Unsupported Media Type',
-        416 => 'Range Not Satisfiable',
-        417 => 'Expectation Failed',
-        418 => 'I\'m a teapot',
-        422 => 'Unprocessable Entity',
-        425 => 'Too Early',
-        426 => 'Upgrade Required',
-        428 => 'Precondition Required',
-        429 => 'Too Many Requests',
-        431 => 'Request Header Fields Too Large',
-        451 => 'Unavailable For Legal Reasons',
-        500 => 'Internal Server Error',
-        501 => 'Not Implemented',
-        502 => 'Bad Gateway',
-        503 => 'Service Unavailable',
-        504 => 'Gateway Timeout',
-        505 => 'HTTP Version Not Supported',
-        506 => 'Variant Also Negotiates',
-        507 => 'Insufficient Storage',
-        508 => 'Loop Detected',
-        510 => 'Not Extended',
-        511 => 'Network Authentication Required',
-    ];
+    private IExceptionHandler $exceptionHandler;
+
+    public function __construct($callableResolver, $responseFactory, IExceptionHandler $exceptionHandler = null)
+    {
+        parent::__construct($callableResolver, $responseFactory);
+        $this->exceptionHandler = $exceptionHandler ?? new ExceptionHandler();
+    }
 
     /**
-     * @return ResponseInterface
+     * Handle the error and return a response
      */
     public function respond(): ResponseInterface
     {
         $response = $this->responseFactory->createResponse();
 
+        // Handle OPTIONS requests for CORS
         if ($this->request->getMethod() === 'OPTIONS' && !$this->exception instanceof HttpNotFoundException) {
             return $response->withStatus(200);
         }
-        $data = [
-            'trace-id' => Trace::uuid(),
-            'message' => 'Falha inesperada.',
-            'status' => $this->statusCode
-        ];
 
-        if (isset($this->exception) && array_key_exists($this->exception->getCode(), self::HTTP_STATUS_CODES)) {
-            $data['status'] = $this->statusCode = $this->exception->getCode();
-            $data['message'] = $this->exception->getMessage();
+        // Use the exception handler to process the error
+        $errorData = $this->exceptionHandler->handle($this->exception ?? new \RuntimeException('Unknown error'));
+        
+        // Add Slim-specific information
+        $errorData = $this->addSlimSpecificData($errorData);
+        
+        // Log the error
+        if ($this->exception) {
+            $this->exceptionHandler->log($this->exception, $errorData);
         }
 
-        $extras = $this->extras();
-
-        logger()->log(
-            $this->statusCode >= 500 ? 'error' : 'info',
-            $this->exception ? $this->exception->getMessage() : $data['message'],
-            $extras
-        );
-        if (Env::Local()) {
-            $data['extras'] = $extras;
+        // Add debug information in development
+        if (Env::local()) {
+            $errorData['debug'] = $this->getDebugInfo();
         }
 
-
-        $response->getBody()->write(json_encode($data, JSON_PRETTY_PRINT));
+        // Write response
+        $response->getBody()->write(json_encode($errorData, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
+        
         return $response
-            ->withHeader('Content-Type', 'application/json')
-            ->withStatus($this->statusCode);
+            ->withHeader('Content-Type', 'application/json; charset=utf-8')
+            ->withHeader('Cache-Control', 'no-cache, no-store, must-revalidate')
+            ->withHeader('Pragma', 'no-cache')
+            ->withHeader('Expires', '0')
+            ->withStatus($errorData['status']);
     }
 
     /**
-     * @return array
+     * Add Slim-specific data to the error response
      */
-    protected function extras(): array
+    private function addSlimSpecificData(array $errorData): array
     {
-        $request = [];
-        $request['use-id'] = auth()->id();
-        $request['status'] = $this->statusCode;
-        $request['method'] = filter_input(INPUT_SERVER, 'REQUEST_METHOD');
-        $request['agent'] = filter_input(INPUT_SERVER, 'HTTP_USER_AGENT');
-        $request['host'] = filter_input(INPUT_SERVER, 'HTTP_HOST');
-        $request['uri'] = filter_input(INPUT_SERVER, 'REQUEST_URI');
+        // Add request information
+        $errorData['request'] = [
+            'method' => $this->request->getMethod(),
+            'uri' => (string) $this->request->getUri(),
+            'user_agent' => $this->request->getHeaderLine('User-Agent'),
+            'host' => $this->request->getHeaderLine('Host'),
+            'ip' => $this->getClientIp(),
+        ];
 
+        // Add user information if available
+        if (function_exists('auth') && auth()) {
+            $errorData['user'] = [
+                'id' => auth()->id() ?? null,
+            ];
+        }
+
+        // Add specific information for HTTP method not allowed
         if ($this->exception instanceof HttpMethodNotAllowedException) {
-            $request['allow'] = $this->exception->getAllowedMethods();
+            $errorData['allowed_methods'] = $this->exception->getAllowedMethods();
         }
 
-        if ($this->exception instanceof Throwable) {
-            $request['code'] = $this->exception->getCode();
-            $request['class'] = get_class($this->exception);
-            $request['file'] = $this->exception->getFile();
-            $request['line'] = $this->exception->getLine();
-            $request['stack-trace'] = explode("\n", $this->exception->getTraceAsString());
+        return $errorData;
+    }
+
+    /**
+     * Get debug information for development environment
+     */
+    private function getDebugInfo(): array
+    {
+        $debug = [];
+
+        if ($this->exception) {
+            $debug['exception'] = [
+                'class' => get_class($this->exception),
+                'file' => $this->exception->getFile(),
+                'line' => $this->exception->getLine(),
+                'code' => $this->exception->getCode(),
+                'trace' => $this->exception->getTraceAsString(),
+            ];
+
+            if ($this->exception->getPrevious()) {
+                $debug['exception']['previous'] = [
+                    'class' => get_class($this->exception->getPrevious()),
+                    'message' => $this->exception->getPrevious()->getMessage(),
+                ];
+            }
         }
 
-        return $request;
+        // Add request details
+        $debug['request'] = [
+            'method' => $this->request->getMethod(),
+            'uri' => (string) $this->request->getUri(),
+            'headers' => $this->request->getHeaders(),
+            'query_params' => $this->request->getQueryParams(),
+        ];
 
+        // Add response details
+        $debug['response'] = [
+            'status_code' => $this->statusCode,
+            'headers' => $this->response->getHeaders(),
+        ];
+
+        return $debug;
+    }
+
+    /**
+     * Get client IP address
+     */
+    private function getClientIp(): string
+    {
+        $serverParams = $this->request->getServerParams();
+        
+        // Check for forwarded IP headers
+        $forwardedHeaders = [
+            'HTTP_X_FORWARDED_FOR',
+            'HTTP_X_REAL_IP',
+            'HTTP_CLIENT_IP',
+        ];
+
+        foreach ($forwardedHeaders as $header) {
+            if (isset($serverParams[$header])) {
+                $ips = explode(',', $serverParams[$header]);
+                return trim($ips[0]);
+            }
+        }
+
+        return $serverParams['REMOTE_ADDR'] ?? 'unknown';
     }
 }

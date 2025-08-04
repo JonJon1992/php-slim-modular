@@ -13,7 +13,7 @@ src/
 ├── exception.php                    # Configuração dos handlers globais
 ├── Exceptions/
 │   ├── ExceptionHandler.php        # Classe principal de tratamento
-│   ├── ErrorHandler.php            # Handler específico para Slim
+│   ├── ErrorHandler.php            # Handler específico para Slim (refatorado)
 │   └── [outras exceções...]
 └── Contracts/
     └── Exception/
@@ -46,7 +46,24 @@ Interface que define o contrato para implementações de tratamento de exceçõe
 - Permite diferentes implementações
 - Segue princípio de inversão de dependência
 
-#### 3. Configuração Global (src/exception.php)
+#### 3. ErrorHandler (src/Exceptions/ErrorHandler.php)
+
+Classe específica para o Slim Framework que estende `Slim\Handlers\ErrorHandler` e integra com o `ExceptionHandler`.
+
+**Responsabilidades:**
+- Tratamento de exceções HTTP no contexto do Slim
+- Integração com PSR-7 Request/Response
+- Suporte a CORS e headers HTTP apropriados
+- Detecção inteligente de IP do cliente
+- Informações de debug específicas do Slim
+
+**Melhorias Implementadas:**
+- Injeção de dependência do `ExceptionHandler`
+- Uso de métodos PSR-7 em vez de `filter_input()`
+- Tipagem forte e documentação completa
+- Reutilização da lógica do `ExceptionHandler`
+
+#### 4. Configuração Global (src/exception.php)
 
 Arquivo de configuração que registra os handlers globais do PHP.
 
@@ -146,6 +163,26 @@ try {
         $exception->getMessage()
     ));
 }
+```
+
+### 7. Integração com Slim Framework
+
+```php
+// ErrorHandler melhorado com injeção de dependência
+$errorHandler = new ErrorHandler(
+    $app->getCallableResolver(),
+    $app->getResponseFactory(),
+    new ExceptionHandler()
+);
+
+// Uso de métodos PSR-7 em vez de filter_input()
+$errorData['request'] = [
+    'method' => $this->request->getMethod(),
+    'uri' => (string) $this->request->getUri(),
+    'user_agent' => $this->request->getHeaderLine('User-Agent'),
+    'host' => $this->request->getHeaderLine('Host'),
+    'ip' => $this->getClientIp(),
+];
 ```
 
 ## Formato de Resposta
