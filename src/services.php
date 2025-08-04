@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-use Core\Utils\{Arr, Config, Path, Redis, Render\SlimPhpRenderAdapter, S3, SqsClient, Trace, Dynamo};
+use Core\Utils\{Arr, Config, Path, Redis, Render\SlimPhpRenderAdapter, SqsClient, Trace, Dynamo};
 use DI\ContainerBuilder;
 use Illuminate\Container\Container;
 use Illuminate\Database\Capsule\Manager;
@@ -10,6 +10,7 @@ use Monolog\Formatter\JsonFormatter;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
 use Nette\Mail\SmtpMailer;
+use S3\Lib\S3;
 use Slim\Views\PhpRenderer;
 
 

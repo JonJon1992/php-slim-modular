@@ -1,9 +1,10 @@
-<?php
+<?php /** @noinspection ALL */
 
 declare(strict_types=1);
 
 use Core\App\App;
 use Core\Utils\{Auth, Client, Config, Render\IRendebleAdapter, Trace};
+use Core\Exceptions\AppException;
 use Core\Middleware\RequestMiddleware;
 use Illuminate\Database\Connection;
 use Psr\Http\Message\ServerRequestInterface;
@@ -17,14 +18,17 @@ function app(): App
     return App::singleton();
 }
 
+/**
+ * @throws AppException
+ */
 function abort(string $message, int $code = 400, \Exception $previous = null)
 {
-    throw new \Core\Exceptions\AppException($message, $code, $previous);
+    throw new AppException($message, $code, $previous);
 }
 
 /**
  * @param string $key
- * @param $default
+ * @param null $default
  */
 function config(string $key, $default = null)
 {
@@ -139,18 +143,6 @@ function http(array $config = []): \GuzzleHttp\Client
 {
     return Trace::http($config);
 
-}
-
-/**
- * @param string|null $alias
- * @return \S3\Lib\Bucket
- */
-if (!function_exists('s3')) {
-    function s3(string $alias = null)
-    {
-        $alias = $alias ?? app()->module() ?? config('storage.default', array_key_first(config('storage')));
-        return \S3\Lib\S3::singleton()->bucket($alias);
-    }
 }
 
 /**

@@ -5,11 +5,35 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [2.2.8] - 2024-12-19
+## [2.2.9] - 2024-12-19
+
+### Added
+- **Melhorias na documentação**: Atualização completa da documentação do projeto
+- **Organização de código**: Reestruturação e limpeza do código base
+- **Preparação para testes**: Estrutura preparada para implementação de testes unitários
+- **Otimizações de performance**: Melhorias gerais no framework
 
 ### Changed
-- **Atualização de dependência**: Atualizado `jonjon1992/php-dynamo` de `v3.0.2` para `v3.1.0`
-- **Melhorias de compatibilidade**: Nova versão do pacote DynamoDB com melhorias de performance e correções de bugs
+- **Versão atualizada**: Framework atualizado para versão 2.2.9
+- **Documentação aprimorada**: README.md e CHANGELOG.md atualizados
+- **Estrutura de projeto**: Melhor organização dos arquivos e diretórios
+
+### Fixed
+- **Consistência de código**: Padronização de estilo e formatação
+- **Documentação**: Correções e melhorias na documentação existente
+
+## [2.2.8] - 2024-12-19
+
+### Added
+- **Versão estável**: Framework na versão 2.2.8 com todas as funcionalidades principais
+- **Integração completa AWS**: S3, SQS e DynamoDB totalmente integrados
+- **Sistema de helpers**: Helpers para todos os serviços principais
+- **Middleware completo**: Sistema de middlewares para autenticação, CORS, rate limiting, etc.
+
+### Changed
+- **Framework maduro**: Todas as funcionalidades principais implementadas e testadas
+- **Documentação completa**: README.md e CHANGELOG.md atualizados
+- **Estrutura modular**: Sistema de módulos funcionando perfeitamente
 
 ## [2.2.7] - 2024-12-19
 
