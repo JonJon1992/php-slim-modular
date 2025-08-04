@@ -12,10 +12,17 @@ use Illuminate\Database\Connection;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
+use Symfony\Component\Console\Style\SymfonyStyle;
+use Symfony\Component\Console\Helper\ProgressBar;
 use Throwable;
 
 class MigrateRunCommand extends AbstractCommand
 {
+    private SymfonyStyle $io;
+    private int $totalMigrations = 0;
+    private int $executedMigrations = 0;
+    private int $failedMigrations = 0;
+
     /**
      * @return void
      */
@@ -23,6 +30,7 @@ class MigrateRunCommand extends AbstractCommand
     {
         $this->setName('migrate:run');
         $this->setDescription('Executa todas as migrations que ainda não foram executadas');
+        $this->setHelp('Este comando executa todas as migrations pendentes em todos os módulos disponíveis.');
     }
 
     /**
@@ -31,58 +39,139 @@ class MigrateRunCommand extends AbstractCommand
      */
     protected function handler(): void
     {
-        foreach (app()->modules() as $module) {
-            try {
-                $db = MigrateRunCommand::getConnection($module);
-            } catch (Throwable) {
+        $this->io = new SymfonyStyle($this->input, $this->output);
+        
+        $this->io->title('Executando Migrations');
+        $this->io->text('Iniciando processo de execução de migrations...');
+
+        $modules = app()->modules();
+        $this->io->section(sprintf('Encontrados %d módulos', count($modules)));
+
+        foreach ($modules as $module) {
+            $this->processModule($module);
+        }
+
+        $this->displaySummary();
+    }
+
+    /**
+     * Processa um módulo específico
+     */
+    private function processModule(Module $module): void
+    {
+        $this->io->section(sprintf('Processando módulo: %s', get_class($module)));
+
+        try {
+            $db = self::getConnection($module);
+        } catch (Throwable $e) {
+            $this->io->warning(sprintf('Não foi possível conectar ao banco do módulo %s: %s', get_class($module), $e->getMessage()));
+            return;
+        }
+
+        try {
+            $this->ensureMigrationTableExists($db);
+        } catch (Throwable $e) {
+            $this->io->error(sprintf('Erro ao preparar tabela de migrations: %s', $e->getMessage()));
+            return;
+        }
+
+        $migrations = $this->getIdleMigration($db, $module->migrations());
+
+        if (empty($migrations)) {
+            $this->io->note('Nenhuma migration pendente encontrada');
+            return;
+        }
+
+        $this->io->text(sprintf('Encontradas %d migrations pendentes', count($migrations)));
+        $this->totalMigrations += count($migrations);
+
+        $batch = $this->getLastBatch($db) + 1;
+        $this->io->text(sprintf('Usando batch: %d', $batch));
+
+        $this->executeMigrations($db, $migrations, $batch);
+    }
+
+    /**
+     * Garante que a tabela de migrations existe
+     */
+    private function ensureMigrationTableExists(Connection $db): void
+    {
+        if (!$this->existTableMigration($db)) {
+            $this->io->text('Criando tabela de migrations...');
+            $this->createMigrationTable($db);
+            $this->io->text('Tabela de migrations criada com sucesso');
+        }
+    }
+
+    /**
+     * Executa as migrations com progress bar
+     */
+    private function executeMigrations(Connection $db, array $migrations, int $batch): void
+    {
+        $progressBar = new ProgressBar($this->output, count($migrations));
+        $progressBar->setFormat(' %current%/%max% [%bar%] %percent:3s%% %elapsed:6s%/%estimated:-6s% %memory:6s%');
+        $progressBar->setMessage('Executando migrations...');
+        $progressBar->start();
+
+        foreach ($migrations as $migration) {
+            $progressBar->setMessage(sprintf('Executando: %s', $migration));
+            
+            if ($this->alreadyExist($db, $migration)) {
+                $progressBar->advance();
                 continue;
             }
 
-            $this->output->writeln("\n#\n#" . get_class($module) . "\n#\n#");
-
             try {
-                $this->existTableMigration($db);
-            } catch (\Exception) {
-                $this->output->writeln('> Preparando tabela de migração...');
-                $this->createTableMigrations($db);
-            }
-
-            $migrations = $this->getIdleMigration($db, $module->migrations());
-
-            if (empty($migrations)) {
-                $this->output->writeln("> Modulo não possui migrations");
-                continue;
-            }
-
-            $this->output->writeln('> Definindo proximo batch...');
-            $batch = $this->getLastBatch($db) + 1;
-
-            foreach ($migrations as $migration) {
+                $db->beginTransaction();
+                
                 $m = new $migration($db);
-                $this->output->writeln("\n> $migration");
+                $m->up();
 
-                if ($this->alreadyExist($db, $migration)) {
-                    $this->output->writeln('> Já existe!');
+                $this->registerMigration($db, $migration, $batch);
+                $db->commit();
+
+                $this->executedMigrations++;
+                $this->io->text(sprintf('✓ %s executada com sucesso', $migration));
+                
+            } catch (Throwable $e) {
+                $db->rollBack();
+                $this->failedMigrations++;
+                
+                $this->io->error(sprintf('✗ Erro ao executar %s: %s', $migration, $e->getMessage()));
+                
+                if ($this->io->confirm('Deseja continuar com as próximas migrations?', false)) {
                     continue;
-                }
-
-                try {
-                    $db->beginTransaction();
-                    $this->output->writeln('> Executando...');
-                    $m->up();
-
-                    $this->registerMigration($db, $migration, $batch);
-
-                    $this->output->writeln('> Realizando commmit...');
-                    $db->commit();
-                } catch (Throwable $t) {
-                    $this->output->writeln('> Realizando rollback...');
-                    $db->rollBack();
-                    throw  $t;
+                } else {
+                    break;
                 }
             }
 
-            $this->output->writeln('\n> Finalizando....');
+            $progressBar->advance();
+        }
+
+        $progressBar->finish();
+        $this->io->newLine(2);
+    }
+
+    /**
+     * Exibe resumo da execução
+     */
+    private function displaySummary(): void
+    {
+        $this->io->section('Resumo da Execução');
+        
+        $summary = [
+            'Total de migrations encontradas' => $this->totalMigrations,
+            'Migrations executadas com sucesso' => $this->executedMigrations,
+            'Migrations com falha' => $this->failedMigrations,
+        ];
+
+        $this->io->definitionList($summary);
+
+        if ($this->failedMigrations > 0) {
+            $this->io->warning('Algumas migrations falharam. Verifique os logs para mais detalhes.');
+        } else {
+            $this->io->success('Todas as migrations foram executadas com sucesso!');
         }
     }
 
@@ -213,6 +302,5 @@ class MigrateRunCommand extends AbstractCommand
             });
 
         return array_values($migrations);
-
     }
 }

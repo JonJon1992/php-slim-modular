@@ -7,6 +7,12 @@
 - [ ] Adicionar suporte a índices secundários no DynamoDB
 - [ ] Implementar cache automático para queries frequentes
 - [ ] Criar middleware para monitoramento de performance do DynamoDB
+- [ ] Melhorar comandos de migration (em progresso)
+  - [x] MigrateRunCommand com SymfonyStyle e ProgressBar
+  - [x] MigrateCreateCommand com interação e validação
+  - [ ] Adicionar comando migrate:rollback
+  - [ ] Adicionar comando migrate:status
+  - [ ] Implementar testes para os comandos
 
 ## Backlog (Prioridade Normal)
 - [ ] Implementar suporte a DynamoDB Streams
