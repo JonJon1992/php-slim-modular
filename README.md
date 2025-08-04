@@ -260,4 +260,4 @@ Para suporte, entre em contato através das issues do GitHub ou envie um email p
 
 ---
 
-**Versão 2.2.1** - Atualizado em 19 de Dezembro de 2024 
+**Versão 2.3.0** - Atualizado em 04 de Agosto de 2025 

@@ -22,18 +22,18 @@
 - [ ] Implementar integração com CloudWatch para monitoramento
 
 ## Concluído
-- [x] Nova versão 2.3.0 e release (19/12/2024)
+- [x] Nova versão 2.3.0 e release (04/08/2025)
   - [x] Atualização da versão no composer.json para 2.3.0
   - [x] Atualização do CHANGELOG.md com nova versão
   - [x] Atualização da dependência jonjon1992/s3-php para v2.4.0
   - [x] Commit das alterações e push para o repositório
   - [x] Criação e push da tag v2.3.0
-- [x] Nova versão 2.2.9 e release (19/12/2024)
+- [x] Nova versão 2.2.9 e release (04/08/2025)
   - [x] Atualização da versão no composer.json para 2.2.9
   - [x] Atualização do CHANGELOG.md com nova versão
   - [x] Melhorias na documentação e organização do código
   - [x] Release preparado para publicação
-- [x] Implementação do util DynamoDB (19/12/2024)
+- [x] Implementação do util DynamoDB (04/08/2025)
   - [x] Classe principal `Core\Utils\Dynamo`
   - [x] Suporte a operações CRUD
   - [x] Configuração automática para LocalStack e AWS
@@ -47,14 +47,14 @@
   - [x] Atualização do README.md
   - [x] Atualização do CHANGELOG.md
   - [x] Atualização da versão para 2.2.5
-- [x] Implementação do helper dynamo() (19/12/2024)
+- [x] Implementação do helper dynamo() (04/08/2025)
   - [x] Helper `dynamo()` em `src/helpers.php`
   - [x] Integração com sistema de serviços em `src/services.php`
   - [x] Suporte a múltiplas configurações via alias
   - [x] Documentação específica em `docs/utils/dynamo-helper.md`
   - [x] Exemplo completo de uso em `examples/dynamo-example.php`
   - [x] Segue padrão dos outros helpers (redis, s3, db, etc.)
-- [x] Nova versão 2.2.7 e release (19/12/2024)
+- [x] Nova versão 2.2.7 e release (04/08/2025)
   - [x] Atualização da versão no composer.json para 2.2.7
   - [x] Atualização do CHANGELOG.md com nova versão
   - [x] Documentação das funcionalidades do helper dynamo()
