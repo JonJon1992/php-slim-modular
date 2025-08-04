@@ -13,6 +13,12 @@
   - [ ] Adicionar comando migrate:rollback
   - [ ] Adicionar comando migrate:status
   - [ ] Implementar testes para os comandos
+- [x] Melhorar arquivo bootstrap.php (concluído)
+  - [x] Adicionar documentação completa
+  - [x] Implementar tratamento de erros robusto
+  - [x] Adicionar validações de arquivos e classes
+  - [x] Melhorar organização e legibilidade
+  - [x] Implementar validações finais da aplicação
 
 ## Backlog (Prioridade Normal)
 - [ ] Implementar suporte a DynamoDB Streams
