@@ -19,6 +19,13 @@
   - [x] Adicionar validações de arquivos e classes
   - [x] Melhorar organização e legibilidade
   - [x] Implementar validações finais da aplicação
+- [x] Melhorar sistema de tratamento de exceções (concluído)
+  - [x] Refatorar arquivo exception.php seguindo melhores práticas
+  - [x] Criar classe ExceptionHandler com separação de responsabilidades
+  - [x] Implementar interface IExceptionHandler para testabilidade
+  - [x] Adicionar tipagem forte e documentação completa
+  - [x] Implementar logging estruturado e fallback seguro
+  - [x] Criar documentação detalhada em docs/EXCEPTION_HANDLING.md
 
 ## Backlog (Prioridade Normal)
 - [ ] Implementar suporte a DynamoDB Streams
@@ -73,6 +80,22 @@
   - [x] Release preparado para publicação
 
 ## Notas Técnicas
+
+### Sistema de Exceções Melhorado
+- **Arquivo Principal**: `src/exception.php` (refatorado)
+- **Classe Principal**: `src/Exceptions/ExceptionHandler.php`
+- **Interface**: `src/Contracts/Exception/IExceptionHandler.php`
+- **Documentação**: `docs/EXCEPTION_HANDLING.md`
+- **Padrão**: Segue princípios SOLID e melhores práticas PHP 8.2+
+- **Funcionalidades**:
+  - Tipagem forte com `declare(strict_types=1)`
+  - Separação clara de responsabilidades
+  - Logging estruturado com contexto completo
+  - Mapeamento inteligente de status codes HTTP
+  - Tratamento de erros fatais
+  - Fallback seguro para logging
+  - Interface para testabilidade
+  - Documentação completa
 
 ### Util DynamoDB Implementado
 - **Arquivo Principal**: `src/Utils/Dynamo.php`

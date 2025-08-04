@@ -1,65 +1,112 @@
 <?php
 
-use Core\Utils\Env;
-use Core\Utils\Trace;
-use Monolog\Formatter\JsonFormatter;
-use Monolog\Handler\StreamHandler;
-use Monolog\Logger;
+declare(strict_types=1);
 
-ob_start(function ($buffer) {
+use Core\Exceptions\ExceptionHandler;
+
+/**
+ * Exception Handler Configuration
+ * 
+ * This file configures global exception and error handling for the application.
+ * It provides a centralized way to handle uncaught exceptions and errors,
+ * ensuring proper logging and user-friendly error responses.
+ */
+
+// Create a single instance of the exception handler
+$exceptionHandler = new ExceptionHandler();
+
+/**
+ * Global Exception Handler
+ * 
+ * Handles uncaught exceptions and converts them to proper HTTP responses
+ * with appropriate logging and error tracking.
+ */
+set_exception_handler(function (Throwable $exception) use ($exceptionHandler): void {
+    $errorData = $exceptionHandler->handle($exception);
+    $exceptionHandler->log($exception, $errorData);
+    $exceptionHandler->sendResponse($errorData);
+});
+
+/**
+ * Global Error Handler
+ * 
+ * Converts PHP errors to exceptions for consistent error handling.
+ */
+set_error_handler(function (int $severity, string $message, string $file, int $line): bool {
+    if (!(error_reporting() & $severity)) {
+        return false; // Error was suppressed
+    }
+    
+    throw new ErrorException($message, 0, $severity, $file, $line);
+});
+
+/**
+ * Fatal Error Handler
+ * 
+ * Handles fatal errors that occur during shutdown.
+ */
+register_shutdown_function(function () use ($exceptionHandler): void {
     $error = error_get_last();
-
-    if ($error) {
-        $trace = explode("\n", $error['message']);
-
-        $data = [
-            'trace-id' => Trace::uuid(),
-            'status' => 500,
-            'message' => array_shift($trace)
-        ];
-
-        $extras = [
-            'user-id' => null,
-            'status' => $data['status'],
-            'method' => filter_input(INPUT_SERVER, 'REQUEST_METHOD'),
-            'agent' => filter_input(INPUT_SERVER, 'HTTP_USER_AGENT'),
-            'host' => filter_input(INPUT_SERVER, 'HTTP_HOST'),
-            'uri' => filter_input(INPUT_SERVER, 'REQUEST_URI'),
-            'code' => 0,
-            'class' => $error['file'],
-            'type' => $error['type'],
-            'file' => $error['file'],
-            'line' => $error['line'],
-            'stack-trace' => $trace,
-        ];
-        $handler = new StreamHandler(config('log.main.path'), config('app.log_level'));
-        $handler->setFormatter(new JsonFormatter());
-
-        $logger = new Logger('Slim');
-
-        $logger->pushProcessor(fn($record) => Trace::processor($record));
-        $logger->pushHandler($handler);
-        $logger->error($data['message'], $extras);
-
-        if (Env::local()) {
-            $data['extras'] = $extras;
-        }
-
-        header('Content-type: application/json');
-        http_response_code(500);
-        return json_encode($data, JSON_PRETTY_PRINT);
-    }
-    return $buffer;
-});
-
-set_error_handler(function ($severity, $message, $file, $line) {
-    if (error_reporting() & $severity) {
-        throw  new ErrorException($message, 0, $severity, $file, $line);
+    
+    if ($error !== null && isFatalError($error['type'])) {
+        $exception = new ErrorException(
+            $error['message'],
+            0,
+            $error['type'],
+            $error['file'],
+            $error['line']
+        );
+        
+        $errorData = $exceptionHandler->handle($exception);
+        $exceptionHandler->log($exception, $errorData);
+        $exceptionHandler->sendResponse($errorData);
     }
 });
 
-if (env('APP_ENV', 'production') == 'development') {
+/**
+ * Development Environment Configuration
+ * 
+ * Enable detailed error reporting in development environment.
+ */
+if (isDevelopmentEnvironment()) {
     ini_set('display_errors', '1');
     ini_set('display_startup_errors', '1');
     error_reporting(E_ALL);
+}
+
+/**
+ * Check if error type is fatal
+ */
+function isFatalError(int $type): bool
+{
+    return in_array($type, [
+        E_ERROR,
+        E_PARSE,
+        E_CORE_ERROR,
+        E_CORE_WARNING,
+        E_COMPILE_ERROR,
+        E_COMPILE_WARNING,
+        E_USER_ERROR,
+    ]);
+}
+
+/**
+ * Check if running in development environment
+ */
+function isDevelopmentEnvironment(): bool
+{
+    return env('APP_ENV', 'production') === 'development' || 
+           env('APP_DEBUG', false) === true;
+}
+
+/**
+ * Get environment variable with fallback
+ */
+function env(string $key, mixed $default = null): mixed
+{
+    if (function_exists('env')) {
+        return env($key, $default);
+    }
+    
+    return $_ENV[$key] ?? $_SERVER[$key] ?? $default;
 }
