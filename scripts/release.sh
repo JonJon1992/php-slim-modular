@@ -37,8 +37,8 @@ if ! command -v git &> /dev/null; then
     exit 1
 fi
 
-# Verificar se há mudanças para commitar
-if [ -z "$(git status --porcelain)" ] && [ -z "$VERSAO" ]; then
+# Verificar se há mudanças para commitar (apenas se não for uma release)
+if [ -z "$(git status --porcelain)" ] && [ -z "$3" ]; then
     warn "Não há mudanças para commitar"
     exit 0
 fi
