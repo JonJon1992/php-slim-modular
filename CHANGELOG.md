@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.8.7] - 2025-08-05
+
+### Fixed
+- **Conflito com Laravel**: Corrigido conflito de função `env()` com Laravel/Illuminate
+- **Compatibilidade**: Renomeada função `env()` para `getEnvVar()` no exception.php
+- **Erro de Redeclaração**: Corrigido erro 'Cannot redeclare env()' em projetos que usam Laravel
+- **Integração**: Framework agora é compatível com projetos Laravel sem conflitos
+
+### Changed
+- **Função env()**: Renomeada para `getEnvVar()` para evitar conflitos
+- **Compatibilidade**: Melhor integração com outros frameworks PHP
+
 ## [2.8.6] - 2025-08-05
 
 ### Fixed
