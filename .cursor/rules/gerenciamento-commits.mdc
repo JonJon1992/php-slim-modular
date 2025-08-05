@@ -69,3 +69,4 @@ alwaysApply: true
 - Mensagens bem escritas facilitam revisões de código
 - Um bom histórico permite restaurar estados anteriores com confiança
 - Commits padronizados permitem gerar changelogs automatizados
+- Usar scripts para auxilixar no commit e release

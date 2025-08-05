@@ -32,7 +32,7 @@ class ImAliveAction extends Action
     private Filesystem $filesystem;
     private LoggerInterface $logger;
 
-    protected $response = [];
+    protected array $responseData = [];
     private int $deadServices = 0;
     private float $startTime;
 
@@ -78,7 +78,7 @@ class ImAliveAction extends Action
         // Salva log de sucesso
         $this->saveSuccessLog();
 
-        return $this->response;
+        return $this->responseData;
     }
 
     /**
@@ -126,8 +126,8 @@ class ImAliveAction extends Action
 
             $key = "cache.$alias";
             if (empty($service) || Str::has($key, $service)) {
-                $this->response[$key] = $this->checkCache($alias);
-                $this->updateDeadCount($this->response[$key]['status']);
+                $this->responseData[$key] = $this->checkCache($alias);
+                $this->updateDeadCount($this->responseData[$key]['status']);
             }
         }
     }
@@ -149,8 +149,8 @@ class ImAliveAction extends Action
 
             $key = "db.$alias";
             if (empty($service) || Str::has($key, $service)) {
-                $this->response[$key] = $this->checkDatabase($alias);
-                $this->updateDeadCount($this->response[$key]['status']);
+                $this->responseData[$key] = $this->checkDatabase($alias);
+                $this->updateDeadCount($this->responseData[$key]['status']);
             }
         }
     }
@@ -172,8 +172,8 @@ class ImAliveAction extends Action
 
             $key = "storage.$alias";
             if (empty($service) || Str::has($key, $service)) {
-                $this->response[$key] = $this->checkStorage($alias);
-                $this->updateDeadCount($this->response[$key]['status']);
+                $this->responseData[$key] = $this->checkStorage($alias);
+                $this->updateDeadCount($this->responseData[$key]['status']);
             }
         }
     }
@@ -195,8 +195,8 @@ class ImAliveAction extends Action
 
             $key = "dynamo.$alias";
             if (empty($service) || Str::has($key, $service)) {
-                $this->response[$key] = $this->checkDynamo($alias);
-                $this->updateDeadCount($this->response[$key]['status']);
+                $this->responseData[$key] = $this->checkDynamo($alias);
+                $this->updateDeadCount($this->responseData[$key]['status']);
             }
         }
     }
@@ -210,10 +210,10 @@ class ImAliveAction extends Action
     {
         $totalTime = microtime(true) - $this->startTime;
 
-        $this->response['_metrics'] = [
-            'total_services' => count($this->response),
+        $this->responseData['_metrics'] = [
+            'total_services' => count($this->responseData),
             'dead_services' => $this->deadServices,
-            'healthy_services' => count($this->response) - $this->deadServices,
+            'healthy_services' => count($this->responseData) - $this->deadServices,
             'total_time' => round($totalTime * 1000, 2), // em milissegundos
             'timestamp' => time(),
             'status' => $this->deadServices > 0 ? 'unhealthy' : 'healthy'
@@ -242,11 +242,11 @@ class ImAliveAction extends Action
     {
         $this->logger->critical('Health check failed', [
             'dead_services' => $this->deadServices,
-            'response' => $this->response,
+            'response' => $this->responseData,
             'timestamp' => time()
         ]);
 
-        return $this->respondWithJSON($this->response, 503);
+        return $this->respondWithJSON($this->responseData, 503);
     }
 
     /**
