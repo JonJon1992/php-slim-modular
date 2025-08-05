@@ -43,6 +43,11 @@
 - [ ] Implementar integração com CloudWatch para monitoramento
 
 ## Concluído
+- [x] Corrigir compatibilidade do useAttributes com PHP-DI 6.x (05/08/2025) ✅
+  - [x] Adicionar verificação method_exists para useAttributes
+  - [x] Manter compatibilidade com PHP-DI 6.x e 7.x
+  - [x] Adicionar documentação sobre compatibilidade
+  - [x] Criar exemplo de teste do bootstrap
 - [x] Adicionar método src() à classe Path (05/08/2025) ✅
   - [x] Criar método src() para acessar diretório src
   - [x] Melhorar documentação da classe Path
