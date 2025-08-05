@@ -293,3 +293,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Adicionado
 - corrige erro TypeError em str_ends_with com chaves numéricas
 
+## [2.8.5] - 2025-08-05
+
+### Adicionado
+- melhora proteção contra TypeError em str_ends_with com verificações mais robustas
+
