@@ -278,3 +278,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Adicionado
 - corrige problemas de substr com valores null no AbstractAction
 
+## [2.8.2] - 2025-08-05
+
+### Adicionado
+- corrige conflito de tipo na propriedade response do ImAliveAction
+
