@@ -193,7 +193,7 @@ $errorData['request'] = [
     "trace-id": "550e8400-e29b-41d4-a716-446655440000",
     "status": 400,
     "message": "Dados inválidos fornecidos",
-    "timestamp": "2024-01-15T10:30:00+00:00",
+    "timestamp": "2025-08-05T10:30:00+00:00",
     "path": "/api/users"
 }
 ```
@@ -204,7 +204,7 @@ $errorData['request'] = [
     "trace-id": "550e8400-e29b-41d4-a716-446655440000",
     "status": 400,
     "message": "Dados inválidos fornecidos",
-    "timestamp": "2024-01-15T10:30:00+00:00",
+    "timestamp": "2025-08-05T10:30:00+00:00",
     "path": "/api/users",
     "debug": {
         "exception": "Core\\Exceptions\\ValidatorException",

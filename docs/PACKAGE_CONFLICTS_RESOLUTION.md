@@ -198,6 +198,6 @@ Os conflitos de pacotes foram identificados e resolvidos com sucesso. A aplicaç
 
 ---
 
-**Data da Resolução**: 03/08/2024  
+**Data da Resolução**: 05/08/2025  
 **Responsável**: Equipe de Desenvolvimento  
 **Status**: ✅ Resolvido 

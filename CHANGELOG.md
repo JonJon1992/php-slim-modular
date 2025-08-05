@@ -5,7 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [2.5.0] - 2024-06-XX
+## [2.5.0] - 2025-08-05
 
 ### Changed
 - Adicionado declare(strict_types=1) em todos os arquivos PHP do projeto
@@ -51,7 +51,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Performance**: Cache reduz verificações desnecessárias
 - **Observabilidade**: Métricas detalhadas para monitoramento
 
-## [2.3.0] - 2025-08-04
+## [2.3.0] - 2025-08-05
 
 ### Added
 - **Atualização de dependências**: Atualizado `jonjon1992/s3-php` de v2.1.0 para v2.4.0
@@ -67,7 +67,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Consistência de código**: Padronização de estilo e formatação
 - **Documentação**: Correções e melhorias na documentação existente
 
-## [2.2.9] - 2024-12-19
+## [2.2.9] - 2025-08-05
 
 ### Added
 - **Melhorias na documentação**: Atualização completa da documentação do projeto
@@ -84,7 +84,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Consistência de código**: Padronização de estilo e formatação
 - **Documentação**: Correções e melhorias na documentação existente
 
-## [2.2.8] - 2024-12-19
+## [2.2.8] - 2025-08-05
 
 ### Added
 - **Versão estável**: Framework na versão 2.2.8 com todas as funcionalidades principais
@@ -97,7 +97,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Documentação completa**: README.md e CHANGELOG.md atualizados
 - **Estrutura modular**: Sistema de módulos funcionando perfeitamente
 
-## [2.2.7] - 2024-12-19
+## [2.2.7] - 2025-08-05
 
 ### Added
 - **Novo helper DynamoDB**: Implementado helper `dynamo()` em `src/helpers.php` seguindo o padrão dos outros helpers
@@ -116,7 +116,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Consistência de helpers**: Todos os helpers agora seguem o mesmo padrão de implementação
 - **Documentação atualizada**: @TODO atualizado com detalhes da implementação do helper
 
-## [2.2.6] - 2024-08-03
+## [2.2.6] - 2025-08-05
 
 ### Fixed
 - **Resolvido conflito de função `s3()`**: Adicionado `if (!function_exists('s3'))` em `src/helpers.php` para evitar redeclaração da função
@@ -127,7 +127,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Melhorada compatibilidade com dependências externas
 - Mantida funcionalidade completa da biblioteca
 
-## [2.2.5] - 2024-12-19
+## [2.2.5] - 2025-08-05
 
 ### Added
 - **Novo util DynamoDB**: Implementado `Core\Utils\Dynamo` para integração com Amazon DynamoDB
@@ -145,7 +145,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Atualizado README.md com seção de uso do DynamoDB
 - Melhorada documentação de utils do framework
 
-## [2.2.4] - 2024-12-19
+## [2.2.4] - 2025-08-05
 
 ### Fixed
 - Corrigido uso de `HttpException` para `HttpInternalServerErrorException` no `Action.php`
@@ -157,7 +157,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Atualizado uso de `Exception` genérica para exceções específicas em todo o framework
 - Melhorada segurança de tipos e tratamento de erros
 
-## [2.2.3] - 2024-12-19
+## [2.2.3] - 2025-08-05
 
 ### Fixed
 - Resolvido conflito adicional de dependências com `slim/psr7` e `slim/slim`
@@ -165,19 +165,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Atualizado `slim/slim` de `4.8.1` para `^4.9` para melhor compatibilidade
 - Corrigidos todos os conflitos de dependências PSR HTTP Message
 
-## [2.2.2] - 2024-12-19
+## [2.2.2] - 2025-08-05
 
 ### Fixed
 - Resolvido conflito de dependências entre `aws/aws-sdk-php` e `slim/php-view`
 - Atualizado `slim/php-view` de `3.1.0` para `^3.2` para suportar `psr/http-message ^2.0`
 - Corrigido problema de compatibilidade com AWS SDK PHP ^3.350
 
-## [2.2.1] - 2024-12-19
+## [2.2.1] - 2025-08-05
 
 ### Changed
 - Atualizado `jonjon1992/s3-php` de `v2.0.0` para `v2.1.0`
 
-## [2.2.0] - 2024-12-19
+## [2.2.0] - 2025-08-05
 
 ### Added
 - AWS SDK PHP atualizado para versão ^3.350
@@ -216,8 +216,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Sistema de migrações
 - Integração com AWS S3 e SQS
 - Sistema de autenticação e criptografia
-- Middlewares personalizados ## [2.6.0] - 2025-08-05
+- Middlewares personalizados
 
-### Adicionado
-- sistema de validação melhorado e scripts de automação
+## [2.6.0] - 2025-08-05
+
+### Added
+- **Sistema de Validação Melhorado**: Corrigida dependência inexistente `Awurth\Validator\Validator`
+- **Validação com Respect\Validation**: Implementada validação usando `Respect\Validation\Validator`
+- **Value Objects Corrigidos**: Lógica de validação corrigida em Value Objects
+- **Scripts de Automação**: Sistema completo de scripts para commits e releases
+- **Script de Release**: `scripts/release.sh` para commits e releases automatizados
+- **Script de Commit Rápido**: `scripts/quick-commit.sh` com detecção automática de tipo
+- **Configuração de Aliases**: `scripts/setup-aliases.sh` para facilitar uso dos scripts
+- **Documentação Completa**: README dos scripts com exemplos de uso
+
+### Changed
+- **Correção de Método Chaining**: Corrigido ordem de métodos em validação de CPF
+- **Validação Inteligente**: Sistema detecta automaticamente tipo de commit
+- **Padronização**: Mensagens de commit seguem convenções do projeto
+- **Automação**: Releases incluem atualização de versão, changelog e tags
+
+### Fixed
+- **Dependências**: Removida dependência inexistente do validator
+- **Validação**: Corrigida lógica de validação em Value Objects
+- **Compatibilidade**: Sistema funciona com dependências já instaladas
 
