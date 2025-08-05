@@ -259,6 +259,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [2.8.0] - 2025-08-05
 
-### Adicionado
-- nova release do framework
+### Added
+- **Nova Release**: Framework atualizado para versão 2.8.0
+- **Scripts de Automação**: Sistema de scripts para commits e releases funcionando perfeitamente
+- **Correção de Scripts**: Script de release corrigido para permitir releases sem mudanças pendentes
+
+### Changed
+- **Versão**: Framework atualizado de 2.7.0 para 2.8.0
+- **Automação**: Processo de release totalmente automatizado
+- **Documentação**: CHANGELOG atualizado automaticamente
+
+### Fixed
+- **Script de Release**: Corrigida lógica para permitir releases sem mudanças pendentes
+- **Automação**: Sistema de scripts funcionando corretamente
 
