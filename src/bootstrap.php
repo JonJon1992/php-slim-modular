@@ -2,9 +2,6 @@
 
 declare(strict_types=1);
 
-// Carrega o autoloader do Composer
-require_once __DIR__ . '/../vendor/autoload.php';
-
 /**
  * Bootstrap da Aplicação
  * 
