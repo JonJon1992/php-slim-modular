@@ -2,10 +2,10 @@
 
 namespace Core\ValueObjects;
 
-use Awurth\SlimValidation\Validator;
+use Core\Utils\Validate;
 use Stringable;
 
-abstract class ValueObject extends Stringable implements IValueObject
+abstract class ValueObject implements Stringable, IValueObject
 {
     /**
      * @var mixed
@@ -17,9 +17,10 @@ abstract class ValueObject extends Stringable implements IValueObject
     public function __construct($value)
     {
         $value = $this->sanitize($value);
-        $validations = (new Validator())->value($value, $this->roles(), 'value');
-        if ($validations->isValid()) {
-            throw  new \Exception($validations->getFirstError('value'));
+        try {
+            Validate::value($value, $this->roles(), 'value');
+        } catch (\Exception $e) {
+            throw new \Exception($e->getMessage());
         }
         $this->value = $value;
     }

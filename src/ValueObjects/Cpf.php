@@ -5,9 +5,20 @@ namespace Core\ValueObjects;
 
 use Core\Utils\Mask;
 use Core\Utils\Str;
+use Core\Utils\Validate;
 
 class Cpf extends ValueObject
 {
+    protected array $roles = [
+        'rules' => null // Será definido no construtor
+    ];
+
+    public function __construct($value)
+    {
+        $this->roles['rules'] = Validate::length(11, 11)->numeric();
+        parent::__construct($value);
+    }
+
     /**
      * @param mixed $value
      */

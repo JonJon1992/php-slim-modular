@@ -2,7 +2,7 @@
 
 namespace Core\Utils;
 
-use Awurth\Validator\Validator as AwurthValidator;
+use Respect\Validation\Validator as RespectValidator;
 use Core\Contracts\IValidate;
 use Core\Exceptions\Exception\ValidatorException;
 use Respect\Validation\Exceptions\ComponentException;
@@ -47,13 +47,21 @@ class Validate implements IValidate
      */
     private static function validate($subject, array $rules, array $messages = []): void
     {
-        $validation = AwurthValidator::create();
-        $errors = $validation->validate($subject, $rules, $messages);
-
-        if ($errors->has(0)) {
-            throw new ValidatorException($errors->get(0)->getMessage(), 412);
+        // Para Value Objects, vamos usar uma abordagem mais simples
+        // já que os rules são passados como array de regras do Respect\Validation
+        if (isset($rules['rules'])) {
+            $validator = $rules['rules'];
+            if (!$validator->validate($subject)) {
+                throw new ValidatorException($validator->getMessage(), 412);
+            }
+        } else {
+            // Fallback para validação simples
+            foreach ($rules as $rule) {
+                if (!$rule->validate($subject)) {
+                    throw new ValidatorException($rule->getMessage(), 412);
+                }
+            }
         }
-
     }
 
     /**
