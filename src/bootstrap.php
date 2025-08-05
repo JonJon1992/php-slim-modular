@@ -28,6 +28,8 @@ require_once __DIR__ . '/helpers.php';
  */
 Trace::bootstrap();
 
+require 'exception.php';
+
 /**
  * Carrega variáveis de ambiente
  */

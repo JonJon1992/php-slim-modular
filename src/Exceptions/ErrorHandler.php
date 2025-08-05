@@ -54,7 +54,7 @@ class ErrorHandler extends SlimErrorHandler
 
         // Add debug information in development
         if (Env::local()) {
-            $errorData['debug'] = $this->getDebugInfo();
+            $errorData['debug'] = $this->getDebugInfo($errorData);
         }
 
         // Write response
@@ -100,7 +100,7 @@ class ErrorHandler extends SlimErrorHandler
     /**
      * Get debug information for development environment
      */
-    private function getDebugInfo(): array
+    private function getDebugInfo(array $errorData): array
     {
         $debug = [];
 
@@ -131,8 +131,8 @@ class ErrorHandler extends SlimErrorHandler
 
         // Add response details
         $debug['response'] = [
-            'status_code' => $this->statusCode,
-            'headers' => $this->response->getHeaders(),
+            'status_code' => $errorData['status'] ?? 500,
+            'headers' => [],
         ];
 
         return $debug;
