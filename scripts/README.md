@@ -1,5 +1,35 @@
 # Scripts de Automação
 
+## Script Rápido (`quick-commit.sh`)
+
+Script para commits rápidos com detecção automática do tipo de commit.
+
+### Uso
+
+```bash
+./scripts/quick-commit.sh [descrição]
+```
+
+### Exemplos
+
+```bash
+# Commit com descrição
+./scripts/quick-commit.sh "adiciona validação de email"
+
+# Commit simples
+./scripts/quick-commit.sh
+```
+
+### Detecção Automática
+
+O script detecta automaticamente o tipo de commit baseado nas mudanças:
+- **fix**: Se contém palavras como "fix", "corrige", "error", "bug"
+- **refactor**: Se contém "refactor", "simplifica", "melhora"
+- **docs**: Se modifica arquivos README, CHANGELOG ou .md
+- **feat**: Para outras mudanças
+
+---
+
 ## Script de Release (`release.sh`)
 
 Script automatizado para fazer commits e releases seguindo as convenções do projeto.
