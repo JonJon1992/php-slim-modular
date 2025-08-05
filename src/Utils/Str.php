@@ -52,7 +52,7 @@ class Str extends \Illuminate\Support\Str
      */
     public static function endsWith($value, $cap): bool
     {
-        return str_ends_with($value, $cap);
+        return is_string($value) && str_ends_with($value, $cap);
     }
 
     /**

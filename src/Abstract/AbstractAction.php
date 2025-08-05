@@ -59,14 +59,14 @@ abstract class AbstractAction extends Action
             }
             $keyCheck = !is_numeric($key) ? $key : Arr::last(explode('.', $keyDot));
 
-            $hasSuffixDecoded = str_ends_with($key, $suffixDecoded);
+            $hasSuffixDecoded = is_string($key) && str_ends_with($key, $suffixDecoded);
             $keyWithoutSuffixDecoded = $hasSuffixDecoded ? substr($key, 0, strlen($key) - strlen($suffixDecoded)) : $key;
 
             if (is_array($value)) {
                 $keyReturn = !$encode && $hasSuffixDecoded ? $keyWithoutSuffixDecoded : $key;
                 $dataReturn[$keyReturn] = $this->resolvePayload($value, $encode, $keyDot);
             }
-            $isEncodedBase64 = !is_array($value) && Str::endsWith($key, '_encoded_base64');
+            $isEncodedBase64 = !is_array($value) && is_string($key) && Str::endsWith($key, '_encoded_base64');
 
             if ((!is_array($value) && !$this->attributeSupportHash($keyCheck)) && !$isEncodedBase64) {
                 $dataReturn[$key] = $value;
@@ -79,7 +79,7 @@ abstract class AbstractAction extends Action
                 $dataReturn[$key] = $this->decode($value);
             }
             if (!$encode && $isEncodedBase64) {
-                $keyWithoutSuffix = str_ends_with($key, '_encoded_base64') ? substr($key, 0, strlen($key) - strlen('_encoded_base64')) : $key;
+                $keyWithoutSuffix = is_string($key) && str_ends_with($key, '_encoded_base64') ? substr($key, 0, strlen($key) - strlen('_encoded_base64')) : $key;
                 $dataReturn[$keyWithoutSuffix] = EncodedBase64::create()->decode($value);
             }
             if (!is_array($value) && !$encode && $hasSuffixDecoded) {
