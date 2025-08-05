@@ -273,3 +273,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Script de Release**: Corrigida lógica para permitir releases sem mudanças pendentes
 - **Automação**: Sistema de scripts funcionando corretamente
 
+## [2.8.1] - 2025-08-05
+
+### Adicionado
+- corrige problemas de substr com valores null no AbstractAction
+
