@@ -28,7 +28,6 @@ require_once __DIR__ . '/helpers.php';
  */
 Trace::bootstrap();
 
-require 'exception.php';
 
 /**
  * Carrega variáveis de ambiente
@@ -43,6 +42,7 @@ try {
     throw new AppException('Erro ao carregar variáveis de ambiente: ' . $e->getMessage(), 0, $e);
 }
 
+require 'exception.php';
 
 /**
  * Configura o container de injeção de dependência
