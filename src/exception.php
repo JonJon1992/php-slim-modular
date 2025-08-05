@@ -95,18 +95,14 @@ function isFatalError(int $type): bool
  */
 function isDevelopmentEnvironment(): bool
 {
-    return env('APP_ENV', 'production') === 'development' || 
-           env('APP_DEBUG', false) === true;
+    return getEnvVar('APP_ENV', 'production') === 'development' || 
+           getEnvVar('APP_DEBUG', false) === true;
 }
 
 /**
  * Get environment variable with fallback
  */
-function env(string $key, mixed $default = null): mixed
+function getEnvVar(string $key, mixed $default = null): mixed
 {
-    if (function_exists('env')) {
-        return env($key, $default);
-    }
-    
     return $_ENV[$key] ?? $_SERVER[$key] ?? $default;
 }
