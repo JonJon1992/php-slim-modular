@@ -62,13 +62,20 @@ foreach ($requiredFiles as $file) {
 
 /**
  * Configura o container de injeção de dependência
+ * 
+ * Nota: Este código é compatível com PHP-DI 6.x e 7.x
+ * O método useAttributes() só está disponível no PHP-DI 7.0+
  */
 try {
     $containerBuilder = new ContainerBuilder();
     
     // Configurações do container
     $containerBuilder->useAutowiring(true);
-    $containerBuilder->useAttributes(true);
+    
+    // Verifica se o método useAttributes está disponível (PHP-DI 7.0+)
+    if (method_exists($containerBuilder, 'useAttributes')) {
+        $containerBuilder->useAttributes(true);
+    }
     
     // Adiciona definições de bindings
     $bindings = require 'bindings.php';
