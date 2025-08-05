@@ -334,3 +334,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Adicionado
 - adiciona funções dd() e d() para debug similar ao Laravel
 
+## [2.9.0] - 2025-08-05
+
+### Adicionado
+- melhora ordem de carregamento do sistema de exceções
+
