@@ -257,3 +257,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Validação**: Corrigida lógica de validação em Value Objects
 - **Compatibilidade**: Sistema funciona com dependências já instaladas
 
+## [2.8.0] - 2025-08-05
+
+### Adicionado
+- nova release do framework
+
