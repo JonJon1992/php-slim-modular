@@ -44,26 +44,6 @@ try {
     throw new AppException('Erro ao carregar variáveis de ambiente: ' . $e->getMessage(), 0, $e);
 }
 
-/**
- * Carrega arquivos de configuração essenciais
- */
-$requiredFiles = [
-    'cors.php',
-    'exception.php',
-    'bindings.php',
-    'services.php',
-    'middlewares.php',
-    'routes.php',
-    'events.php'
-];
-
-foreach ($requiredFiles as $file) {
-    $filePath = Path::src($file);
-    if (!file_exists($filePath)) {
-        throw new AppException("Arquivo de configuração não encontrado: {$file}");
-    }
-    require $filePath;
-}
 
 /**
  * Configura o container de injeção de dependência

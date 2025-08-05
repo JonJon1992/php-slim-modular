@@ -13,6 +13,6 @@ return function (App $app) {
     $app->add(ApiGatewayMiddleware::class);
     $app->add(CryptMiddleware::class);
     $app->addRoutingMiddleware();
-    $app->addErrorMiddleware('app.debug', config('app.error'), config('app.details'))
+    $app->addErrorMiddleware(config('app.debug'), config('app.error'), config('app.details'))
         ->setDefaultErrorHandler(new ErrorHandler($app->getCallableResolver(), $app->getResponseFactory()));
 };

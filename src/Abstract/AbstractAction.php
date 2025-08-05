@@ -60,7 +60,7 @@ abstract class AbstractAction extends Action
             $keyCheck = !is_numeric($key) ? $key : Arr::last(explode('.', $keyDot));
 
             $hasSuffixDecoded = str_ends_with($key, $suffixDecoded);
-            $keyWithoutSuffixDecoded = substr($key, 0, $hasSuffixDecoded ? strlen($key) - strlen($hasSuffixDecoded) : null);
+            $keyWithoutSuffixDecoded = $hasSuffixDecoded ? substr($key, 0, strlen($key) - strlen($suffixDecoded)) : $key;
 
             if (is_array($value)) {
                 $keyReturn = !$encode && $hasSuffixDecoded ? $keyWithoutSuffixDecoded : $key;
@@ -79,7 +79,7 @@ abstract class AbstractAction extends Action
                 $dataReturn[$key] = $this->decode($value);
             }
             if (!$encode && $isEncodedBase64) {
-                $keyWithoutSuffix = substr($key, strlen($key) - strlen('_encoded_base64'));
+                $keyWithoutSuffix = str_ends_with($key, '_encoded_base64') ? substr($key, 0, strlen($key) - strlen('_encoded_base64')) : $key;
                 $dataReturn[$keyWithoutSuffix] = EncodedBase64::create()->decode($value);
             }
             if (!is_array($value) && !$encode && $hasSuffixDecoded) {
