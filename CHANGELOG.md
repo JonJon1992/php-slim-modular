@@ -218,6 +218,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Sistema de autenticação e criptografia
 - Middlewares personalizados
 
+## [2.7.0] - 2025-08-05
+
+### Added
+- **Atualização de Datas**: Todas as datas dos documentos atualizadas para 2025-08-05
+- **Consistência Temporal**: CHANGELOG com datas padronizadas
+- **Documentação Atualizada**: Exemplos e referências temporais corrigidas
+
+### Changed
+- **CHANGELOG**: Todas as versões agora têm data consistente (2025-08-05)
+- **Documentação Técnica**: Timestamps de exemplo atualizados
+- **Referências Temporais**: Data de resolução de conflitos atualizada
+
+### Fixed
+- **Consistência**: Documentação sempre reflete a data atual
+- **Profissionalismo**: Histórico de versões com datas corretas
+
 ## [2.6.0] - 2025-08-05
 
 ### Added
