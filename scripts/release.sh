@@ -38,7 +38,7 @@ if ! command -v git &> /dev/null; then
 fi
 
 # Verificar se há mudanças para commitar
-if [ -z "$(git status --porcelain)" ]; then
+if [ -z "$(git status --porcelain)" ] && [ -z "$VERSAO" ]; then
     warn "Não há mudanças para commitar"
     exit 0
 fi
@@ -104,13 +104,17 @@ push_changes() {
 # Processo principal
 log "Iniciando processo de release..."
 
-# 1. Adicionar todas as mudanças
-log "Adicionando mudanças ao staging..."
-git add .
-
-# 2. Fazer commit
-log "Criando commit..."
-git commit -m "$TIPO: $DESCRICAO"
+# 1. Adicionar todas as mudanças (se houver)
+if [ -n "$(git status --porcelain)" ]; then
+    log "Adicionando mudanças ao staging..."
+    git add .
+    
+    # 2. Fazer commit
+    log "Criando commit..."
+    git commit -m "$TIPO: $DESCRICAO"
+else
+    log "Nenhuma mudança para commitar"
+fi
 
 # 3. Se versão foi especificada, fazer release
 if [ -n "$VERSAO" ]; then
