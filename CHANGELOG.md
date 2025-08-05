@@ -5,6 +5,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.8.6] - 2025-08-05
+
+### Fixed
+- **Sistema de Tratamento de Exceções**: Corrigido carregamento do sistema de exceções no bootstrap.php
+- **Mensagens de Erro**: Corrigido problema onde mensagens de erro não apareciam nas requisições
+- **ErrorHandler**: Corrigida propriedade indefinida `$response` no ErrorHandler
+- **Debug Info**: Melhorado tratamento de informações de debug no ambiente de desenvolvimento
+- **Propriedades Indefinidas**: Removidas referências a propriedades inexistentes no ErrorHandler
+
+### Changed
+- **Bootstrap**: Adicionado carregamento automático do sistema de exceções
+- **ErrorHandler**: Refatorado para usar dados de erro já calculados
+- **Tratamento de Erros**: Sistema mais robusto e confiável
+
 ## [2.5.0] - 2025-08-05
 
 ### Changed
