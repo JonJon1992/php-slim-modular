@@ -15,7 +15,7 @@ class Cpf extends ValueObject
 
     public function __construct($value)
     {
-        $this->roles['rules'] = Validate::length(11, 11)->numeric();
+        $this->roles['rules'] = Validate::numeric()->length(11, 11);
         parent::__construct($value);
     }
 
