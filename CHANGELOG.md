@@ -216,4 +216,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Sistema de migrações
 - Integração com AWS S3 e SQS
 - Sistema de autenticação e criptografia
-- Middlewares personalizados 
+- Middlewares personalizados ## [2.6.0] - 2025-08-05
+
+### Adicionado
+- sistema de validação melhorado e scripts de automação
+
