@@ -114,4 +114,36 @@ Script automatizado para fazer commits e releases seguindo as convenções do pr
 
 - Linux
 - macOS
-- Windows (WSL/Git Bash) 
+- Windows (WSL/Git Bash)
+
+## Configuração de Aliases
+
+Para facilitar o uso, configure aliases no seu shell:
+
+```bash
+# Configurar aliases para esta sessão
+source ./scripts/setup-aliases.sh
+
+# Ou adicione ao seu .bashrc/.zshrc
+echo "source $(pwd)/scripts/setup-aliases.sh" >> ~/.bashrc
+```
+
+### Aliases Disponíveis
+
+- `commit` - Commit rápido
+- `release` - Commit com release
+- `qc` - Commit rápido (abreviado)
+- `rel` - Release (abreviado)
+
+### Exemplos com Aliases
+
+```bash
+# Commit rápido
+commit "adiciona validação de email"
+
+# Release
+release feat "nova funcionalidade" 2.6.0
+
+# Commit rápido (abreviado)
+qc "correção rápida"
+``` 
