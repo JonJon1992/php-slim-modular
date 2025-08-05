@@ -43,6 +43,13 @@
 - [ ] Implementar integração com CloudWatch para monitoramento
 
 ## Concluído
+- [x] Adicionar método src() à classe Path (05/08/2025) ✅
+  - [x] Criar método src() para acessar diretório src
+  - [x] Melhorar documentação da classe Path
+  - [x] Adicionar tipagem forte com declare(strict_types=1)
+  - [x] Corrigir erro em VersionAction (compose.json → composer.json)
+  - [x] Adicionar métodos tests(), docs() e examples()
+  - [x] Criar exemplo completo de uso
 - [x] Nova versão 2.4.0 e release (05/08/2025) ✅
   - [x] Atualização da versão no composer.json para 2.4.0
   - [x] Atualização do CHANGELOG.md com nova versão
