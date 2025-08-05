@@ -2,9 +2,10 @@
 
 namespace Core\Utils;
 
-use Core\Contracts\IValidate;
-use Core\Exceptions\ValidatorException;
 use Awurth\Validator\Validator as AwurthValidator;
+use Core\Contracts\IValidate;
+use Core\Exceptions\Exception\ValidatorException;
+use Respect\Validation\Exceptions\ComponentException;
 use Respect\Validation\Validator;
 
 class Validate implements IValidate

@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace Core\Entities;
 
@@ -12,13 +13,13 @@ abstract class SlimCollection implements ISlimCollection
     private array $collect;
 
     /**
-     * @param ...$collect
+     * @param ISlimEntity ...$collect
      * @throws Exception
      */
-    final public function __construct(...$collect)
+    final public function __construct(ISlimEntity ...$collect)
     {
         foreach ($collect as $item) {
-            if ($item instanceof ISlimEntity) {
+            if (!$item instanceof ISlimEntity) {
                 throw new \Exception('O item da collect não é um instância de ' . ISlimEntity::class);
             }
         }
@@ -35,9 +36,9 @@ abstract class SlimCollection implements ISlimCollection
 
     /**
      * @param ISlimEntity $entity
-     * @return $this
+     * @return static
      */
-    public function collect(ISlimEntity $entity): SlimCollection
+    public function collect(ISlimEntity $entity): static
     {
         $this->collect[] = $entity;
         return $this;

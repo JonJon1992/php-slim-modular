@@ -6,6 +6,7 @@ namespace Core\Exceptions;
 
 use Core\Contracts\Exception\IExceptionHandler;
 use Core\Utils\Env;
+use Core\Utils\Path;
 use Core\Utils\Trace;
 use Monolog\Formatter\JsonFormatter;
 use Monolog\Handler\StreamHandler;
@@ -110,7 +111,7 @@ class ExceptionHandler implements IExceptionHandler
         $logger = new Logger('Application');
         
         try {
-            $logPath = config('log.main.path', storage_path('logs/app.log'));
+            $logPath = config('log.main.path', Path::logs('/app.log'));
             $logLevel = config('app.log_level', 'error');
             
             $handler = new StreamHandler($logPath, $logLevel);
@@ -231,11 +232,11 @@ class ExceptionHandler implements IExceptionHandler
             'ArithmeticError' => 500,
             'AssertionError' => 500,
             'Core\Exceptions\AppException' => 400,
-            'Core\Exceptions\DomainException' => 400,
-            'Core\Exceptions\InfraException' => 500,
-            'Core\Exceptions\ValidatorException' => 422,
-            'Core\Exceptions\AuthenticationException' => 401,
-            'Core\Exceptions\InvalidRequestException' => 400,
+            'Core\Exceptions\Exception\DomainException' => 400,
+            'Core\Exceptions\Exception\InfraException' => 500,
+            'Core\Exceptions\Exception\ValidatorException' => 422,
+            'Core\Exceptions\Exception\AuthenticationException' => 401,
+            'Core\Exceptions\Exception\InvalidRequestException' => 400,
         ];
     }
     

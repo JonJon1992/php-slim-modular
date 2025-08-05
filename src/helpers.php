@@ -3,9 +3,9 @@
 declare(strict_types=1);
 
 use Core\App\App;
-use Core\Utils\{Auth, Client, Config, Render\IRendebleAdapter, Trace};
-use Core\Exceptions\AppException;
+use Core\Exceptions\Exception\AppException;
 use Core\Middleware\RequestMiddleware;
+use Core\Utils\{Auth, Client, Config, Render\IRendebleAdapter, Trace};
 use Illuminate\Database\Connection;
 use Psr\Http\Message\ServerRequestInterface;
 use Slim\Views\PhpRenderer;

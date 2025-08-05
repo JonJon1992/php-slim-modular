@@ -1,25 +1,27 @@
 <?php
+declare(strict_types=1);
 
 namespace Core\Utils;
 
 class Arr extends \Illuminate\Support\Arr
 {
     /**
-     * @param $arr1
-     * @param $arr2
+     * @param array $arr1
+     * @param array $arr2
      * @return array
      */
-    public static function merge($arr1, $arr2): array
+    public static function merge(array $arr1, array $arr2): array
     {
         return array_merge($arr1, $arr2);
     }
 
     /**
-     * @param $arr
-     * @param $key
-     * @param $limit
+     * @param array $arr
+     * @param string $key
+     * @param mixed $limit
+     * @return mixed
      */
-    public function min($arr, $key, $limit = null)
+    public function min(array $arr, string $key, mixed $limit = null): mixed
     {
         $value = self::get($arr, $key);
         if (is_null($value) || !is_numeric($value) || ($limit && $limit > $value)) return $limit;
@@ -27,11 +29,12 @@ class Arr extends \Illuminate\Support\Arr
     }
 
     /**
-     * @param $arr
-     * @param $key
-     * @param $limit
+     * @param array $arr
+     * @param string $key
+     * @param mixed $limit
+     * @return mixed
      */
-    public function max($arr, $key, $limit = null)
+    public function max(array $arr, string $key, mixed $limit = null): mixed
     {
         $value = self::get($arr, $key);
         if (is_null($value) || !is_numeric($value) || ($limit && $limit < $value)) return $limit;

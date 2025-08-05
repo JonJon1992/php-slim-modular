@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace Core\ValueObjects;
 
@@ -8,11 +9,11 @@ use Core\Utils\Str;
 class Cnpj extends ValueObject
 {
     /**
-     * @param $value
+     * @param mixed $value
      */
-    protected function sanitize($value)
+    protected function sanitize($value): string
     {
-        return Str::numbers($value);
+        return Str::numbers((string)$value);
     }
 
     /**

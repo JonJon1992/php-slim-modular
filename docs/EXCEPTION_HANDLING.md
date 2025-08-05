@@ -120,8 +120,8 @@ private function getStatusCodeMap(): array
         'DomainException' => 400,
         'RuntimeException' => 500,
         'Core\Exceptions\AppException' => 400,
-        'Core\Exceptions\ValidatorException' => 422,
-        'Core\Exceptions\AuthenticationException' => 401,
+        'Core\Exceptions\Exception\ValidatorException' => 422,
+        'Core\Exceptions\Exception\AuthenticationException' => 401,
         // ... mais mapeamentos
     ];
 }
@@ -246,13 +246,13 @@ O sistema funciona automaticamente para exceções não capturadas:
 
 ```php
 // Esta exceção será tratada automaticamente
-throw new Core\Exceptions\ValidatorException('Dados inválidos');
+throw new Core\Exceptions\Exception\ValidatorException('Dados inválidos');
 ```
 
 ### Uso Manual
 
 ```php
-use Core\Exceptions\ExceptionHandler;
+use Core\Exceptions\Exception\ExceptionHandler;
 
 $handler = new ExceptionHandler();
 
@@ -295,7 +295,7 @@ class MockExceptionHandler implements IExceptionHandler
 ### Teste da Classe Principal
 
 ```php
-use Core\Exceptions\ExceptionHandler;
+use Core\Exceptions\Exception\ExceptionHandler;
 
 $handler = new ExceptionHandler();
 $exception = new InvalidArgumentException('Test exception');

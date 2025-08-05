@@ -1,6 +1,8 @@
 <?php
+declare(strict_types=1);
 
 namespace Core\Traits\Attr;
+
 trait Id
 {
 
@@ -19,9 +21,9 @@ trait Id
 
     /**
      * @param mixed $id
-     * @return Id
+     * @return static
      */
-    public function setId(mixed $id)
+    public function setId(mixed $id): static
     {
         $this->id = $id;
         return $this;

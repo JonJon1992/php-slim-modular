@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace Core\App;
 
@@ -87,6 +88,8 @@ class App extends \Slim\App
 
     /**
      * @return AbstractCommand[]
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      */
     public function commands(): array
     {

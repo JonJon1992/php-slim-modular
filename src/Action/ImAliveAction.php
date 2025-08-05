@@ -31,7 +31,8 @@ class ImAliveAction extends Action
 
     private Filesystem $filesystem;
     private LoggerInterface $logger;
-    private $response = [];
+
+    protected $response = [];
     private int $deadServices = 0;
     private float $startTime;
 
@@ -335,9 +336,8 @@ class ImAliveAction extends Action
         $start = microtime(true);
 
         try {
-            $pdo = db($alias)->getPdo();
+            db($alias)->getPdo();
             $info['details'] = 'Database connection successful';
-            $info['driver'] = $pdo->getAttribute(\PDO::ATTR_DRIVER_NAME);
         } catch (Exception $e) {
             $info['status'] = 'dead';
             $info['error'] = $e->getMessage();

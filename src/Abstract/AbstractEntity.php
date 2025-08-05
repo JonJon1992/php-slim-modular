@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace Core\Abstract;
 
@@ -24,10 +25,10 @@ class AbstractEntity extends Serializable
 
 
     /**
-     * @param $data
-     * @return $this
+     * @param array|object $data
+     * @return static
      */
-    protected function hydrate($data): static
+    protected function hydrate(array|object $data): static
     {
         $data = is_array($data) ? (object)$data : $data;
 

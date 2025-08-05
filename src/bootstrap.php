@@ -2,6 +2,9 @@
 
 declare(strict_types=1);
 
+// Carrega o autoloader do Composer
+require_once __DIR__ . '/../vendor/autoload.php';
+
 /**
  * Bootstrap da Aplicação
  * 
@@ -13,13 +16,15 @@ declare(strict_types=1);
  */
 
 use Core\App\App;
+use Core\Exceptions\Exception\AppException;
 use Core\Utils\Path;
 use Core\Utils\Trace;
-use Core\Utils\Config;
-use Core\Exceptions\AppException;
 use DI\ContainerBuilder;
 use Dotenv\Dotenv;
 use function DI\autowire;
+
+// Carrega helpers globais
+require_once __DIR__ . '/helpers.php';
 
 /**
  * Inicializa o sistema de rastreamento
@@ -63,8 +68,7 @@ foreach ($requiredFiles as $file) {
 /**
  * Configura o container de injeção de dependência
  * 
- * Nota: Este código é compatível com PHP-DI 6.x e 7.x
- * O método useAttributes() só está disponível no PHP-DI 7.0+
+ * PHP-DI 7.0+ com suporte a atributos habilitado
  */
 try {
     $containerBuilder = new ContainerBuilder();
@@ -72,10 +76,8 @@ try {
     // Configurações do container
     $containerBuilder->useAutowiring(true);
     
-    // Verifica se o método useAttributes está disponível (PHP-DI 7.0+)
-    if (method_exists($containerBuilder, 'useAttributes')) {
-        $containerBuilder->useAttributes(true);
-    }
+    // Habilita atributos para PHP-DI 7.0+
+    $containerBuilder->useAttributes(true);
     
     // Adiciona definições de bindings
     $bindings = require 'bindings.php';

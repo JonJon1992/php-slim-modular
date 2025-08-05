@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace Core\ValueObjects;
 
@@ -11,7 +12,7 @@ class Date extends ValueObject
 
     private string $date;
 
-    public function __construct($value, $format = self::DEFAULT_DATE_FORMAT)
+    public function __construct(mixed $value, string $format = self::DEFAULT_DATE_FORMAT)
     {
         $rules = [
             'value' => [
@@ -26,7 +27,7 @@ class Date extends ValueObject
     /**
      * @return DateTime
      */
-    public function getDateTime(): \DateTime
+    public function getDateTime(): DateTime
     {
         return DateTime::createFromFormat(self::DEFAULT_DATE_FORMAT, $this->date);
     }

@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace Core\Contracts;
 
@@ -11,17 +12,16 @@ interface IAuth
 
     public function id(): ?int;
 
-    public function login(string $data);
+    public function login(string $data): static;
 
-    public function logout();
+    public function logout(): static;
 
-    public function on();
+    public function on(): bool;
 
-    public function off();
+    public function off(): bool;
 
-    public function ip($default = 'UNKNOWN'): string;
+    public function ip(string $default = 'UNKNOWN'): string;
 
     public function agent(): string;
-
 
 }

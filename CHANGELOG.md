@@ -5,6 +5,23 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.5.0] - 2024-06-XX
+
+### Changed
+- Adicionado declare(strict_types=1) em todos os arquivos PHP do projeto
+- Correção de tipagem em Traits, ValueObjects, Entities, Utils, Middleware, Abstract, App, Contracts, etc.
+- Compatibilidade de assinaturas entre interfaces e implementações
+- Melhoria de docblocks e tipos de retorno
+- Refatoração de construtores e métodos para maior consistência
+- Remoção de tags PHP desnecessárias em views
+- Ajuste de métodos de interfaces para garantir compatibilidade
+- Correção de lógica invertida em construtores de coleções
+
+### Fixed
+- Correção de erros de tipagem e inconsistências de assinatura
+- Garantia de compatibilidade total com PHP 8.2+
+- Código mais limpo, seguro e padronizado
+
 ## [2.4.0] - 2025-08-05
 
 ### Added

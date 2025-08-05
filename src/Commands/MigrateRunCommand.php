@@ -1,19 +1,19 @@
 <?php
+declare(strict_types=1);
 
 namespace Core\Commands;
 
 use Carbon\Carbon;
 use Core\Abstract\AbstractCommand;
-use Core\App\SlimCommand;
 use Core\App\Module;
-use Core\Exceptions\CommandException;
+use Core\Exceptions\Exception\CommandException;
 use Illuminate\Database\Capsule\Manager;
 use Illuminate\Database\Connection;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
-use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Console\Helper\ProgressBar;
+use Symfony\Component\Console\Style\SymfonyStyle;
 use Throwable;
 
 class MigrateRunCommand extends AbstractCommand
@@ -212,17 +212,6 @@ class MigrateRunCommand extends AbstractCommand
         }
     }
 
-    /**
-     * @param Connection $conn
-     */
-    protected function createTableMigrations(Connection $conn)
-    {
-        try {
-            $this->createMigrationTable($conn);
-        } catch (Throwable $e) {
-            throw new CommandException('Falha ao conectar no database', 0, $e);
-        }
-    }
 
     protected function existTableMigration(Connection $conn): bool
     {
@@ -283,7 +272,12 @@ class MigrateRunCommand extends AbstractCommand
         ]);
     }
 
-    protected function getIdleMigration(Connection $connection, array $migrations)
+    /**
+     * @param Connection $connection
+     * @param array $migrations
+     * @return array
+     */
+    protected function getIdleMigration(Connection $connection, array $migrations): array
     {
         if (empty($migrations)) {
             return [];

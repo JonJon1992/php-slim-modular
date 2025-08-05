@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace Core\Traits\Attr;
 
@@ -7,20 +8,21 @@ trait DataCriacao
     /**
      * @var mixed
      */
-    protected $data_criacao;
+    protected mixed $data_criacao;
 
     /**
      * @return mixed
      */
-    public function getDataCriacao()
+    public function getDataCriacao(): mixed
     {
         return $this->data_criacao ?? null;
     }
 
     /**
      * @param mixed $data_criacao
+     * @return static
      */
-    public function setDataCriacao($data_criacao): self
+    public function setDataCriacao(mixed $data_criacao): static
     {
         $this->data_criacao = $data_criacao;
         return $this;

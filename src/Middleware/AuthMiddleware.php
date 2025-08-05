@@ -1,10 +1,10 @@
 <?php
+declare(strict_types=1);
 
 namespace Core\Middleware;
 
 use Core\Contracts\IAuth;
-use Core\Contracts\IClient;
-use Core\Exceptions\AuthenticationException;
+use Core\Exceptions\Exception\AuthenticationException;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;

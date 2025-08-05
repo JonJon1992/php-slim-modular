@@ -1,19 +1,19 @@
 <?php
+declare(strict_types=1);
 
 namespace Core\Commands;
 
 use Carbon\Carbon;
 use Core\Abstract\AbstractCommand;
-use Core\App\SlimCommand;
 use Core\App\Module;
+use Core\Exceptions\Exception\CommandException;
 use Core\Utils\Path;
 use Core\Utils\Str;
-use Core\Exceptions\CommandException;
 use Illuminate\Filesystem\Filesystem;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Console\Question\Question;
+use Symfony\Component\Console\Style\SymfonyStyle;
 use Throwable;
 
 class MigrateCreateCommand extends AbstractCommand
@@ -273,25 +273,20 @@ class MigrateCreateCommand extends AbstractCommand
      */
     private function getUpMethodContent(string $type, ?string $tableName): string
     {
-        switch ($type) {
-            case 'create':
-                return $tableName 
-                    ? "        \$this->schema->create('{$tableName}', function (Blueprint \$table) {\n" .
-                      "            \$table->id();\n" .
-                      "            \$table->timestamps();\n" .
-                      "        });\n"
-                    : "        // Implementar criação da tabela\n";
-                    
-            case 'modify':
-                return $tableName
-                    ? "        \$this->schema->table('{$tableName}', function (Blueprint \$table) {\n" .
-                      "            // Adicionar colunas ou modificações\n" .
-                      "        });\n"
-                    : "        // Implementar modificação da tabela\n";
-                    
-            default:
-                return "        // Implementar lógica da migration\n";
-        }
+        return match ($type) {
+            'create' => $tableName
+                ? "        \$this->schema->create('{$tableName}', function (Blueprint \$table) {\n" .
+                "            \$table->id();\n" .
+                "            \$table->timestamps();\n" .
+                "        });\n"
+                : "        // Implementar criação da tabela\n",
+            'modify' => $tableName
+                ? "        \$this->schema->table('{$tableName}', function (Blueprint \$table) {\n" .
+                "            // Adicionar colunas ou modificações\n" .
+                "        });\n"
+                : "        // Implementar modificação da tabela\n",
+            default => "        // Implementar lógica da migration\n",
+        };
     }
 
     /**
@@ -299,21 +294,16 @@ class MigrateCreateCommand extends AbstractCommand
      */
     private function getDownMethodContent(string $type, ?string $tableName): string
     {
-        switch ($type) {
-            case 'create':
-                return $tableName 
-                    ? "        \$this->schema->dropIfExists('{$tableName}');\n"
-                    : "        // Implementar rollback da criação\n";
-                    
-            case 'modify':
-                return $tableName
-                    ? "        \$this->schema->table('{$tableName}', function (Blueprint \$table) {\n" .
-                      "            // Reverter modificações\n" .
-                      "        });\n"
-                    : "        // Implementar rollback das modificações\n";
-                    
-            default:
-                return "        // Implementar rollback da migration\n";
-        }
+        return match ($type) {
+            'create' => $tableName
+                ? "        \$this->schema->dropIfExists('{$tableName}');\n"
+                : "        // Implementar rollback da criação\n",
+            'modify' => $tableName
+                ? "        \$this->schema->table('{$tableName}', function (Blueprint \$table) {\n" .
+                "            // Reverter modificações\n" .
+                "        });\n"
+                : "        // Implementar rollback das modificações\n",
+            default => "        // Implementar rollback da migration\n",
+        };
     }
 }

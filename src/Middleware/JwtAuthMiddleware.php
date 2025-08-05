@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Core\Middleware;
 
 use Core\Contracts\IAuth;
-use Core\Exceptions\AuthenticationException;
+use Core\Exceptions\Exception\AuthenticationException;
 use Lcobucci\JWT\Configuration;
 use Lcobucci\JWT\Signer\Hmac\Sha256;
 use Lcobucci\JWT\Signer\Key\InMemory;
@@ -62,7 +62,7 @@ class JwtAuthMiddleware implements MiddlewareInterface
         $request = $request->withAttribute('user_id', $user['id'] ?? null);
 
         // Fazer login no sistema de autenticação
-        $this->auth->login($user);
+        $this->auth->login("");
 
         return $handler->handle($request);
     }

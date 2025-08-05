@@ -1,8 +1,9 @@
 <?php
+declare(strict_types=1);
 
 use Core\App\App;
 use Core\Exceptions\ErrorHandler;
-use Core\Middleware\{ApiGatewayMiddleware, CryptMiddleware, GatewayMiddleware, RequestMiddleware};
+use Core\Middleware\{ApiGatewayMiddleware, CryptMiddleware, RequestMiddleware};
 use Slim\Middleware\MethodOverrideMiddleware;
 
 return function (App $app) {

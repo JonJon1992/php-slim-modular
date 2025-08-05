@@ -5,5 +5,5 @@
 docker-compose.yml
 Dockerfile
 .cursor
-@TODO
+@TODO.md
 localstack-data/

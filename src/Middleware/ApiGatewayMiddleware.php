@@ -2,9 +2,9 @@
 
 namespace Core\Middleware;
 
+use Core\Exceptions\Exception\InvalidRequestException;
 use Core\Utils\Env;
 use Core\Utils\Time;
-use Core\Exceptions\InvalidRequestException;
 use InvalidArgumentException;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface as RequestInterface;

@@ -43,6 +43,13 @@
 - [ ] Implementar integração com CloudWatch para monitoramento
 
 ## Concluído
+- [x] Atualizar PHP-DI para versão 7.0 e corrigir erros (05/08/2025) ✅
+  - [x] Instalar PHP 8.2 e extensões necessárias
+  - [x] Atualizar php-di/php-di para ^7.0 no composer.json
+  - [x] Instalar extensão intl para PHP 8.2
+  - [x] Corrigir bootstrap.php para usar useAttributes() sem verificação
+  - [x] Adicionar carregamento do autoloader e helpers.php
+  - [x] Testar funcionamento do PHP-DI 7.0
 - [x] Corrigir compatibilidade do useAttributes com PHP-DI 6.x (05/08/2025) ✅
   - [x] Adicionar verificação method_exists para useAttributes
   - [x] Manter compatibilidade com PHP-DI 6.x e 7.x
