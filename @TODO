@@ -43,7 +43,7 @@
 - [ ] Implementar integração com CloudWatch para monitoramento
 
 ## Concluído
-- [x] Nova versão 2.4.0 e release (05/08/2025)
+- [x] Nova versão 2.4.0 e release (05/08/2025) ✅
   - [x] Atualização da versão no composer.json para 2.4.0
   - [x] Atualização do CHANGELOG.md com nova versão
   - [x] Atualização do README.md com nova versão

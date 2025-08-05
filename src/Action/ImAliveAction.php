@@ -15,10 +15,10 @@ use Psr\Log\LoggerInterface;
 
 /**
  * Health Check Action
- * 
+ *
  * Endpoint para verificação de saúde dos serviços da aplicação.
  * Verifica conectividade com cache (Redis), banco de dados, storage (S3) e DynamoDB.
- * 
+ *
  * @package Core\Action
  * @author JonJon1992
  * @version 2.3.0
@@ -31,13 +31,13 @@ class ImAliveAction extends Action
 
     private Filesystem $filesystem;
     private LoggerInterface $logger;
-    private array $response = [];
+    private $response = [];
     private int $deadServices = 0;
     private float $startTime;
 
     /**
      * Executa a verificação de saúde dos serviços
-     * 
+     *
      * @return array|ResponseInterface
      * @throws Exception
      */
@@ -46,23 +46,23 @@ class ImAliveAction extends Action
         $this->startTime = microtime(true);
         $this->filesystem = new Filesystem();
         $this->logger = logger();
-        
+
         // Verifica se deve usar cache
         if ($this->shouldUseCache()) {
             return $this->getCachedResponse();
         }
 
         $service = $this->queryParam('service', '');
-        
+
         // Verifica serviços de cache
         $this->checkCacheServices($service);
-        
+
         // Verifica serviços de banco de dados
         $this->checkDatabaseServices($service);
-        
+
         // Verifica serviços de storage
         $this->checkStorageServices($service);
-        
+
         // Verifica serviços DynamoDB
         $this->checkDynamoServices($service);
 
@@ -76,26 +76,26 @@ class ImAliveAction extends Action
 
         // Salva log de sucesso
         $this->saveSuccessLog();
-        
+
         return $this->response;
     }
 
     /**
      * Verifica se deve usar resposta em cache
-     * 
+     *
      * @return bool
      */
     private function shouldUseCache(): bool
     {
         $forceCheck = $this->queryParam('force', '');
         $cacheFile = Path::temp(self::HEALTHY_CHECK_FILE);
-        
+
         return $this->filesystem->exists($cacheFile) && empty($forceCheck);
     }
 
     /**
      * Retorna resposta em cache
-     * 
+     *
      * @return array
      */
     private function getCachedResponse(): array
@@ -110,19 +110,19 @@ class ImAliveAction extends Action
 
     /**
      * Verifica serviços de cache (Redis)
-     * 
+     *
      * @param string $service
      * @return void
      */
     private function checkCacheServices(string $service): void
     {
         $cacheConfigs = config('cache', []);
-        
+
         foreach (array_keys($cacheConfigs) as $alias) {
             if ($alias === 'default') {
                 continue;
             }
-            
+
             $key = "cache.$alias";
             if (empty($service) || Str::has($key, $service)) {
                 $this->response[$key] = $this->checkCache($alias);
@@ -133,19 +133,19 @@ class ImAliveAction extends Action
 
     /**
      * Verifica serviços de banco de dados
-     * 
+     *
      * @param string $service
      * @return void
      */
     private function checkDatabaseServices(string $service): void
     {
         $dbConfigs = config('db', []);
-        
+
         foreach (array_keys($dbConfigs) as $alias) {
             if ($alias === 'default') {
                 continue;
             }
-            
+
             $key = "db.$alias";
             if (empty($service) || Str::has($key, $service)) {
                 $this->response[$key] = $this->checkDatabase($alias);
@@ -156,19 +156,19 @@ class ImAliveAction extends Action
 
     /**
      * Verifica serviços de storage (S3)
-     * 
+     *
      * @param string $service
      * @return void
      */
     private function checkStorageServices(string $service): void
     {
         $storageConfigs = config('storage', []);
-        
+
         foreach (array_keys($storageConfigs) as $alias) {
             if ($alias === 'default') {
                 continue;
             }
-            
+
             $key = "storage.$alias";
             if (empty($service) || Str::has($key, $service)) {
                 $this->response[$key] = $this->checkStorage($alias);
@@ -179,19 +179,19 @@ class ImAliveAction extends Action
 
     /**
      * Verifica serviços DynamoDB
-     * 
+     *
      * @param string $service
      * @return void
      */
     private function checkDynamoServices(string $service): void
     {
         $dynamoConfigs = config('dynamo', []);
-        
+
         foreach (array_keys($dynamoConfigs) as $alias) {
             if ($alias === 'default') {
                 continue;
             }
-            
+
             $key = "dynamo.$alias";
             if (empty($service) || Str::has($key, $service)) {
                 $this->response[$key] = $this->checkDynamo($alias);
@@ -202,13 +202,13 @@ class ImAliveAction extends Action
 
     /**
      * Adiciona métricas gerais à resposta
-     * 
+     *
      * @return void
      */
     private function addGeneralMetrics(): void
     {
         $totalTime = microtime(true) - $this->startTime;
-        
+
         $this->response['_metrics'] = [
             'total_services' => count($this->response),
             'dead_services' => $this->deadServices,
@@ -221,7 +221,7 @@ class ImAliveAction extends Action
 
     /**
      * Atualiza contador de serviços mortos
-     * 
+     *
      * @param string $status
      * @return void
      */
@@ -234,7 +234,7 @@ class ImAliveAction extends Action
 
     /**
      * Trata falha na verificação de saúde
-     * 
+     *
      * @return ResponseInterface
      */
     private function handleFailure(): ResponseInterface
@@ -250,24 +250,24 @@ class ImAliveAction extends Action
 
     /**
      * Salva log de sucesso
-     * 
+     *
      * @return void
      */
     private function saveSuccessLog(): void
     {
         $logFile = Path::temp(self::HEALTHY_CHECK_FILE);
         $timestamp = time();
-        
+
         // Adiciona nova entrada
         $this->filesystem->append($logFile, $timestamp . "\n");
-        
+
         // Limita número de entradas no log
         $this->limitLogEntries($logFile);
     }
 
     /**
      * Limita número de entradas no arquivo de log
-     * 
+     *
      * @param string $logFile
      * @return void
      */
@@ -278,7 +278,7 @@ class ImAliveAction extends Action
         }
 
         $lines = file($logFile, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
-        
+
         if (count($lines) > self::MAX_LOG_ENTRIES) {
             $lines = array_slice($lines, -self::MAX_LOG_ENTRIES);
             $this->filesystem->put($logFile, implode("\n", $lines) . "\n");
@@ -287,7 +287,7 @@ class ImAliveAction extends Action
 
     /**
      * Retorna informações padrão de saúde
-     * 
+     *
      * @return array
      */
     private function getDefaultHealthInfo(): array
@@ -301,7 +301,7 @@ class ImAliveAction extends Action
 
     /**
      * Verifica serviço de cache (Redis)
-     * 
+     *
      * @param string $alias
      * @return array
      */
@@ -325,7 +325,7 @@ class ImAliveAction extends Action
 
     /**
      * Verifica serviço de banco de dados
-     * 
+     *
      * @param string $alias
      * @return array
      */
@@ -350,7 +350,7 @@ class ImAliveAction extends Action
 
     /**
      * Verifica serviço de storage (S3)
-     * 
+     *
      * @param string $alias
      * @return array
      */
@@ -362,7 +362,7 @@ class ImAliveAction extends Action
         try {
             $s3Client = s3($alias);
             $bucketExists = $s3Client->isExistBucket();
-            
+
             if ($bucketExists) {
                 $info['details'] = 'S3 bucket accessible';
             } else {
@@ -381,7 +381,7 @@ class ImAliveAction extends Action
 
     /**
      * Verifica serviço DynamoDB
-     * 
+     *
      * @param string $alias
      * @return array
      */
@@ -392,7 +392,7 @@ class ImAliveAction extends Action
 
         try {
             $dynamoClient = dynamo($alias);
-            
+
             // Tenta listar tabelas para verificar conectividade
             $tables = $dynamoClient->listTables();
             $info['details'] = 'DynamoDB connection successful';
