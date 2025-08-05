@@ -283,3 +283,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Adicionado
 - corrige conflito de tipo na propriedade response do ImAliveAction
 
+## [2.8.3] - 2025-08-05
+
+### Adicionado
+- remove autoloader do bootstrap.php
+
