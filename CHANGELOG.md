@@ -329,3 +329,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Adicionado
 - corrige conflito de função env() com Laravel - versão final
 
+## [2.8.9] - 2025-08-05
+
+### Adicionado
+- adiciona funções dd() e d() para debug similar ao Laravel
+
