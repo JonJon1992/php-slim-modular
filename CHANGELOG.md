@@ -324,3 +324,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Adicionado
 - melhora proteção contra TypeError em str_ends_with com verificações mais robustas
 
+## [2.8.8] - 2025-08-05
+
+### Adicionado
+- corrige conflito de função env() com Laravel - versão final
+
