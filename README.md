@@ -1,6 +1,6 @@
 # PHP Slim Modular Framework
 
-[![Version](https://img.shields.io/badge/version-2.8.7-blue.svg)](https://github.com/JonJon1992/php-slim-modular)
+[![Version](https://img.shields.io/badge/version-2.9.1-blue.svg)](https://github.com/JonJon1992/php-slim-modular)
 [![PHP](https://img.shields.io/badge/php-%3E%3D8.2-blue.svg)](https://php.net)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 
@@ -32,7 +32,7 @@ Um framework PHP modular baseado no Slim Framework com suporte completo para AWS
 ## 🛠️ Instalação
 
 ```bash
-composer require jonjon1992/php-slim-modular:^2.8.7
+composer require jonjon1992/php-slim-modular:^2.9.1
 ```
 
 ## 🔧 Configuração

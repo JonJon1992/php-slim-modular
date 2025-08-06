@@ -5,6 +5,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.9.1] - 2025-08-06
+
+### Fixed
+- **Erro de Tipo no Crypt**: Corrigido erro "Return value must be of type string, int returned" no método `encode()` da classe `Crypt`
+- **Hashids Integration**: Forçada conversão para string no retorno do método `encode()` para garantir compatibilidade com a interface `ICrypt`
+- **Conflito de Funções**: Corrigido conflito de declaração das funções `dd()` e `d()` com Symfony VarDumper
+- **Dependências**: Instalada extensão `php8.2-bcmath` para suporte completo ao Hashids
+- **Compatibilidade**: Framework agora funciona corretamente com valores numéricos na criptografia
+
+### Changed
+- **Método encode()**: Agora sempre retorna string conforme especificado na interface
+- **Funções de Debug**: Adicionada verificação `function_exists()` para evitar conflitos
+- **Tipagem**: Garantida tipagem correta em toda a cadeia de criptografia
+
 ## [2.8.7] - 2025-08-05
 
 ### Fixed
