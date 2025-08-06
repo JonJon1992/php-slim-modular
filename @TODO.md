@@ -43,6 +43,13 @@
 - [ ] Implementar integração com CloudWatch para monitoramento
 
 ## Concluído
+- [x] Corrigir erro de tipo no método encode() da classe Crypt (06/08/2025) ✅
+  - [x] Identificar problema: Hashids::encode() retornava int em vez de string
+  - [x] Corrigir método encode() para sempre retornar string
+  - [x] Corrigir conflito de função dd() no helpers.php
+  - [x] Instalar extensão bcmath para suporte ao Hashids
+  - [x] Testar correção com valores numéricos
+  - [x] Commit das alterações
 - [x] Atualizar PHP-DI para versão 7.0 e corrigir erros (05/08/2025) ✅
   - [x] Instalar PHP 8.2 e extensões necessárias
   - [x] Atualizar php-di/php-di para ^7.0 no composer.json
