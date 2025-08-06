@@ -50,6 +50,7 @@
   - [x] Instalar extensão bcmath para suporte ao Hashids
   - [x] Testar correção com valores numéricos
   - [x] Commit das alterações
+  - [x] Release v2.9.1 criada e publicada
 - [x] Atualizar PHP-DI para versão 7.0 e corrigir erros (05/08/2025) ✅
   - [x] Instalar PHP 8.2 e extensões necessárias
   - [x] Atualizar php-di/php-di para ^7.0 no composer.json
