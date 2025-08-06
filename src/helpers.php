@@ -165,21 +165,7 @@ function dynamo(string $alias = null): \Core\Utils\Dynamo
     return service("dynamo.$alias");
 }
 
-/**
- * Dump and die - função de debug similar ao Laravel
- * 
- * @param mixed ...$vars Variáveis para fazer dump
- * @return void
- */
-function dd(...$vars): void
-{
-    foreach ($vars as $var) {
-        echo '<pre>';
-        var_dump($var);
-        echo '</pre>';
-    }
-    exit();
-}
+
 
 /**
  * Dump without die - função de debug que não para a execução
@@ -187,12 +173,14 @@ function dd(...$vars): void
  * @param mixed ...$vars Variáveis para fazer dump
  * @return void
  */
-function d(...$vars): void
-{
-    foreach ($vars as $var) {
-        echo '<pre>';
-        var_dump($var);
-        echo '</pre>';
+if (!function_exists('d')) {
+    function d(...$vars): void
+    {
+        foreach ($vars as $var) {
+            echo '<pre>';
+            var_dump($var);
+            echo '</pre>';
+        }
     }
 }
 

@@ -62,7 +62,8 @@ class Crypt implements ICrypt
      */
     public function encode($value): string
     {
-        return $this->hashids->encode($value);
+        $encoded = $this->hashids->encode($value);
+        return (string) $encoded;
     }
 
     /**
