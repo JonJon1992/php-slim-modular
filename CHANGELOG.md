@@ -19,6 +19,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Funções de Debug**: Adicionada verificação `function_exists()` para evitar conflitos
 - **Tipagem**: Garantida tipagem correta em toda a cadeia de criptografia
 
+## [2.9.0] - 2025-08-05
+
+### Changed
+- **Sistema de Exceções**: Melhorada ordem de carregamento do sistema de exceções no bootstrap.php
+
+## [2.8.9] - 2025-08-05
+
+### Added
+- **Funções de Debug**: Adicionadas funções `dd()` e `d()` para debug similar ao Laravel
+- **Compatibilidade**: Verificação `function_exists()` para evitar conflitos com Symfony VarDumper
+
+## [2.8.8] - 2025-08-05
+
+### Fixed
+- **Conflito com Laravel**: Corrigido conflito de função `env()` com Laravel/Illuminate
+- **Compatibilidade**: Renomeada função `env()` para `getEnvVar()` no exception.php
+- **Erro de Redeclaração**: Corrigido erro 'Cannot redeclare env()' em projetos que usam Laravel
+
 ## [2.8.7] - 2025-08-05
 
 ### Fixed
@@ -45,22 +63,84 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **ErrorHandler**: Refatorado para usar dados de erro já calculados
 - **Tratamento de Erros**: Sistema mais robusto e confiável
 
+## [2.8.5] - 2025-08-05
+
+### Fixed
+- **Proteção contra TypeError**: Melhorada proteção contra TypeError em `str_ends_with` com verificações mais robustas
+
+## [2.8.4] - 2025-08-05
+
+### Fixed
+- **TypeError em str_ends_with**: Corrigido erro TypeError em `str_ends_with` com chaves numéricas
+
+## [2.8.3] - 2025-08-05
+
+### Changed
+- **Bootstrap**: Removido autoloader do bootstrap.php para melhor organização
+
+## [2.8.2] - 2025-08-05
+
+### Fixed
+- **Conflito de Tipo**: Corrigido conflito de tipo na propriedade `response` do ImAliveAction
+
+## [2.8.1] - 2025-08-05
+
+### Fixed
+- **Problemas com substr**: Corrigidos problemas de `substr` com valores null no AbstractAction
+
+## [2.8.0] - 2025-08-05
+
+### Added
+- **Scripts de Automação**: Sistema de scripts para commits e releases funcionando perfeitamente
+
+### Changed
+- **Versão**: Framework atualizado de 2.7.0 para 2.8.0
+- **Automação**: Processo de release totalmente automatizado
+
+### Fixed
+- **Script de Release**: Corrigida lógica para permitir releases sem mudanças pendentes
+
+## [2.7.0] - 2025-08-05
+
+### Changed
+- **Atualização de Datas**: Todas as datas dos documentos atualizadas para 2025-08-05
+- **Consistência Temporal**: CHANGELOG com datas padronizadas
+
+## [2.6.0] - 2025-08-05
+
+### Added
+- **Sistema de Validação Melhorado**: Corrigida dependência inexistente `Awurth\Validator\Validator`
+- **Validação com Respect\Validation**: Implementada validação usando `Respect\Validation\Validator`
+- **Scripts de Automação**: Sistema completo de scripts para commits e releases
+- **Script de Release**: `scripts/release.sh` para commits e releases automatizados
+- **Script de Commit Rápido**: `scripts/quick-commit.sh` com detecção automática de tipo
+- **Configuração de Aliases**: `scripts/setup-aliases.sh` para facilitar uso dos scripts
+
+### Changed
+- **Correção de Método Chaining**: Corrigido ordem de métodos em validação de CPF
+- **Validação Inteligente**: Sistema detecta automaticamente tipo de commit
+- **Padronização**: Mensagens de commit seguem convenções do projeto
+
+### Fixed
+- **Dependências**: Removida dependência inexistente do validator
+- **Validação**: Corrigida lógica de validação em Value Objects
+
 ## [2.5.0] - 2025-08-05
 
 ### Changed
-- Adicionado declare(strict_types=1) em todos os arquivos PHP do projeto
-- Correção de tipagem em Traits, ValueObjects, Entities, Utils, Middleware, Abstract, App, Contracts, etc.
-- Compatibilidade de assinaturas entre interfaces e implementações
-- Melhoria de docblocks e tipos de retorno
-- Refatoração de construtores e métodos para maior consistência
-- Remoção de tags PHP desnecessárias em views
-- Ajuste de métodos de interfaces para garantir compatibilidade
-- Correção de lógica invertida em construtores de coleções
+- **Tipagem Forte**: Adicionado `declare(strict_types=1)` em todos os arquivos PHP do projeto
+- **Correção de Tipagem**: Correção de tipagem em Traits, ValueObjects, Entities, Utils, Middleware, Abstract, App, Contracts, etc.
+- **Compatibilidade de Assinaturas**: Compatibilidade de assinaturas entre interfaces e implementações
+- **Melhoria de Docblocks**: Melhoria de docblocks e tipos de retorno
+- **Refatoração de Construtores**: Refatoração de construtores e métodos para maior consistência
+- **Remoção de Tags PHP**: Remoção de tags PHP desnecessárias em views
+- **Ajuste de Métodos**: Ajuste de métodos de interfaces para garantir compatibilidade
+- **Correção de Lógica**: Correção de lógica invertida em construtores de coleções
 
 ### Fixed
-- Correção de erros de tipagem e inconsistências de assinatura
-- Garantia de compatibilidade total com PHP 8.2+
-- Código mais limpo, seguro e padronizado
+- **Erros de Tipagem**: Correção de erros de tipagem e inconsistências de assinatura
+- **Compatibilidade PHP 8.2+**: Garantia de compatibilidade total com PHP 8.2+
+- **Código Limpo**: Código mais limpo, seguro e padronizado
 
 ## [2.4.0] - 2025-08-05
 
@@ -93,146 +173,131 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [2.3.0] - 2025-08-05
 
-### Added
-- **Atualização de dependências**: Atualizado `jonjon1992/s3-php` de v2.1.0 para v2.4.0
-- **Melhorias de compatibilidade**: Suporte a novas funcionalidades do S3 PHP
-- **Otimizações de performance**: Melhorias gerais no framework
-
 ### Changed
-- **Versão atualizada**: Framework atualizado para versão 2.3.0
-- **Dependências atualizadas**: Composer.lock atualizado com novas versões
-- **Estrutura de projeto**: Melhor organização dos arquivos e diretórios
-
-### Fixed
-- **Consistência de código**: Padronização de estilo e formatação
-- **Documentação**: Correções e melhorias na documentação existente
+- **Atualização de Dependências**: Atualizado `jonjon1992/s3-php` de v2.1.0 para v2.4.0
+- **Melhorias de Compatibilidade**: Suporte a novas funcionalidades do S3 PHP
+- **Otimizações de Performance**: Melhorias gerais no framework
 
 ## [2.2.9] - 2025-08-05
 
 ### Added
-- **Melhorias na documentação**: Atualização completa da documentação do projeto
-- **Organização de código**: Reestruturação e limpeza do código base
-- **Preparação para testes**: Estrutura preparada para implementação de testes unitários
-- **Otimizações de performance**: Melhorias gerais no framework
+- **Melhorias na Documentação**: Atualização completa da documentação do projeto
+- **Organização de Código**: Reestruturação e limpeza do código base
+- **Preparação para Testes**: Estrutura preparada para implementação de testes unitários
 
 ### Changed
-- **Versão atualizada**: Framework atualizado para versão 2.2.9
-- **Documentação aprimorada**: README.md e CHANGELOG.md atualizados
-- **Estrutura de projeto**: Melhor organização dos arquivos e diretórios
-
-### Fixed
-- **Consistência de código**: Padronização de estilo e formatação
-- **Documentação**: Correções e melhorias na documentação existente
+- **Versão Atualizada**: Framework atualizado para versão 2.2.9
+- **Documentação Aprimorada**: README.md e CHANGELOG.md atualizados
 
 ## [2.2.8] - 2025-08-05
 
 ### Added
-- **Versão estável**: Framework na versão 2.2.8 com todas as funcionalidades principais
-- **Integração completa AWS**: S3, SQS e DynamoDB totalmente integrados
-- **Sistema de helpers**: Helpers para todos os serviços principais
-- **Middleware completo**: Sistema de middlewares para autenticação, CORS, rate limiting, etc.
+- **Versão Estável**: Framework na versão 2.2.8 com todas as funcionalidades principais
+- **Integração Completa AWS**: S3, SQS e DynamoDB totalmente integrados
+- **Sistema de Helpers**: Helpers para todos os serviços principais
+- **Middleware Completo**: Sistema de middlewares para autenticação, CORS, rate limiting, etc.
 
 ### Changed
-- **Framework maduro**: Todas as funcionalidades principais implementadas e testadas
-- **Documentação completa**: README.md e CHANGELOG.md atualizados
-- **Estrutura modular**: Sistema de módulos funcionando perfeitamente
+- **Framework Maduro**: Todas as funcionalidades principais implementadas e testadas
+- **Documentação Completa**: README.md e CHANGELOG.md atualizados
+- **Estrutura Modular**: Sistema de módulos funcionando perfeitamente
 
 ## [2.2.7] - 2025-08-05
 
 ### Added
-- **Novo helper DynamoDB**: Implementado helper `dynamo()` em `src/helpers.php` seguindo o padrão dos outros helpers
-- **Integração com sistema de serviços**: Adicionado suporte para configurações do DynamoDB em `src/services.php`
-- **Suporte a múltiplas configurações**: Helper suporta alias para diferentes ambientes (local, produção, etc.)
-- **Documentação específica**: Criado `docs/utils/dynamo-helper.md` com documentação completa do helper
-- **Exemplo de uso**: Atualizado `examples/dynamo-example.php` com exemplos do helper
-- **Testes unitários**: Criado `tests/Utils/DynamoHelperTest.php` para validar o helper
+- **Novo Helper DynamoDB**: Implementado helper `dynamo()` em `src/helpers.php` seguindo o padrão dos outros helpers
+- **Integração com Sistema de Serviços**: Adicionado suporte para configurações do DynamoDB em `src/services.php`
+- **Suporte a Múltiplas Configurações**: Helper suporta alias para diferentes ambientes (local, produção, etc.)
+- **Documentação Específica**: Criado `docs/utils/dynamo-helper.md` com documentação completa do helper
+- **Exemplo de Uso**: Atualizado `examples/dynamo-example.php` com exemplos do helper
+- **Testes Unitários**: Criado `tests/Utils/DynamoHelperTest.php` para validar o helper
 
 ### Changed
-- **Padrão consistente**: Helper `dynamo()` segue o mesmo padrão dos outros helpers (redis, s3, db, etc.)
+- **Padrão Consistente**: Helper `dynamo()` segue o mesmo padrão dos outros helpers (redis, s3, db, etc.)
 - **Integração com DI**: Helper integra automaticamente com o sistema de injeção de dependência
-- **Configuração flexível**: Suporte a variáveis de ambiente e configurações customizadas
+- **Configuração Flexível**: Suporte a variáveis de ambiente e configurações customizadas
 
 ### Fixed
-- **Consistência de helpers**: Todos os helpers agora seguem o mesmo padrão de implementação
-- **Documentação atualizada**: @TODO atualizado com detalhes da implementação do helper
+- **Consistência de Helpers**: Todos os helpers agora seguem o mesmo padrão de implementação
 
 ## [2.2.6] - 2025-08-05
 
 ### Fixed
-- **Resolvido conflito de função `s3()`**: Adicionado `if (!function_exists('s3'))` em `src/helpers.php` para evitar redeclaração da função
-- **Corrigidas assinaturas incompatíveis na classe `Str`**: Removidos type hints `string` dos métodos `endsWith()`, `camel()`, `ucfirst()` e `studly()` para manter compatibilidade com `Illuminate\Support\Str`
-- **Compatibilidade com pacotes**: Resolvidos conflitos entre `jonjon1992/php-slim-modular`, `jonjon1992/s3-php` e `illuminate/support` v10.48.28
+- **Conflito de Função s3()**: Adicionado `if (!function_exists('s3'))` em `src/helpers.php` para evitar redeclaração da função
+- **Assinaturas Incompatíveis**: Corrigidas assinaturas incompatíveis na classe `Str` removendo type hints `string` dos métodos `endsWith()`, `camel()`, `ucfirst()` e `studly()`
+- **Compatibilidade com Pacotes**: Resolvidos conflitos entre `jonjon1992/php-slim-modular`, `jonjon1992/s3-php` e `illuminate/support` v10.48.28
 
 ### Changed
-- Melhorada compatibilidade com dependências externas
-- Mantida funcionalidade completa da biblioteca
+- **Compatibilidade**: Melhorada compatibilidade com dependências externas
 
 ## [2.2.5] - 2025-08-05
 
 ### Added
-- **Novo util DynamoDB**: Implementado `Core\Utils\Dynamo` para integração com Amazon DynamoDB
-- Suporte completo para operações CRUD no DynamoDB
-- Configuração automática para ambiente local (LocalStack) e produção (AWS)
-- Operações em lote (batch operations)
-- Suporte a queries e scans
-- Gerenciamento de tabelas (criar, listar, descrever, remover)
-- Conversão flexível de dados (objetos, arrays, stdClass)
-- Documentação completa em `docs/utils/dynamo.md`
-- Exemplo de uso em `examples/dynamo-example.php`
-- Integração com a package `jonjon1992/php-dynamo` v3.0.2
+- **Novo Util DynamoDB**: Implementado `Core\Utils\Dynamo` para integração com Amazon DynamoDB
+- **Suporte Completo CRUD**: Suporte completo para operações CRUD no DynamoDB
+- **Configuração Automática**: Configuração automática para ambiente local (LocalStack) e produção (AWS)
+- **Operações em Lote**: Operações em lote (batch operations)
+- **Queries e Scans**: Suporte a queries e scans
+- **Gerenciamento de Tabelas**: Gerenciamento de tabelas (criar, listar, descrever, remover)
+- **Conversão Flexível**: Conversão flexível de dados (objetos, arrays, stdClass)
+- **Documentação Completa**: Documentação completa em `docs/utils/dynamo.md`
+- **Exemplo de Uso**: Exemplo de uso em `examples/dynamo-example.php`
+- **Integração**: Integração com a package `jonjon1992/php-dynamo` v3.0.2
 
 ### Changed
-- Atualizado README.md com seção de uso do DynamoDB
-- Melhorada documentação de utils do framework
+- **README Atualizado**: Atualizado README.md com seção de uso do DynamoDB
+- **Documentação**: Melhorada documentação de utils do framework
 
 ## [2.2.4] - 2025-08-05
 
 ### Fixed
-- Corrigido uso de `HttpException` para `HttpInternalServerErrorException` no `Action.php`
-- Criadas classes de exceção personalizadas para melhor tratamento de erros:
+- **HttpException**: Corrigido uso de `HttpException` para `HttpInternalServerErrorException` no `Action.php`
+- **Classes de Exceção**: Criadas classes de exceção personalizadas para melhor tratamento de erros:
   - `AuthenticationException` para erros de autenticação
   - `InvalidRequestException` para erros de validação de requisição
   - `CommandException` para erros de execução de comandos
   - `AppException` para erros gerais da aplicação
-- Atualizado uso de `Exception` genérica para exceções específicas em todo o framework
-- Melhorada segurança de tipos e tratamento de erros
+- **Exceções Específicas**: Atualizado uso de `Exception` genérica para exceções específicas em todo o framework
+
+### Changed
+- **Segurança de Tipos**: Melhorada segurança de tipos e tratamento de erros
 
 ## [2.2.3] - 2025-08-05
 
 ### Fixed
-- Resolvido conflito adicional de dependências com `slim/psr7` e `slim/slim`
-- Atualizado `slim/psr7` de `1.6.1` para `^1.7` para suportar `psr/http-message ^2.0`
-- Atualizado `slim/slim` de `4.8.1` para `^4.9` para melhor compatibilidade
-- Corrigidos todos os conflitos de dependências PSR HTTP Message
+- **Conflito de Dependências**: Resolvido conflito adicional de dependências com `slim/psr7` e `slim/slim`
+- **Atualização slim/psr7**: Atualizado `slim/psr7` de `1.6.1` para `^1.7` para suportar `psr/http-message ^2.0`
+- **Atualização slim/slim**: Atualizado `slim/slim` de `4.8.1` para `^4.9` para melhor compatibilidade
+- **Conflitos PSR**: Corrigidos todos os conflitos de dependências PSR HTTP Message
 
 ## [2.2.2] - 2025-08-05
 
 ### Fixed
-- Resolvido conflito de dependências entre `aws/aws-sdk-php` e `slim/php-view`
-- Atualizado `slim/php-view` de `3.1.0` para `^3.2` para suportar `psr/http-message ^2.0`
-- Corrigido problema de compatibilidade com AWS SDK PHP ^3.350
+- **Conflito AWS SDK**: Resolvido conflito de dependências entre `aws/aws-sdk-php` e `slim/php-view`
+- **Atualização slim/php-view**: Atualizado `slim/php-view` de `3.1.0` para `^3.2` para suportar `psr/http-message ^2.0`
+- **Compatibilidade AWS**: Corrigido problema de compatibilidade com AWS SDK PHP ^3.350
 
 ## [2.2.1] - 2025-08-05
 
 ### Changed
-- Atualizado `jonjon1992/s3-php` de `v2.0.0` para `v2.1.0`
+- **Atualização S3 PHP**: Atualizado `jonjon1992/s3-php` de `v2.0.0` para `v2.1.0`
 
 ## [2.2.0] - 2025-08-05
 
 ### Added
-- AWS SDK PHP atualizado para versão ^3.350
-- Função helper `s3()` para acessar buckets S3
-- Função helper `queue()` para acessar clientes SQS
-- Métodos `endsWith()`, `camel()`, `ucfirst()` e `studly()` na classe `Str`
+- **AWS SDK PHP**: AWS SDK PHP atualizado para versão ^3.350
+- **Helper S3**: Função helper `s3()` para acessar buckets S3
+- **Helper Queue**: Função helper `queue()` para acessar clientes SQS
+- **Métodos String**: Métodos `endsWith()`, `camel()`, `ucfirst()` e `studly()` na classe `Str`
 
 ### Fixed
-- Corrigido uso de `Exception` sem namespace em múltiplos arquivos
-- Removida propriedade `$client` não utilizada no `SqsClient`
-- Corrigida variável `$service` não definida no `ImAliveAction`
-- Adicionado import da classe `Str` no `Trace.php`
-- Melhorada validação do endpoint no `SqsClient` para evitar erros quando não fornecido
-- Adicionada verificação se `mime_content_type()` existe antes de usá-la no `S3.php`
-- Corrigidos todos os usos de `Exception` sem namespace nos seguintes arquivos:
+- **Exception sem Namespace**: Corrigido uso de `Exception` sem namespace em múltiplos arquivos
+- **Propriedade Não Utilizada**: Removida propriedade `$client` não utilizada no `SqsClient`
+- **Variável Não Definida**: Corrigida variável `$service` não definida no `ImAliveAction`
+- **Import da Classe Str**: Adicionado import da classe `Str` no `Trace.php`
+- **Validação de Endpoint**: Melhorada validação do endpoint no `SqsClient` para evitar erros quando não fornecido
+- **Verificação mime_content_type**: Adicionada verificação se `mime_content_type()` existe antes de usá-la no `S3.php`
+- **Exception sem Namespace**: Corrigidos todos os usos de `Exception` sem namespace nos seguintes arquivos:
   - `src/helpers.php`
   - `src/Action/ImAliveAction.php`
   - `src/Commands/MigrateCreateCommand.php`
@@ -240,116 +305,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - `src/Utils/Crypt.php`
 
 ### Changed
-- AWS SDK PHP atualizado de `3.324.0` para `^3.350`
-- Melhorada configuração do SqsClient para ser mais robusta
-- Adicionadas verificações de segurança para endpoints opcionais
+- **AWS SDK PHP**: AWS SDK PHP atualizado de `3.324.0` para `^3.350`
+- **Configuração SqsClient**: Melhorada configuração do SqsClient para ser mais robusta
+- **Verificações de Segurança**: Adicionadas verificações de segurança para endpoints opcionais
 
 ### Security
-- Melhorada validação de entrada de dados
-- Adicionadas verificações de segurança para configurações AWS
+- **Validação de Entrada**: Melhorada validação de entrada de dados
+- **Verificações de Segurança**: Adicionadas verificações de segurança para configurações AWS
 
-## [2.1.0] - Versão anterior
-
-### Added
-- Funcionalidades iniciais do framework
-- Suporte a módulos
-- Sistema de migrações
-- Integração com AWS S3 e SQS
-- Sistema de autenticação e criptografia
-- Middlewares personalizados
-
-## [2.7.0] - 2025-08-05
+## [2.1.0] - 2025-08-05
 
 ### Added
-- **Atualização de Datas**: Todas as datas dos documentos atualizadas para 2025-08-05
-- **Consistência Temporal**: CHANGELOG com datas padronizadas
-- **Documentação Atualizada**: Exemplos e referências temporais corrigidas
-
-### Changed
-- **CHANGELOG**: Todas as versões agora têm data consistente (2025-08-05)
-- **Documentação Técnica**: Timestamps de exemplo atualizados
-- **Referências Temporais**: Data de resolução de conflitos atualizada
-
-### Fixed
-- **Consistência**: Documentação sempre reflete a data atual
-- **Profissionalismo**: Histórico de versões com datas corretas
-
-## [2.6.0] - 2025-08-05
-
-### Added
-- **Sistema de Validação Melhorado**: Corrigida dependência inexistente `Awurth\Validator\Validator`
-- **Validação com Respect\Validation**: Implementada validação usando `Respect\Validation\Validator`
-- **Value Objects Corrigidos**: Lógica de validação corrigida em Value Objects
-- **Scripts de Automação**: Sistema completo de scripts para commits e releases
-- **Script de Release**: `scripts/release.sh` para commits e releases automatizados
-- **Script de Commit Rápido**: `scripts/quick-commit.sh` com detecção automática de tipo
-- **Configuração de Aliases**: `scripts/setup-aliases.sh` para facilitar uso dos scripts
-- **Documentação Completa**: README dos scripts com exemplos de uso
-
-### Changed
-- **Correção de Método Chaining**: Corrigido ordem de métodos em validação de CPF
-- **Validação Inteligente**: Sistema detecta automaticamente tipo de commit
-- **Padronização**: Mensagens de commit seguem convenções do projeto
-- **Automação**: Releases incluem atualização de versão, changelog e tags
-
-### Fixed
-- **Dependências**: Removida dependência inexistente do validator
-- **Validação**: Corrigida lógica de validação em Value Objects
-- **Compatibilidade**: Sistema funciona com dependências já instaladas
-
-## [2.8.0] - 2025-08-05
-
-### Added
-- **Nova Release**: Framework atualizado para versão 2.8.0
-- **Scripts de Automação**: Sistema de scripts para commits e releases funcionando perfeitamente
-- **Correção de Scripts**: Script de release corrigido para permitir releases sem mudanças pendentes
-
-### Changed
-- **Versão**: Framework atualizado de 2.7.0 para 2.8.0
-- **Automação**: Processo de release totalmente automatizado
-- **Documentação**: CHANGELOG atualizado automaticamente
-
-### Fixed
-- **Script de Release**: Corrigida lógica para permitir releases sem mudanças pendentes
-- **Automação**: Sistema de scripts funcionando corretamente
-
-## [2.8.1] - 2025-08-05
-
-### Adicionado
-- corrige problemas de substr com valores null no AbstractAction
-
-## [2.8.2] - 2025-08-05
-
-### Adicionado
-- corrige conflito de tipo na propriedade response do ImAliveAction
-
-## [2.8.3] - 2025-08-05
-
-### Adicionado
-- remove autoloader do bootstrap.php
-
-## [2.8.4] - 2025-08-05
-
-### Adicionado
-- corrige erro TypeError em str_ends_with com chaves numéricas
-
-## [2.8.5] - 2025-08-05
-
-### Adicionado
-- melhora proteção contra TypeError em str_ends_with com verificações mais robustas
-
-## [2.8.8] - 2025-08-05
-
-### Adicionado
-- corrige conflito de função env() com Laravel - versão final
-
-## [2.8.9] - 2025-08-05
-
-### Adicionado
-- adiciona funções dd() e d() para debug similar ao Laravel
-
-## [2.9.0] - 2025-08-05
-
-### Adicionado
-- melhora ordem de carregamento do sistema de exceções
+- **Funcionalidades Iniciais**: Funcionalidades iniciais do framework
+- **Sistema de Módulos**: Suporte a módulos
+- **Sistema de Migrações**: Sistema de migrações
+- **Integração AWS**: Integração com AWS S3 e SQS
+- **Sistema de Autenticação**: Sistema de autenticação e criptografia
+- **Middlewares Personalizados**: Middlewares personalizados
 
