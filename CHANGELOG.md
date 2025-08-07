@@ -353,3 +353,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Adicionado
 - implementar DynamoMock seguindo padrão do RedisMock
 
+## [2.9.4] - 2025-08-07
+
+### Adicionado
+- melhorar BaseTestCase com tipagem e organização
+
