@@ -348,3 +348,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Sistema de Autenticação**: Sistema de autenticação e criptografia
 - **Middlewares Personalizados**: Middlewares personalizados
 
+## [2.9.3] - 2025-08-07
+
+### Adicionado
+- implementar DynamoMock seguindo padrão do RedisMock
+
