@@ -5,6 +5,7 @@ namespace Core\Tests;
 
 use Core\App\App;
 use Core\Tests\Mocks\RedisMock;
+use Core\Tests\Mocks\DynamoMock;
 use Core\Utils\Config;
 use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerInterface;
@@ -290,6 +291,25 @@ class BaseTestCase extends TestCase
                 continue;
             }
             $container->set("cache.$alias", function () use ($mock) {
+                return $mock;
+            });
+        }
+    }
+
+    /**
+     * @param DynamoMock $mock
+     * @return void
+     */
+    protected static function mockContainerDynamo(DynamoMock $mock): void
+    {
+        $container = self::getInstance()->getContainer();
+        $configs = Config::singleton();
+
+        foreach ($configs as $alias => $settings) {
+            if ($alias == 'default') {
+                continue;
+            }
+            $container->set("dynamo.$alias", function () use ($mock) {
                 return $mock;
             });
         }
