@@ -5,7 +5,7 @@ declare(strict_types=1);
 use Core\App\App;
 use Core\Exceptions\Exception\AppException;
 use Core\Middleware\RequestMiddleware;
-use Core\Utils\{Auth, Client, Config, Render\IRendebleAdapter, Trace};
+use Core\Utils\{Auth, Client, Config, Path, Render\IRendebleAdapter, Trace};
 use Illuminate\Database\Connection;
 use Psr\Http\Message\ServerRequestInterface;
 use Slim\Views\PhpRenderer;
@@ -165,22 +165,4 @@ function dynamo(string $alias = null): \Core\Utils\Dynamo
     return service("dynamo.$alias");
 }
 
-
-
-/**
- * Dump without die - função de debug que não para a execução
- * 
- * @param mixed ...$vars Variáveis para fazer dump
- * @return void
- */
-if (!function_exists('d')) {
-    function d(...$vars): void
-    {
-        foreach ($vars as $var) {
-            echo '<pre>';
-            var_dump($var);
-            echo '</pre>';
-        }
-    }
-}
 

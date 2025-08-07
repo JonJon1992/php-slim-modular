@@ -1,6 +1,15 @@
 # @TODO: PHP Slim Modular Framework
 
 ## Em Progresso
+- [x] Melhorar BaseTestCase para testes (concluído)
+  - [x] Corrigir comandos exec com escapeshellarg() para segurança
+  - [x] Adicionar tratamento de erros robusto com try-catch
+  - [x] Implementar logs de debug detalhados
+  - [x] Tornar permissões configuráveis via variável de ambiente
+  - [x] Adicionar helpers para testes: assertJsonResponse(), createTestData(), cleanTestData()
+  - [x] Criar documentação completa em docs/TESTING_IMPROVEMENTS.md
+  - [x] Implementar validações de sucesso para comandos shell
+  - [x] Adicionar permissões adequadas (chmod) para arquivos SQLite
 
 ## Próximas Tarefas (Prioridade Alta)
 - [ ] Implementar testes unitários para o util DynamoDB
@@ -43,6 +52,16 @@
 - [ ] Implementar integração com CloudWatch para monitoramento
 
 ## Concluído
+- [x] Melhorar BaseTestCase para testes (06/08/2025) ✅
+  - [x] Implementar método executeCommand() seguro com validação de erros
+  - [x] Corrigir comandos exec com escapeshellarg() para prevenir injection
+  - [x] Adicionar tratamento de erros robusto com try-catch e logs detalhados
+  - [x] Tornar permissões configuráveis via variável de ambiente TEST_USER
+  - [x] Adicionar helpers para testes: assertJsonResponse(), createTestData(), cleanTestData()
+  - [x] Criar documentação completa em docs/TESTING_IMPROVEMENTS.md
+  - [x] Implementar validações de sucesso para comandos shell
+  - [x] Adicionar permissões adequadas (chmod) para arquivos SQLite
+  - [x] Melhorar segurança, robustez e produtividade dos testes
 - [x] Corrigir erro de tipo no método encode() da classe Crypt (06/08/2025) ✅
   - [x] Identificar problema: Hashids::encode() retornava int em vez de string
   - [x] Corrigir método encode() para sempre retornar string
