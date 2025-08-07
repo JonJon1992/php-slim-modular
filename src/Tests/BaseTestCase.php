@@ -4,9 +4,10 @@ namespace Core\Tests;
 
 
 use Core\App\App;
-use Core\Tests\Mocks\RedisMock;
 use Core\Tests\Mocks\DynamoMock;
+use Core\Tests\Mocks\RedisMock;
 use Core\Utils\Config;
+use DI\Container;
 use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
@@ -19,15 +20,14 @@ use Slim\Psr7\Uri;
 
 class BaseTestCase extends TestCase
 {
-    protected static ContainerInterface $container;
-    protected static string $module;
+    protected Container|ContainerInterface $container;
     protected array $default_headers = ['Accept' => 'application/json', 'Content-Type' => 'application/json'];
     static bool $sqlite_executed = false;
 
-    public function __construct(?string $name = null)
+    public function __construct(?string $name = null, array $data = [], $dataName = '')
     {
-        parent::__construct($name);
-        self::$container = self::getInstance()->getContainer();
+        parent::__construct($name, $data, $dataName);
+        $this->container = self::getInstance()->getContainer();
     }
 
     /**
@@ -178,16 +178,16 @@ class BaseTestCase extends TestCase
     {
         $output = [];
         $returnCode = 0;
-        
+
         exec($command . ' 2>&1', $output, $returnCode);
-        
+
         if ($returnCode !== 0) {
             $outputStr = implode("\n", $output);
             error_log("Comando falhou: {$command}");
             error_log("Saída: {$outputStr}");
             throw new \RuntimeException("{$errorMessage}: {$outputStr}");
         }
-        
+
         return true;
     }
 
@@ -203,7 +203,7 @@ class BaseTestCase extends TestCase
         try {
             $dbs = Config::singleton()->get('db', []);
             $testUser = getenv('TEST_USER') ?: 'www-data';
-            
+
             foreach ($dbs as $alias => $settings) {
                 if ($alias == 'default') {
                     continue;
@@ -248,7 +248,7 @@ class BaseTestCase extends TestCase
                     "chown -R {$testUser}:{$testUser} " . escapeshellarg($dir),
                     "Falha ao definir permissões do diretório"
                 );
-                
+
                 static::executeCommand(
                     "chown {$testUser}:{$testUser} " . escapeshellarg($arquivo),
                     "Falha ao definir permissões do arquivo"
@@ -259,7 +259,7 @@ class BaseTestCase extends TestCase
                     "chmod 755 " . escapeshellarg($dir),
                     "Falha ao definir permissões de acesso do diretório"
                 );
-                
+
                 static::executeCommand(
                     "chmod 644 " . escapeshellarg($arquivo),
                     "Falha ao definir permissões de acesso do arquivo"
@@ -267,9 +267,9 @@ class BaseTestCase extends TestCase
 
                 error_log("SQLite configurado com sucesso: {$arquivo}");
             }
-            
+
             static::$sqlite_executed = true;
-            
+
         } catch (\Exception $e) {
             error_log("Erro ao configurar SQLite: " . $e->getMessage());
             throw $e;
@@ -325,12 +325,12 @@ class BaseTestCase extends TestCase
     {
         $this->assertEquals($expectedStatusCode, $response->getStatusCode());
         $this->assertStringContainsString('application/json', $response->getHeaderLine('Content-Type'));
-        
-        $body = (string) $response->getBody();
+
+        $body = (string)$response->getBody();
         $data = json_decode($body, true);
-        
+
         $this->assertNotFalse($data, 'Resposta deve ser JSON válido');
-        
+
         return $data;
     }
 
@@ -346,7 +346,7 @@ class BaseTestCase extends TestCase
             'created_at' => date('Y-m-d H:i:s'),
             'updated_at' => date('Y-m-d H:i:s')
         ];
-        
+
         return array_merge($defaultData, $overrides);
     }
 
