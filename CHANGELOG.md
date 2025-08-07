@@ -5,6 +5,31 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.9.2] - 2025-08-06
+
+### Added
+- **BaseTestCase Melhorado**: Implementadas melhorias significativas no sistema de testes
+- **Segurança Aprimorada**: Comandos shell seguros com `escapeshellarg()` para prevenir injection
+- **Tratamento de Erros Robusto**: Try-catch abrangente com logs detalhados e validações
+- **Permissões Configuráveis**: Suporte a variável de ambiente `TEST_USER` para flexibilidade
+- **Helpers para Testes**: Novos métodos `assertJsonResponse()`, `createTestData()`, `cleanTestData()`
+- **Documentação Completa**: Guia detalhado em `docs/TESTING_IMPROVEMENTS.md`
+- **Exemplo Prático**: Arquivo `examples/BaseTestCaseExample.php` com casos de uso reais
+- **Mock do Redis**: Classe `RedisMock` para testes sem dependência externa
+
+### Changed
+- **Método executeCommand()**: Implementado para execução segura de comandos shell
+- **Configuração SQLite**: Melhorada com validações e permissões adequadas
+- **Logs de Debug**: Sistema de logging detalhado para rastreamento de operações
+- **Validações**: Verificação de sucesso para todos os comandos shell
+- **Permissões**: Definição automática de chmod apropriados para arquivos SQLite
+
+### Fixed
+- **Comandos Exec**: Corrigidos espaços faltantes em comandos `rm -f` e `mkdir -p`
+- **Segurança**: Prevenção de command injection com `escapeshellarg()`
+- **Robustez**: Tratamento adequado de erros em operações críticas
+- **Flexibilidade**: Suporte a diferentes ambientes via configuração
+
 ## [2.9.1] - 2025-08-06
 
 ### Fixed
