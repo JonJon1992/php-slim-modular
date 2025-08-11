@@ -40,7 +40,7 @@ class MigrateRunCommand extends AbstractCommand
     protected function handler(): void
     {
         $this->io = new SymfonyStyle($this->input, $this->output);
-        
+
         $this->io->title('Executando Migrations');
         $this->io->text('Iniciando processo de execução de migrations...');
 
@@ -69,7 +69,7 @@ class MigrateRunCommand extends AbstractCommand
         }
 
         try {
-            $this->ensureMigrationTableExists($db);
+            $this->existTableMigration($db);
         } catch (Throwable $e) {
             $this->io->error(sprintf('Erro ao preparar tabela de migrations: %s', $e->getMessage()));
             return;
@@ -92,18 +92,6 @@ class MigrateRunCommand extends AbstractCommand
     }
 
     /**
-     * Garante que a tabela de migrations existe
-     */
-    private function ensureMigrationTableExists(Connection $db): void
-    {
-        if (!$this->existTableMigration($db)) {
-            $this->io->text('Criando tabela de migrations...');
-            $this->createMigrationTable($db);
-            $this->io->text('Tabela de migrations criada com sucesso');
-        }
-    }
-
-    /**
      * Executa as migrations com progress bar
      */
     private function executeMigrations(Connection $db, array $migrations, int $batch): void
@@ -115,7 +103,7 @@ class MigrateRunCommand extends AbstractCommand
 
         foreach ($migrations as $migration) {
             $progressBar->setMessage(sprintf('Executando: %s', $migration));
-            
+
             if ($this->alreadyExist($db, $migration)) {
                 $progressBar->advance();
                 continue;
@@ -123,7 +111,7 @@ class MigrateRunCommand extends AbstractCommand
 
             try {
                 $db->beginTransaction();
-                
+
                 $m = new $migration($db);
                 $m->up();
 
@@ -132,13 +120,13 @@ class MigrateRunCommand extends AbstractCommand
 
                 $this->executedMigrations++;
                 $this->io->text(sprintf('✓ %s executada com sucesso', $migration));
-                
+
             } catch (Throwable $e) {
                 $db->rollBack();
                 $this->failedMigrations++;
-                
+
                 $this->io->error(sprintf('✗ Erro ao executar %s: %s', $migration, $e->getMessage()));
-                
+
                 if ($this->io->confirm('Deseja continuar com as próximas migrations?', false)) {
                     continue;
                 } else {
@@ -159,7 +147,7 @@ class MigrateRunCommand extends AbstractCommand
     private function displaySummary(): void
     {
         $this->io->section('Resumo da Execução');
-        
+
         $summary = [
             'Total de migrations encontradas' => $this->totalMigrations,
             'Migrations executadas com sucesso' => $this->executedMigrations,
@@ -212,10 +200,19 @@ class MigrateRunCommand extends AbstractCommand
         }
     }
 
-
-    protected function existTableMigration(Connection $conn): bool
+    /**
+     * @param Connection $conn
+     * @return void
+     */
+    protected function existTableMigration(Connection $conn): void
     {
-        return $conn->table('migrations')->exists();
+        try {
+            $conn->table('migrations')->exists();
+        } catch (\Exception) {
+            $this->io->text('Criando tabela de migrations...');
+            $this->createMigrationTable($conn);
+            $this->io->text('Tabela de migrations criada com sucesso');
+        }
     }
 
     /**
