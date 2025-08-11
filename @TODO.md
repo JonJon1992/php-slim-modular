@@ -1,15 +1,8 @@
 # @TODO: PHP Slim Modular Framework
 
 ## Em Progresso
-- [x] Melhorar BaseTestCase para testes (concluído)
-  - [x] Corrigir comandos exec com escapeshellarg() para segurança
-  - [x] Adicionar tratamento de erros robusto com try-catch
-  - [x] Implementar logs de debug detalhados
-  - [x] Tornar permissões configuráveis via variável de ambiente
-  - [x] Adicionar helpers para testes: assertJsonResponse(), createTestData(), cleanTestData()
-  - [x] Criar documentação completa em docs/TESTING_IMPROVEMENTS.md
-  - [x] Implementar validações de sucesso para comandos shell
-  - [x] Adicionar permissões adequadas (chmod) para arquivos SQLite
+- [ ] Implementar testes unitários para o util DynamoDB
+- [ ] Adicionar suporte a índices secundários no DynamoDB
 
 ## Próximas Tarefas (Prioridade Alta)
 - [ ] Implementar testes unitários para o util DynamoDB
@@ -52,6 +45,11 @@
 - [ ] Implementar integração com CloudWatch para monitoramento
 
 ## Concluído
+- [x] Release v2.9.5 - Melhorias no sistema de testes e comandos de migration (06/08/2025) ✅
+  - [x] Atualização da versão no composer.json para 2.9.5
+  - [x] Atualização do CHANGELOG.md com nova versão
+  - [x] Criação e push da tag v2.9.5
+  - [x] Release publicado no repositório remoto
 - [x] Melhorar BaseTestCase para testes (06/08/2025) ✅
   - [x] Implementar método executeCommand() seguro com validação de erros
   - [x] Corrigir comandos exec com escapeshellarg() para prevenir injection
