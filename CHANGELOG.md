@@ -358,3 +358,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Adicionado
 - melhorar BaseTestCase com tipagem e organização
 
+## [2.9.5] - 2025-08-11
+
+### Adicionado
+- melhorias no sistema de testes e comandos de migration
+
