@@ -1,7 +1,7 @@
 {
   "name": "jonjon1992/php-slim-modular",
   "type": "library",
-  "version": "2.9.5",
+  "version": "2.9.6",
   "description": "Um framework PHP modular baseado no Slim Framework com suporte completo para AWS, autenticação, criptografia e sistema de módulos",
   "keywords": ["slim", "framework", "modular", "aws", "s3", "sqs", "php", "api"],
   "license": "MIT",
@@ -69,10 +69,15 @@
     "slim/slim-swoole": "Para integração oficial do Slim com Swoole"
   },
   "scripts": {
-    "serve": "php -S localhost:8000 -t public",
-    "serve-swoole": "php src/server-swoole.php",
-    "start": "php -S localhost:8000 -t public",
-    "start-swoole": "php src/server-swoole.php"
+    "serve": "php server.php",
+    "serve-swoole": "php server.php --swoole",
+    "serve-standard": "php server.php --standard",
+    "start": "php server.php",
+    "start-swoole": "php server.php --swoole",
+    "start-standard": "php server.php --standard",
+    "dev": "php server.php",
+    "dev-swoole": "php server.php --swoole",
+    "dev-standard": "php server.php --standard"
   },
   "homepage": "https://github.com/JonJon1992/php-slim-modular",
   "support": {

@@ -1,13 +1,14 @@
 # @TODO: PHP Slim Modular Framework
 
 ## Em Progresso
-- [x] Implementar suporte opcional ao Swoole (concluído)
-  - [x] Criar servidor Swoole opcional (src/server-swoole.php)
-  - [x] Implementar classe utilitária Swoole
-  - [x] Criar comando CLI para gerenciar servidor
-  - [x] Adicionar helpers para Swoole
-  - [x] Criar configuração completa
-  - [x] Documentar integração
+- [x] Implementar integração centralizada de servidores (concluído)
+  - [x] Modificar bootstrap.php para suportar inicialização automática
+  - [x] Criar função bootstrap_app() para controle de servidor
+  - [x] Criar server.php como ponto de entrada principal
+  - [x] Atualizar public/index.php para usar bootstrap
+  - [x] Simplificar src/server-swoole.php
+  - [x] Atualizar scripts composer
+  - [x] Criar documentação completa
 - [ ] Implementar testes unitários para o util DynamoDB
 - [ ] Adicionar suporte a índices secundários no DynamoDB
 
@@ -52,6 +53,16 @@
 - [ ] Implementar integração com CloudWatch para monitoramento
 
 ## Concluído
+- [x] Implementar integração centralizada de servidores (06/08/2025) ✅
+  - [x] Modificar bootstrap.php para suportar inicialização automática de servidores
+  - [x] Criar função bootstrap_app() para controle centralizado
+  - [x] Criar server.php como ponto de entrada principal com detecção automática
+  - [x] Atualizar public/index.php para usar bootstrap com inicialização automática
+  - [x] Simplificar src/server-swoole.php para usar novo bootstrap
+  - [x] Atualizar scripts composer com novos comandos
+  - [x] Criar documentação completa em docs/SERVER_INTEGRATION.md
+  - [x] Manter total compatibilidade com servidor padrão e Swoole
+  - [x] Implementar detecção automática baseada em disponibilidade e configuração
 - [x] Implementar suporte opcional ao Swoole (06/08/2025) ✅
   - [x] Adicionar Swoole como dependência opcional no composer.json
   - [x] Criar servidor Swoole standalone (src/server-swoole.php)

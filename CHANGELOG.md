@@ -5,6 +5,29 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.9.6] - 2025-08-06
+
+### Added
+- **Integração Centralizada de Servidores**: Implementado sistema unificado para controle de servidores
+- **Função bootstrap_app()**: Nova função no bootstrap.php para inicialização automática de servidores
+- **Ponto de Entrada Principal**: Criado `server.php` na raiz com detecção automática de servidor
+- **Scripts Composer Aprimorados**: Novos comandos para facilitar uso dos servidores
+- **Documentação Completa**: Guia detalhado em `docs/SERVER_INTEGRATION.md`
+- **Detecção Automática**: Sistema inteligente que escolhe Swoole ou servidor padrão
+- **Compatibilidade Total**: Mantém compatibilidade com todos os pontos de entrada existentes
+
+### Changed
+- **Bootstrap.php**: Modificado para suportar inicialização automática de servidores
+- **Public/index.php**: Atualizado para usar bootstrap com inicialização automática
+- **Server-swoole.php**: Simplificado para usar novo sistema de bootstrap
+- **Scripts Composer**: Atualizados com novos comandos `serve`, `serve-swoole`, `serve-standard`
+- **Versão**: Atualizada para 2.9.6
+
+### Fixed
+- **Controle Centralizado**: Unificado controle de servidores no bootstrap.php
+- **Flexibilidade**: Múltiplos pontos de entrada com detecção automática
+- **Facilidade de Uso**: Scripts composer simplificados para desenvolvimento
+
 ## [2.9.2] - 2025-08-06
 
 ### Added
