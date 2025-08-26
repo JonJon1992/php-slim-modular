@@ -165,4 +165,34 @@ function dynamo(string $alias = null): \Core\Utils\Dynamo
     return service("dynamo.$alias");
 }
 
+/**
+ * @return \Core\Utils\Swoole
+ */
+function swoole(): \Core\Utils\Swoole
+{
+    return \Core\Utils\Swoole::class;
+}
 
+/**
+ * Verifica se o Swoole está disponível
+ */
+function swoole_available(): bool
+{
+    return \Core\Utils\Swoole::isAvailable();
+}
+
+/**
+ * Obtém informações do Swoole
+ */
+function swoole_info(): array
+{
+    return \Core\Utils\Swoole::getInfo();
+}
+
+/**
+ * Verifica se deve usar o Swoole
+ */
+function should_use_swoole(): bool
+{
+    return \Core\Utils\Swoole::shouldUse();
+}

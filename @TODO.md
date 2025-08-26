@@ -1,6 +1,13 @@
 # @TODO: PHP Slim Modular Framework
 
 ## Em Progresso
+- [x] Implementar suporte opcional ao Swoole (concluído)
+  - [x] Criar servidor Swoole opcional (server-swoole.php)
+  - [x] Implementar classe utilitária Swoole
+  - [x] Criar comando CLI para gerenciar servidor
+  - [x] Adicionar helpers para Swoole
+  - [x] Criar configuração completa
+  - [x] Documentar integração
 - [ ] Implementar testes unitários para o util DynamoDB
 - [ ] Adicionar suporte a índices secundários no DynamoDB
 
@@ -45,6 +52,17 @@
 - [ ] Implementar integração com CloudWatch para monitoramento
 
 ## Concluído
+- [x] Implementar suporte opcional ao Swoole (06/08/2025) ✅
+  - [x] Adicionar Swoole como dependência opcional no composer.json
+  - [x] Criar servidor Swoole standalone (server-swoole.php)
+  - [x] Implementar classe Core\Utils\Swoole para gerenciamento
+  - [x] Criar comando CLI SwooleServerCommand para controle do servidor
+  - [x] Adicionar helpers swoole(), swoole_available(), swoole_info(), should_use_swoole()
+  - [x] Criar arquivo de configuração config/swoole.php
+  - [x] Documentar integração completa em docs/SWOOLE_INTEGRATION.md
+  - [x] Adicionar scripts composer para facilitar uso
+  - [x] Implementar detecção automática e configuração por ambiente
+  - [x] Manter total compatibilidade com servidor padrão do PHP
 - [x] Release v2.9.5 - Melhorias no sistema de testes e comandos de migration (06/08/2025) ✅
   - [x] Atualização da versão no composer.json para 2.9.5
   - [x] Atualização do CHANGELOG.md com nova versão

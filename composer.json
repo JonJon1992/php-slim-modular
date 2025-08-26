@@ -64,6 +64,16 @@
     "squizlabs/php_codesniffer": "3.8.0",
     "symfony/var-dumper": "v7.0.0"
   },
+  "suggest": {
+    "ext-swoole": "Para usar o Swoole como servidor web de alta performance",
+    "slim/slim-swoole": "Para integração oficial do Slim com Swoole"
+  },
+  "scripts": {
+    "serve": "php -S localhost:8000 -t public",
+    "serve-swoole": "php server-swoole.php",
+    "start": "php -S localhost:8000 -t public",
+    "start-swoole": "php server-swoole.php"
+  },
   "homepage": "https://github.com/JonJon1992/php-slim-modular",
   "support": {
     "issues": "https://github.com/JonJon1992/php-slim-modular/issues",

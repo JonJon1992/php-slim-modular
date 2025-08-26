@@ -17,6 +17,7 @@ Um framework PHP modular baseado no Slim Framework com suporte completo para AWS
 - **Cache**: Suporte para Redis e outros sistemas de cache
 - **API Gateway**: Middleware para API Gateway
 - **Health Check**: Endpoint de verificação de saúde dos serviços
+- **Swoole Support**: Suporte opcional ao Swoole para alta performance
 
 ## 📋 Requisitos
 
@@ -28,6 +29,8 @@ Um framework PHP modular baseado no Slim Framework com suporte completo para AWS
   - ext-openssl
   - ext-redis
   - ext-sodium
+- **Swoole (Opcional)**: Para alta performance
+  - ext-swoole (instalar via `pecl install swoole`)
 
 ## 🛠️ Instalação
 
@@ -268,6 +271,66 @@ GET /im-alive?force=1
 - **Logs Estruturados**: Logs de sucesso e falha
 - **Verificação Seletiva**: Verifica apenas serviços específicos
 - **Suporte ao DynamoDB**: Inclui verificação de tabelas
+
+## 🚀 Swoole (Alta Performance)
+
+O framework inclui suporte opcional ao **Swoole**, um servidor web de alta performance que pode melhorar significativamente a performance da sua aplicação.
+
+### Instalação do Swoole
+
+```bash
+# Instalar extensão Swoole
+pecl install swoole
+
+# Verificar instalação
+php -m | grep swoole
+```
+
+### Uso Básico
+
+```bash
+# Iniciar servidor Swoole
+php server-swoole.php
+
+# Ou via Composer
+composer serve-swoole
+
+# Comando CLI para gerenciar
+php cli.php swoole:server --start
+php cli.php swoole:server --status
+php cli.php swoole:server --stop
+```
+
+### Configuração
+
+```env
+# Habilitar Swoole
+SWOOLE_ENABLED=true
+
+# Configurações básicas
+SWOOLE_HOST=0.0.0.0
+SWOOLE_PORT=9501
+SWOOLE_WORKERS=4
+SWOOLE_MAX_REQUEST=10000
+```
+
+### Benefícios
+
+- **Performance**: Até 10x mais rápido que servidor padrão
+- **Coroutines**: Suporte nativo a programação assíncrona
+- **Memória Persistente**: Aplicação mantida em memória
+- **Múltiplos Workers**: Melhor concorrência
+- **Compatibilidade Total**: Funciona com código existente
+
+### Detecção Automática
+
+O framework detecta automaticamente quando usar o Swoole:
+- Extensão disponível
+- Variável `SWOOLE_ENABLED=true`
+- Ambiente de produção
+- Argumento `--swoole` no CLI
+
+Para mais detalhes, consulte [docs/SWOOLE_INTEGRATION.md](docs/SWOOLE_INTEGRATION.md).
 
 ## 🔒 Segurança
 
