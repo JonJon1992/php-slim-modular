@@ -9,17 +9,24 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
+use Throwable;
 
 /**
  * Comando para gerenciar o servidor Swoole
  * 
  * Este comando permite iniciar, parar e verificar o status do servidor Swoole.
+ * Segue o padrão dos outros comandos do projeto.
  * 
  * @package Core\Commands
  * @version 2.9.5
  */
 class SwooleServerCommand extends AbstractCommand
 {
+    private SymfonyStyle $io;
+
+    /**
+     * @return void
+     */
     protected function configure(): void
     {
         $this
@@ -54,74 +61,87 @@ HELP
             );
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output): int
+    /**
+     * @return void
+     * @throws Throwable
+     */
+    protected function handler(): void
     {
-        $io = new SymfonyStyle($input, $output);
-        $io->title('🚀 Gerenciador do Servidor Swoole');
+        $this->io = new SymfonyStyle($this->input, $this->output);
+        $this->io->title('🚀 Gerenciador do Servidor Swoole');
 
         // Verifica se o Swoole está disponível
         if (!Swoole::isAvailable()) {
-            $io->error('❌ Swoole não está disponível');
-            $io->text([
-                'Para instalar o Swoole:',
-                '  <info>pecl install swoole</info>',
-                '',
-                'Alternativa: Use o servidor padrão do PHP',
-                '  <info>composer serve</info>'
-            ]);
-            return self::FAILURE;
+            $this->showSwooleNotAvailable();
+            return;
         }
 
         // Exibe informações do Swoole
-        if ($input->getOption('info')) {
-            return $this->showInfo($io);
+        if ($this->input->getOption('info')) {
+            $this->showInfo();
+            return;
         }
 
         // Verifica status
-        if ($input->getOption('status')) {
-            return $this->showStatus($io);
+        if ($this->input->getOption('status')) {
+            $this->showStatus();
+            return;
         }
 
         // Para o servidor
-        if ($input->getOption('stop')) {
-            return $this->stopServer($io);
+        if ($this->input->getOption('stop')) {
+            $this->stopServer();
+            return;
         }
 
         // Reinicia o servidor
-        if ($input->getOption('restart')) {
-            $this->stopServer($io);
-            sleep(2);
-            return $this->startServer($input, $io);
+        if ($this->input->getOption('restart')) {
+            $this->restartServer();
+            return;
         }
 
         // Inicia o servidor (padrão)
-        if ($input->getOption('start') || !$input->getOption('stop')) {
-            return $this->startServer($input, $io);
+        if ($this->input->getOption('start') || !$this->input->getOption('stop')) {
+            $this->startServer();
+            return;
         }
+    }
 
-        return self::SUCCESS;
+    /**
+     * Exibe mensagem quando Swoole não está disponível
+     */
+    private function showSwooleNotAvailable(): void
+    {
+        $this->io->error('❌ Swoole não está disponível');
+        $this->io->text([
+            'Para instalar o Swoole:',
+            '  <info>pecl install swoole</info>',
+            '',
+            'Alternativa: Use o servidor padrão do PHP',
+            '  <info>composer serve</info>'
+        ]);
     }
 
     /**
      * Exibe informações do Swoole
      */
-    private function showInfo(SymfonyStyle $io): int
+    private function showInfo(): void
     {
         $info = Swoole::getInfo();
         $diagnostics = Swoole::getDiagnostics();
 
-        $io->section('📊 Informações do Swoole');
+        $this->io->section('📊 Informações do Swoole');
 
         if ($info['available']) {
-            $io->success('✅ Swoole está disponível');
-            $io->text([
+            $this->io->success('✅ Swoole está disponível');
+            $this->io->text([
                 "Versão: <info>{$info['version']}</info>",
                 "Funcionalidades: <info>" . implode(', ', $info['features']) . "</info>"
             ]);
 
-            $io->section('🔧 Configuração');
+            $this->io->section('🔧 Configuração');
             $config = Swoole::getConfig();
-            $io->table(
+            $this->io->table(
                 ['Configuração', 'Valor'],
                 [
                     ['Host', $config['host']],
@@ -132,8 +152,8 @@ HELP
                 ]
             );
 
-            $io->section('💻 Ambiente');
-            $io->table(
+            $this->io->section('💻 Ambiente');
+            $this->io->table(
                 ['Item', 'Valor'],
                 [
                     ['PHP Version', $diagnostics['environment']['php_version']],
@@ -143,34 +163,27 @@ HELP
                 ]
             );
         } else {
-            $io->error('❌ Swoole não está disponível');
-            $io->text($info['message']);
+            $this->io->error('❌ Swoole não está disponível');
+            $this->io->text($info['message']);
         }
-
-        return self::SUCCESS;
     }
 
     /**
      * Exibe o status do servidor
      */
-    private function showStatus(SymfonyStyle $io): int
+    private function showStatus(): void
     {
-        $pidFile = Swoole::getConfig()['pid_file'];
-
-        if (!file_exists($pidFile)) {
-            $io->warning('⚠️  Servidor Swoole não está rodando');
-            return self::SUCCESS;
+        if (!Swoole::isRunning()) {
+            $this->io->warning('⚠️  Servidor Swoole não está rodando');
+            return;
         }
 
+        $config = Swoole::getConfig();
+        $pidFile = $config['pid_file'];
         $pid = file_get_contents($pidFile);
-        if (!$pid || !posix_kill((int) $pid, 0)) {
-            $io->warning('⚠️  Servidor Swoole não está rodando (PID inválido)');
-            unlink($pidFile);
-            return self::SUCCESS;
-        }
 
-        $io->success('✅ Servidor Swoole está rodando');
-        $io->text([
+        $this->io->success('✅ Servidor Swoole está rodando');
+        $this->io->text([
             "PID: <info>{$pid}</info>",
             "Arquivo PID: <info>{$pidFile}</info>"
         ]);
@@ -179,8 +192,8 @@ HELP
         try {
             $stats = Swoole::getStats();
             if (!empty($stats) && !isset($stats['error'])) {
-                $io->section('📈 Estatísticas');
-                $io->table(
+                $this->io->section('📈 Estatísticas');
+                $this->io->table(
                     ['Métrica', 'Valor'],
                     [
                         ['Conexões Ativas', $stats['server']['connection_num'] ?? 'N/A'],
@@ -190,93 +203,61 @@ HELP
                     ]
                 );
             }
-        } catch (\Throwable $e) {
-            $io->note('Não foi possível obter estatísticas: ' . $e->getMessage());
+        } catch (Throwable $e) {
+            $this->io->note('Não foi possível obter estatísticas: ' . $e->getMessage());
         }
-
-        return self::SUCCESS;
     }
 
     /**
      * Para o servidor
      */
-    private function stopServer(SymfonyStyle $io): int
+    private function stopServer(): void
     {
-        $pidFile = Swoole::getConfig()['pid_file'];
+        $this->io->text('🛑 Parando servidor Swoole...');
 
-        if (!file_exists($pidFile)) {
-            $io->warning('⚠️  Servidor Swoole não está rodando');
-            return self::SUCCESS;
+        if (Swoole::stopServer()) {
+            $this->io->success('✅ Servidor Swoole parado');
+        } else {
+            $this->io->error('❌ Não foi possível parar o servidor');
         }
+    }
 
-        $pid = file_get_contents($pidFile);
-        if (!$pid) {
-            $io->error('❌ PID inválido');
-            unlink($pidFile);
-            return self::FAILURE;
-        }
-
-        $io->text("🛑 Parando servidor Swoole (PID: {$pid})...");
-
-        // Envia sinal SIGTERM
-        if (posix_kill((int) $pid, SIGTERM)) {
-            $io->success('✅ Sinal de parada enviado');
-            
-            // Aguarda até 10 segundos
-            for ($i = 0; $i < 10; $i++) {
-                if (!posix_kill((int) $pid, 0)) {
-                    $io->success('✅ Servidor Swoole parado');
-                    unlink($pidFile);
-                    return self::SUCCESS;
-                }
-                sleep(1);
-            }
-
-            // Se não parou, força com SIGKILL
-            $io->warning('⚠️  Forçando parada...');
-            posix_kill((int) $pid, SIGKILL);
-            sleep(1);
-            
-            if (!posix_kill((int) $pid, 0)) {
-                $io->success('✅ Servidor Swoole forçado a parar');
-                unlink($pidFile);
-                return self::SUCCESS;
-            }
-        }
-
-        $io->error('❌ Não foi possível parar o servidor');
-        return self::FAILURE;
+    /**
+     * Reinicia o servidor
+     */
+    private function restartServer(): void
+    {
+        $this->io->text('🔄 Reiniciando servidor Swoole...');
+        
+        $this->stopServer();
+        sleep(2);
+        $this->startServer();
     }
 
     /**
      * Inicia o servidor
      */
-    private function startServer(InputInterface $input, SymfonyStyle $io): int
+    private function startServer(): void
     {
         // Verifica se já está rodando
-        $pidFile = Swoole::getConfig()['pid_file'];
-        if (file_exists($pidFile)) {
-            $pid = file_get_contents($pidFile);
-            if ($pid && posix_kill((int) $pid, 0)) {
-                $io->error('❌ Servidor Swoole já está rodando');
-                $io->text("Use <info>--stop</info> para parar ou <info>--restart</info> para reiniciar");
-                return self::FAILURE;
-            }
-            unlink($pidFile);
+        if (Swoole::isRunning()) {
+            $this->io->error('❌ Servidor Swoole já está rodando');
+            $this->io->text("Use <info>--stop</info> para parar ou <info>--restart</info> para reiniciar");
+            return;
         }
 
         // Configura o servidor
         $config = [
-            'host' => $input->getOption('host'),
-            'port' => (int) $input->getOption('port'),
-            'workers' => (int) $input->getOption('workers'),
-            'daemonize' => $input->getOption('daemon'),
+            'host' => $this->input->getOption('host'),
+            'port' => (int) $this->input->getOption('port'),
+            'workers' => (int) $this->input->getOption('workers'),
+            'daemonize' => $this->input->getOption('daemon'),
         ];
 
         Swoole::setConfig($config);
 
-        $io->section('🚀 Iniciando Servidor Swoole');
-        $io->text([
+        $this->io->section('🚀 Iniciando Servidor Swoole');
+        $this->io->text([
             "Host: <info>{$config['host']}</info>",
             "Porta: <info>{$config['port']}</info>",
             "Workers: <info>{$config['workers']}</info>",
@@ -291,126 +272,29 @@ HELP
             $requestHandler = function (\Swoole\Http\Request $request, \Swoole\Http\Response $response) use ($app) {
                 try {
                     // Converte requisição Swoole para PSR-7
-                    $psrRequest = $this->createPsr7Request($request);
+                    $psrRequest = Swoole::createPsr7Request($request);
                     
                     // Processa através do Slim
                     $psrResponse = $app->handle($psrRequest);
                     
                     // Converte resposta PSR-7 para Swoole
-                    $this->createSwooleResponse($psrResponse, $response);
+                    Swoole::createSwooleResponse($psrResponse, $response);
                     
-                } catch (\Throwable $e) {
-                    $this->handleSwooleError($e, $response);
+                } catch (Throwable $e) {
+                    // Trata erros
+                    Swoole::handleError($e, $response);
+                    
+                    // Log do erro
+                    $this->io->error("❌ Erro: {$e->getMessage()}");
                 }
             };
 
             // Inicia o servidor
             Swoole::startServer($requestHandler);
 
-        } catch (\Throwable $e) {
-            $io->error('❌ Erro ao iniciar servidor: ' . $e->getMessage());
-            return self::FAILURE;
+        } catch (Throwable $e) {
+            $this->io->error('❌ Erro ao iniciar servidor: ' . $e->getMessage());
         }
-
-        return self::SUCCESS;
-    }
-
-    /**
-     * Converte requisição Swoole para PSR-7
-     */
-    private function createPsr7Request(\Swoole\Http\Request $swooleRequest): \Psr\Http\Message\ServerRequestInterface
-    {
-        $uri = new \Slim\Psr7\Uri(
-            $swooleRequest->server['request_scheme'] ?? 'http',
-            $swooleRequest->header['host'] ?? 'localhost',
-            $swooleRequest->server['server_port'] ?? 80,
-            $swooleRequest->server['request_uri'] ?? '/',
-            $swooleRequest->server['query_string'] ?? ''
-        );
-
-        $headers = [];
-        foreach ($swooleRequest->header as $name => $value) {
-            $headers[strtolower($name)] = $value;
-        }
-
-        $body = new \Slim\Psr7\Stream(fopen('php://temp', 'r+'));
-        if ($swooleRequest->rawContent()) {
-            $body->write($swooleRequest->rawContent());
-            $body->rewind();
-        }
-
-        $request = new \Slim\Psr7\Request(
-            $swooleRequest->server['request_method'] ?? 'GET',
-            $uri,
-            $headers,
-            $body,
-            '1.1',
-            []
-        );
-
-        // Adiciona parâmetros
-        if (!empty($swooleRequest->get)) {
-            $request = $request->withQueryParams($swooleRequest->get);
-        }
-        if (!empty($swooleRequest->post)) {
-            $request = $request->withParsedBody($swooleRequest->post);
-        }
-        if (!empty($swooleRequest->cookie)) {
-            $request = $request->withCookieParams($swooleRequest->cookie);
-        }
-
-        return $request;
-    }
-
-    /**
-     * Converte resposta PSR-7 para Swoole
-     */
-    private function createSwooleResponse(\Psr\Http\Message\ResponseInterface $psrResponse, \Swoole\Http\Response $swooleResponse): void
-    {
-        $swooleResponse->status($psrResponse->getStatusCode());
-
-        foreach ($psrResponse->getHeaders() as $name => $values) {
-            foreach ($values as $value) {
-                $swooleResponse->header($name, $value);
-            }
-        }
-
-        $body = $psrResponse->getBody();
-        $body->rewind();
-        $swooleResponse->end($body->getContents());
-    }
-
-    /**
-     * Trata erros no contexto do Swoole
-     */
-    private function handleSwooleError(\Throwable $e, \Swoole\Http\Response $response): void
-    {
-        $statusCode = 500;
-        $message = 'Internal Server Error';
-        
-        if ($e instanceof \Slim\Exception\HttpException) {
-            $statusCode = $e->getCode();
-            $message = $e->getMessage();
-        }
-        
-        $response->status($statusCode);
-        $response->header('Content-Type', 'application/json');
-        
-        $errorData = [
-            'error' => [
-                'message' => $message,
-                'code' => $statusCode,
-                'timestamp' => date('c'),
-            ]
-        ];
-        
-        if ($_ENV['APP_DEBUG'] ?? false) {
-            $errorData['error']['trace'] = $e->getTraceAsString();
-            $errorData['error']['file'] = $e->getFile();
-            $errorData['error']['line'] = $e->getLine();
-        }
-        
-        $response->end(json_encode($errorData, JSON_PRETTY_PRINT));
     }
 
     /**

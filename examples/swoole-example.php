@@ -80,21 +80,21 @@ $requestHandler = function (\Swoole\Http\Request $request, \Swoole\Http\Response
         $startTime = microtime(true);
         
         // Converte requisição Swoole para PSR-7
-        $psrRequest = createPsr7Request($request);
+        $psrRequest = \Core\Utils\Swoole::createPsr7Request($request);
         
         // Processa através do Slim
         $psrResponse = $app->handle($psrRequest);
         
         // Converte resposta PSR-7 para Swoole
-        createSwooleResponse($psrResponse, $response);
+        \Core\Utils\Swoole::createSwooleResponse($psrResponse, $response);
         
         // Log de performance
         $duration = (microtime(true) - $startTime) * 1000;
         echo "📝 {$request->server['request_method']} {$request->server['request_uri']} - {$duration}ms\n";
         
-    } catch (\Throwable $e) {
+    } catch (Throwable $e) {
         // Trata erros
-        handleSwooleError($e, $response);
+        \Core\Utils\Swoole::handleError($e, $response);
         
         // Log do erro
         echo "❌ Erro: {$e->getMessage()}\n";
@@ -104,105 +104,7 @@ $requestHandler = function (\Swoole\Http\Request $request, \Swoole\Http\Response
 // Inicia o servidor
 try {
     \Core\Utils\Swoole::startServer($requestHandler);
-} catch (\Throwable $e) {
+} catch (Throwable $e) {
     echo "❌ Erro ao iniciar servidor: {$e->getMessage()}\n";
     exit(1);
-}
-
-/**
- * Converte requisição Swoole para PSR-7
- */
-function createPsr7Request(\Swoole\Http\Request $swooleRequest): \Psr\Http\Message\ServerRequestInterface
-{
-    $uri = new \Slim\Psr7\Uri(
-        $swooleRequest->server['request_scheme'] ?? 'http',
-        $swooleRequest->header['host'] ?? 'localhost',
-        $swooleRequest->server['server_port'] ?? 80,
-        $swooleRequest->server['request_uri'] ?? '/',
-        $swooleRequest->server['query_string'] ?? ''
-    );
-
-    $headers = [];
-    foreach ($swooleRequest->header as $name => $value) {
-        $headers[strtolower($name)] = $value;
-    }
-
-    $body = new \Slim\Psr7\Stream(fopen('php://temp', 'r+'));
-    if ($swooleRequest->rawContent()) {
-        $body->write($swooleRequest->rawContent());
-        $body->rewind();
-    }
-
-    $request = new \Slim\Psr7\Request(
-        $swooleRequest->server['request_method'] ?? 'GET',
-        $uri,
-        $headers,
-        $body,
-        '1.1',
-        []
-    );
-
-    // Adiciona parâmetros
-    if (!empty($swooleRequest->get)) {
-        $request = $request->withQueryParams($swooleRequest->get);
-    }
-    if (!empty($swooleRequest->post)) {
-        $request = $request->withParsedBody($swooleRequest->post);
-    }
-    if (!empty($swooleRequest->cookie)) {
-        $request = $request->withCookieParams($swooleRequest->cookie);
-    }
-
-    return $request;
-}
-
-/**
- * Converte resposta PSR-7 para Swoole
- */
-function createSwooleResponse(\Psr\Http\Message\ResponseInterface $psrResponse, \Swoole\Http\Response $swooleResponse): void
-{
-    $swooleResponse->status($psrResponse->getStatusCode());
-
-    foreach ($psrResponse->getHeaders() as $name => $values) {
-        foreach ($values as $value) {
-            $swooleResponse->header($name, $value);
-        }
-    }
-
-    $body = $psrResponse->getBody();
-    $body->rewind();
-    $swooleResponse->end($body->getContents());
-}
-
-/**
- * Trata erros no contexto do Swoole
- */
-function handleSwooleError(\Throwable $e, \Swoole\Http\Response $response): void
-{
-    $statusCode = 500;
-    $message = 'Internal Server Error';
-    
-    if ($e instanceof \Slim\Exception\HttpException) {
-        $statusCode = $e->getCode();
-        $message = $e->getMessage();
-    }
-    
-    $response->status($statusCode);
-    $response->header('Content-Type', 'application/json');
-    
-    $errorData = [
-        'error' => [
-            'message' => $message,
-            'code' => $statusCode,
-            'timestamp' => date('c'),
-        ]
-    ];
-    
-    if ($_ENV['APP_DEBUG'] ?? false) {
-        $errorData['error']['trace'] = $e->getTraceAsString();
-        $errorData['error']['file'] = $e->getFile();
-        $errorData['error']['line'] = $e->getLine();
-    }
-    
-    $response->end(json_encode($errorData, JSON_PRETTY_PRINT));
 }

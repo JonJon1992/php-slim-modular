@@ -3,11 +3,13 @@ declare(strict_types=1);
 
 namespace Core\Utils;
 
+use Exception;
+
 /**
- * Utilitário para gerenciamento do Swoole
+ * Class Swoole
  * 
- * Esta classe fornece métodos para detectar e configurar o Swoole,
- * permitindo que a aplicação funcione com ou sem a extensão.
+ * Utilitário para gerenciamento do Swoole com detecção automática
+ * e configuração flexível. Segue o padrão dos outros utils do projeto.
  * 
  * @package Core\Utils
  * @version 2.9.5
@@ -16,6 +18,15 @@ class Swoole
 {
     private static ?bool $available = null;
     private static array $config = [];
+    private static ?\Swoole\HTTP\Server $server = null;
+
+    /**
+     * Construtor privado para seguir padrão singleton
+     */
+    private function __construct()
+    {
+        // Construtor privado
+    }
 
     /**
      * Verifica se o Swoole está disponível
@@ -184,16 +195,21 @@ class Swoole
             return null;
         }
 
-        $config = self::getConfig();
-        $server = new \Swoole\HTTP\Server($config['host'], $config['port']);
-        
-        // Remove configurações que não são válidas para o set()
-        $serverConfig = $config;
-        unset($serverConfig['host'], $serverConfig['port']);
-        
-        $server->set($serverConfig);
-        
-        return $server;
+        try {
+            $config = self::getConfig();
+            $server = new \Swoole\HTTP\Server($config['host'], $config['port']);
+            
+            // Remove configurações que não são válidas para o set()
+            $serverConfig = $config;
+            unset($serverConfig['host'], $serverConfig['port']);
+            
+            $server->set($serverConfig);
+            
+            self::$server = $server;
+            return $server;
+        } catch (Exception $e) {
+            throw new Exception("Erro ao criar servidor Swoole: " . $e->getMessage(), 0, $e);
+        }
     }
 
     /**
@@ -215,7 +231,7 @@ class Swoole
                 ],
                 'coroutines' => \Swoole\Coroutine::stats(),
             ];
-        } catch (\Throwable $e) {
+        } catch (Exception $e) {
             return [
                 'error' => $e->getMessage(),
                 'memory' => [
@@ -232,12 +248,12 @@ class Swoole
     public static function startServer(callable $requestHandler): void
     {
         if (!self::isAvailable()) {
-            throw new \RuntimeException('Swoole não está disponível');
+            throw new Exception('Swoole não está disponível');
         }
 
         $server = self::createHttpServer();
         if (!$server) {
-            throw new \RuntimeException('Não foi possível criar o servidor Swoole');
+            throw new Exception('Não foi possível criar o servidor Swoole');
         }
 
         // Configura eventos do servidor
@@ -264,6 +280,67 @@ class Swoole
     }
 
     /**
+     * Para o servidor Swoole
+     */
+    public static function stopServer(): bool
+    {
+        $pidFile = self::getConfig()['pid_file'];
+
+        if (!file_exists($pidFile)) {
+            return false;
+        }
+
+        $pid = file_get_contents($pidFile);
+        if (!$pid) {
+            unlink($pidFile);
+            return false;
+        }
+
+        // Envia sinal SIGTERM
+        if (posix_kill((int) $pid, SIGTERM)) {
+            // Aguarda até 10 segundos
+            for ($i = 0; $i < 10; $i++) {
+                if (!posix_kill((int) $pid, 0)) {
+                    unlink($pidFile);
+                    return true;
+                }
+                sleep(1);
+            }
+
+            // Se não parou, força com SIGKILL
+            posix_kill((int) $pid, SIGKILL);
+            sleep(1);
+            
+            if (!posix_kill((int) $pid, 0)) {
+                unlink($pidFile);
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Verifica se o servidor está rodando
+     */
+    public static function isRunning(): bool
+    {
+        $pidFile = self::getConfig()['pid_file'];
+
+        if (!file_exists($pidFile)) {
+            return false;
+        }
+
+        $pid = file_get_contents($pidFile);
+        if (!$pid) {
+            unlink($pidFile);
+            return false;
+        }
+
+        return posix_kill((int) $pid, 0);
+    }
+
+    /**
      * Obtém informações de diagnóstico
      */
     public static function getDiagnostics(): array
@@ -279,6 +356,105 @@ class Swoole
             ],
             'config' => self::getConfig(),
             'should_use' => self::shouldUse(),
+            'is_running' => self::isRunning(),
         ];
+    }
+
+    /**
+     * Converte requisição Swoole para PSR-7
+     */
+    public static function createPsr7Request(\Swoole\Http\Request $swooleRequest): \Psr\Http\Message\ServerRequestInterface
+    {
+        $uri = new \Slim\Psr7\Uri(
+            $swooleRequest->server['request_scheme'] ?? 'http',
+            $swooleRequest->header['host'] ?? 'localhost',
+            $swooleRequest->server['server_port'] ?? 80,
+            $swooleRequest->server['request_uri'] ?? '/',
+            $swooleRequest->server['query_string'] ?? ''
+        );
+
+        $headers = [];
+        foreach ($swooleRequest->header as $name => $value) {
+            $headers[strtolower($name)] = $value;
+        }
+
+        $body = new \Slim\Psr7\Stream(fopen('php://temp', 'r+'));
+        if ($swooleRequest->rawContent()) {
+            $body->write($swooleRequest->rawContent());
+            $body->rewind();
+        }
+
+        $request = new \Slim\Psr7\Request(
+            $swooleRequest->server['request_method'] ?? 'GET',
+            $uri,
+            $headers,
+            $body,
+            '1.1',
+            []
+        );
+
+        // Adiciona parâmetros
+        if (!empty($swooleRequest->get)) {
+            $request = $request->withQueryParams($swooleRequest->get);
+        }
+        if (!empty($swooleRequest->post)) {
+            $request = $request->withParsedBody($swooleRequest->post);
+        }
+        if (!empty($swooleRequest->cookie)) {
+            $request = $request->withCookieParams($swooleRequest->cookie);
+        }
+
+        return $request;
+    }
+
+    /**
+     * Converte resposta PSR-7 para Swoole
+     */
+    public static function createSwooleResponse(\Psr\Http\Message\ResponseInterface $psrResponse, \Swoole\Http\Response $swooleResponse): void
+    {
+        $swooleResponse->status($psrResponse->getStatusCode());
+
+        foreach ($psrResponse->getHeaders() as $name => $values) {
+            foreach ($values as $value) {
+                $swooleResponse->header($name, $value);
+            }
+        }
+
+        $body = $psrResponse->getBody();
+        $body->rewind();
+        $swooleResponse->end($body->getContents());
+    }
+
+    /**
+     * Trata erros no contexto do Swoole
+     */
+    public static function handleError(\Throwable $e, \Swoole\Http\Response $response): void
+    {
+        $statusCode = 500;
+        $message = 'Internal Server Error';
+        
+        if ($e instanceof \Slim\Exception\HttpException) {
+            $statusCode = $e->getCode();
+            $message = $e->getMessage();
+        }
+        
+        $response->status($statusCode);
+        $response->header('Content-Type', 'application/json');
+        
+        $errorData = [
+            'error' => [
+                'message' => $message,
+                'code' => $statusCode,
+                'timestamp' => date('c'),
+            ]
+        ];
+        
+        if (Env::get('APP_DEBUG', false)) {
+            $errorData['error']['trace'] = $e->getTraceAsString();
+            $errorData['error']['file'] = $e->getFile();
+            $errorData['error']['line'] = $e->getLine();
+        }
+        
+        $response->end(json_encode($errorData, JSON_PRETTY_PRINT));
     }
 }
