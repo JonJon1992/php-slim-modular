@@ -70,9 +70,9 @@
   },
   "scripts": {
     "serve": "php -S localhost:8000 -t public",
-    "serve-swoole": "php server-swoole.php",
+    "serve-swoole": "php src/server-swoole.php",
     "start": "php -S localhost:8000 -t public",
-    "start-swoole": "php server-swoole.php"
+    "start-swoole": "php src/server-swoole.php"
   },
   "homepage": "https://github.com/JonJon1992/php-slim-modular",
   "support": {

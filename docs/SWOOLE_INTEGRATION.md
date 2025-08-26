@@ -86,7 +86,7 @@ O framework detecta automaticamente o ambiente e aplica configurações otimizad
 
 ```bash
 # Iniciar servidor Swoole
-php server-swoole.php
+php src/server-swoole.php
 
 # Ou via Composer
 composer serve-swoole
@@ -356,14 +356,9 @@ $app->add(function ($request, $handler) {
 ### 1. Servidor Básico
 
 ```php
-// server-swoole.php
-$app = require 'bootstrap.php';
-
-Swoole::startServer(function ($request, $response) use ($app) {
-    $psrRequest = createPsr7Request($request);
-    $psrResponse = $app->handle($psrRequest);
-    createSwooleResponse($psrResponse, $response);
-});
+// src/server-swoole.php
+$server = new SwooleServer();
+$server->start();
 ```
 
 ### 2. Com Coroutines

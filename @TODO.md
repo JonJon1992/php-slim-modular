@@ -2,7 +2,7 @@
 
 ## Em Progresso
 - [x] Implementar suporte opcional ao Swoole (concluído)
-  - [x] Criar servidor Swoole opcional (server-swoole.php)
+  - [x] Criar servidor Swoole opcional (src/server-swoole.php)
   - [x] Implementar classe utilitária Swoole
   - [x] Criar comando CLI para gerenciar servidor
   - [x] Adicionar helpers para Swoole
@@ -54,7 +54,7 @@
 ## Concluído
 - [x] Implementar suporte opcional ao Swoole (06/08/2025) ✅
   - [x] Adicionar Swoole como dependência opcional no composer.json
-  - [x] Criar servidor Swoole standalone (server-swoole.php)
+  - [x] Criar servidor Swoole standalone (src/server-swoole.php)
   - [x] Implementar classe Core\Utils\Swoole para gerenciamento
   - [x] Criar comando CLI SwooleServerCommand para controle do servidor
   - [x] Adicionar helpers swoole(), swoole_available(), swoole_info(), should_use_swoole()

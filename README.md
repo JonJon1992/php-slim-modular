@@ -290,7 +290,7 @@ php -m | grep swoole
 
 ```bash
 # Iniciar servidor Swoole
-php server-swoole.php
+php src/server-swoole.php
 
 # Ou via Composer
 composer serve-swoole
