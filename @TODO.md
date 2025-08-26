@@ -1,14 +1,6 @@
 # @TODO: PHP Slim Modular Framework
 
 ## Em Progresso
-- [x] Implementar integração centralizada de servidores (concluído)
-  - [x] Modificar bootstrap.php para suportar inicialização automática
-  - [x] Criar função bootstrap_app() para controle de servidor
-  - [x] Criar server.php como ponto de entrada principal
-  - [x] Atualizar public/index.php para usar bootstrap
-  - [x] Simplificar src/server-swoole.php
-  - [x] Atualizar scripts composer
-  - [x] Criar documentação completa
 - [ ] Implementar testes unitários para o util DynamoDB
 - [ ] Adicionar suporte a índices secundários no DynamoDB
 

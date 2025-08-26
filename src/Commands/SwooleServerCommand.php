@@ -68,7 +68,7 @@ HELP
     protected function handler(): void
     {
         $this->io = new SymfonyStyle($this->input, $this->output);
-        $this->io->title('🚀 Gerenciador do Servidor Swoole');
+        $this->io->title('Gerenciador do Servidor Swoole');
 
         // Verifica se o Swoole está disponível
         if (!Swoole::isAvailable()) {
@@ -112,7 +112,7 @@ HELP
      */
     private function showSwooleNotAvailable(): void
     {
-        $this->io->error('❌ Swoole não está disponível');
+                    $this->io->error('Swoole não está disponível');
         $this->io->text([
             'Para instalar o Swoole:',
             '  <info>pecl install swoole</info>',
@@ -130,16 +130,16 @@ HELP
         $info = Swoole::getInfo();
         $diagnostics = Swoole::getDiagnostics();
 
-        $this->io->section('📊 Informações do Swoole');
+                    $this->io->section('Informações do Swoole');
 
         if ($info['available']) {
-            $this->io->success('✅ Swoole está disponível');
+            $this->io->success('Swoole está disponível');
             $this->io->text([
                 "Versão: <info>{$info['version']}</info>",
                 "Funcionalidades: <info>" . implode(', ', $info['features']) . "</info>"
             ]);
 
-            $this->io->section('🔧 Configuração');
+            $this->io->section('Configuração');
             $config = Swoole::getConfig();
             $this->io->table(
                 ['Configuração', 'Valor'],
@@ -163,7 +163,7 @@ HELP
                 ]
             );
         } else {
-            $this->io->error('❌ Swoole não está disponível');
+            $this->io->error('Swoole não está disponível');
             $this->io->text($info['message']);
         }
     }
@@ -174,7 +174,7 @@ HELP
     private function showStatus(): void
     {
         if (!Swoole::isRunning()) {
-            $this->io->warning('⚠️  Servidor Swoole não está rodando');
+            $this->io->warning('Servidor Swoole não está rodando');
             return;
         }
 
@@ -182,7 +182,7 @@ HELP
         $pidFile = $config['pid_file'];
         $pid = file_get_contents($pidFile);
 
-        $this->io->success('✅ Servidor Swoole está rodando');
+                    $this->io->success('Servidor Swoole está rodando');
         $this->io->text([
             "PID: <info>{$pid}</info>",
             "Arquivo PID: <info>{$pidFile}</info>"
@@ -213,12 +213,12 @@ HELP
      */
     private function stopServer(): void
     {
-        $this->io->text('🛑 Parando servidor Swoole...');
+        $this->io->text('Parando servidor Swoole...');
 
         if (Swoole::stopServer()) {
-            $this->io->success('✅ Servidor Swoole parado');
+            $this->io->success('Servidor Swoole parado');
         } else {
-            $this->io->error('❌ Não foi possível parar o servidor');
+            $this->io->error('Não foi possível parar o servidor');
         }
     }
 
@@ -227,7 +227,7 @@ HELP
      */
     private function restartServer(): void
     {
-        $this->io->text('🔄 Reiniciando servidor Swoole...');
+        $this->io->text('Reiniciando servidor Swoole...');
         
         $this->stopServer();
         sleep(2);
@@ -241,7 +241,7 @@ HELP
     {
         // Verifica se já está rodando
         if (Swoole::isRunning()) {
-            $this->io->error('❌ Servidor Swoole já está rodando');
+            $this->io->error('Servidor Swoole já está rodando');
             $this->io->text("Use <info>--stop</info> para parar ou <info>--restart</info> para reiniciar");
             return;
         }
@@ -256,7 +256,7 @@ HELP
 
         Swoole::setConfig($config);
 
-        $this->io->section('🚀 Iniciando Servidor Swoole');
+        $this->io->section('Iniciando Servidor Swoole');
         $this->io->text([
             "Host: <info>{$config['host']}</info>",
             "Porta: <info>{$config['port']}</info>",
@@ -285,7 +285,7 @@ HELP
                     Swoole::handleError($e, $response);
                     
                     // Log do erro
-                    $this->io->error("❌ Erro: {$e->getMessage()}");
+                    $this->io->error("Erro: {$e->getMessage()}");
                 }
             };
 
@@ -293,7 +293,7 @@ HELP
             Swoole::startServer($requestHandler);
 
         } catch (Throwable $e) {
-            $this->io->error('❌ Erro ao iniciar servidor: ' . $e->getMessage());
+            $this->io->error('Erro ao iniciar servidor: ' . $e->getMessage());
         }
     }
 

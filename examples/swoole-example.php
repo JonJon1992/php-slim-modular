@@ -16,39 +16,39 @@ require_once __DIR__ . '/../vendor/autoload.php';
 // Carrega o bootstrap da aplicação
 $app = require __DIR__ . '/../src/bootstrap.php';
 
-echo "🚀 PHP Slim Modular Framework com Swoole\n";
+echo "PHP Slim Modular Framework com Swoole\n";
 echo "==========================================\n\n";
 
 // Verifica se o Swoole está disponível
 if (!swoole_available()) {
-    echo "❌ Swoole não está disponível\n";
-    echo "📦 Para instalar: pecl install swoole\n";
-    echo "🔧 Usando servidor padrão do PHP...\n\n";
+    echo "Swoole não está disponível\n";
+    echo "Para instalar: pecl install swoole\n";
+    echo "Usando servidor padrão do PHP...\n\n";
     
     // Executa com servidor padrão
     $app->run();
     exit;
 }
 
-echo "✅ Swoole está disponível!\n";
+    echo "Swoole está disponível!\n";
 
 // Exibe informações do Swoole
 $info = swoole_info();
-echo "📊 Versão: {$info['version']}\n";
-echo "🔧 Funcionalidades: " . implode(', ', $info['features']) . "\n\n";
+echo "Versão: {$info['version']}\n";
+echo "Funcionalidades: " . implode(', ', $info['features']) . "\n\n";
 
 // Verifica se deve usar o Swoole
 if (!should_use_swoole()) {
-    echo "⚠️  Swoole não está habilitado\n";
-    echo "🔧 Para habilitar: SWOOLE_ENABLED=true\n";
-    echo "🚀 Usando servidor padrão do PHP...\n\n";
+    echo "Swoole não está habilitado\n";
+    echo "Para habilitar: SWOOLE_ENABLED=true\n";
+    echo "Usando servidor padrão do PHP...\n\n";
     
     // Executa com servidor padrão
     $app->run();
     exit;
 }
 
-echo "🚀 Iniciando servidor Swoole...\n\n";
+    echo "Iniciando servidor Swoole...\n\n";
 
 // Configurações do servidor
 $config = [
@@ -97,7 +97,7 @@ $requestHandler = function (\Swoole\Http\Request $request, \Swoole\Http\Response
         \Core\Utils\Swoole::handleError($e, $response);
         
         // Log do erro
-        echo "❌ Erro: {$e->getMessage()}\n";
+        echo "Erro: {$e->getMessage()}\n";
     }
 };
 
@@ -105,6 +105,6 @@ $requestHandler = function (\Swoole\Http\Request $request, \Swoole\Http\Response
 try {
     \Core\Utils\Swoole::startServer($requestHandler);
 } catch (Throwable $e) {
-    echo "❌ Erro ao iniciar servidor: {$e->getMessage()}\n";
+    echo "Erro ao iniciar servidor: {$e->getMessage()}\n";
     exit(1);
 }

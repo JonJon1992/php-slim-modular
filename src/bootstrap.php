@@ -185,11 +185,11 @@ function bootstrap_app(bool $autoStart = false)
         
         Swoole::setConfig($config);
         
-        echo "🚀 Iniciando servidor Swoole...\n";
-        echo "📍 Host: {$config['host']}\n";
-        echo "🔌 Porta: {$config['port']}\n";
-        echo "👷 Workers: {$config['workers']}\n";
-        echo "⏹️  Para parar: Ctrl+C\n\n";
+        echo "Iniciando servidor Swoole...\n";
+        echo "Host: {$config['host']}\n";
+        echo "Porta: {$config['port']}\n";
+        echo "Workers: {$config['workers']}\n";
+        echo "Para parar: Ctrl+C\n\n";
         
         // Cria handler de requisições
         $requestHandler = function (\Swoole\Http\Request $request, \Swoole\Http\Response $response) use ($app) {
@@ -206,7 +206,7 @@ function bootstrap_app(bool $autoStart = false)
                 Swoole::handleError($e, $response);
                 
                 if ($_ENV['APP_DEBUG'] ?? false) {
-                    echo "❌ Erro: {$e->getMessage()}\n";
+                    echo "Erro: {$e->getMessage()}\n";
                 }
             }
         };
@@ -215,9 +215,9 @@ function bootstrap_app(bool $autoStart = false)
     } else {
         // Inicia servidor padrão do PHP
         if (Swoole::isAvailable() && !Swoole::shouldUse()) {
-            echo "⚠️  Swoole não está habilitado\n";
-            echo "🔧 Para habilitar: SWOOLE_ENABLED=true\n";
-            echo "🚀 Usando servidor padrão do PHP...\n\n";
+            echo "Swoole não está habilitado\n";
+            echo "Para habilitar: SWOOLE_ENABLED=true\n";
+            echo "Usando servidor padrão do PHP...\n\n";
         }
         
         $app->run();

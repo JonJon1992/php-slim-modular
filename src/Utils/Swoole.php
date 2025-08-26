@@ -259,20 +259,20 @@ class Swoole
         // Configura eventos do servidor
         $server->on('start', function (\Swoole\HTTP\Server $server) {
             $config = self::getConfig();
-            echo "🚀 Servidor Swoole iniciado em http://{$config['host']}:{$config['port']}\n";
-            echo "📊 Workers: {$config['workers']}\n";
-            echo "🔄 Max Request: {$config['max_request']}\n";
-            echo "⏹️  Para parar: Ctrl+C\n";
+            echo "Servidor Swoole iniciado em http://{$config['host']}:{$config['port']}\n";
+            echo "Workers: {$config['workers']}\n";
+            echo "Max Request: {$config['max_request']}\n";
+            echo "Para parar: Ctrl+C\n";
         });
 
         $server->on('request', $requestHandler);
 
         $server->on('workerStart', function (\Swoole\HTTP\Server $server, int $workerId) {
-            echo "👷 Worker {$workerId} iniciado (PID: " . posix_getpid() . ")\n";
+            echo "Worker {$workerId} iniciado (PID: " . posix_getpid() . ")\n";
         });
 
         $server->on('workerStop', function (\Swoole\HTTP\Server $server, int $workerId) {
-            echo "🛑 Worker {$workerId} parado\n";
+            echo "Worker {$workerId} parado\n";
         });
 
         // Inicia o servidor

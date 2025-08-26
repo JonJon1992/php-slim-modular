@@ -12,13 +12,13 @@ declare(strict_types=1);
  * @version 2.9.6
  */
 
-echo "🚀 Exemplo de Integração de Servidores\n";
+echo "Exemplo de Integração de Servidores\n";
 echo "=====================================\n\n";
 
 // Exemplo 1: Carregar aplicação sem iniciar servidor
 echo "1. Carregando aplicação sem iniciar servidor:\n";
 $app = require __DIR__ . '/../src/bootstrap.php';
-echo "✅ Aplicação carregada: " . get_class($app) . "\n\n";
+echo "Aplicação carregada: " . get_class($app) . "\n\n";
 
 // Exemplo 2: Verificar se Swoole está disponível
 echo "2. Verificando disponibilidade do Swoole:\n";
@@ -75,5 +75,5 @@ echo "// OU iniciar servidor automaticamente\n";
 echo "bootstrap_app(true);\n";
 echo "```\n\n";
 
-echo "✅ Exemplo concluído!\n";
-echo "📚 Consulte docs/SERVER_INTEGRATION.md para mais detalhes\n";
+echo "Exemplo concluído!\n";
+echo "Consulte docs/SERVER_INTEGRATION.md para mais detalhes\n";
