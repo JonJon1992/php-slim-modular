@@ -365,6 +365,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [2.9.6] - 2025-09-26
 
-### Adicionado
-- melhora ValueObjects e corrige método Str::code
+### Added
+- **ValueObjects Enhancement**: Adicionado método `getValue()` na interface `IValueObject` e implementação na classe base `ValueObject`
+- **Improved Exception Handling**: Melhorado tratamento de exceções com import explícito da classe `Exception`
+
+### Fixed
+- **Str::code() Method**: Corrigido parâmetro faltante no método `code()` da classe `Str` para geração correta de códigos numéricos
+
+### Changed
+- **ValueObject Interface**: Interface `IValueObject` agora inclui método `getValue()` para acesso direto ao valor
+- **Code Generation**: Método `Str::code()` agora funciona corretamente com tamanhos personalizados
 
