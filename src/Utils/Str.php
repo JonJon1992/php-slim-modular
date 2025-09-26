@@ -20,7 +20,7 @@ class Str extends \Illuminate\Support\Str
      */
     public static function code(int $size = 6): string
     {
-        $limit = str_pad('', $size, STR_PAD_LEFT);
+        $limit = str_pad('', $size,'9', STR_PAD_LEFT);
         return str_pad(rand(0, $limit), $size, '0', STR_PAD_LEFT);
     }
 

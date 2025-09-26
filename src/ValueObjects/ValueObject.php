@@ -3,6 +3,7 @@
 namespace Core\ValueObjects;
 
 use Core\Utils\Validate;
+use Exception;
 use Stringable;
 
 abstract class ValueObject implements Stringable, IValueObject
@@ -19,8 +20,8 @@ abstract class ValueObject implements Stringable, IValueObject
         $value = $this->sanitize($value);
         try {
             Validate::value($value, $this->roles(), 'value');
-        } catch (\Exception $e) {
-            throw new \Exception($e->getMessage());
+        } catch (Exception $e) {
+            throw new Exception($e->getMessage());
         }
         $this->value = $value;
     }
@@ -55,5 +56,9 @@ abstract class ValueObject implements Stringable, IValueObject
     protected function roles(): array
     {
         return $this->roles;
+    }
+    public function getValue(): mixed
+    {
+        return $this->value;
     }
 }

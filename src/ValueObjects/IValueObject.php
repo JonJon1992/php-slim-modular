@@ -10,4 +10,6 @@ interface IValueObject extends \Stringable
 
     public function format();
 
+    public function getValue(): mixed;
+
 }
