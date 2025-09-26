@@ -363,3 +363,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Adicionado
 - melhorias no sistema de testes e comandos de migration
 
+## [2.9.6] - 2025-09-26
+
+### Adicionado
+- melhora ValueObjects e corrige método Str::code
+
