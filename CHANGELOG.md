@@ -394,3 +394,8 @@ e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR
 - Integração AWS: integração com AWS S3 e SQS
 - Sistema de autenticação: sistema de autenticação e criptografia
 - Middlewares personalizados: middlewares personalizados
+## [2.9.8] - 2025-11-19
+
+### Adicionado
+- atualiza documentação de contexto
+
