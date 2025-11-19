@@ -7,3 +7,5 @@ Dockerfile
 .cursor
 @TODO.md
 localstack-data/
+auth.json
+
