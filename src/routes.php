@@ -12,7 +12,7 @@ use Slim\Exception\HttpNotFoundException;
 
 return function (App $app) {
 
-    $app->options('/{routes:.+}', fn($request, $response, $args) => $response);
+    $app->options('/{routes:.+}', fn($request, $response) => $response);
 
     $app->get('/', function (Request $request, Response $response) {
         return view()->render($response, 'index.phtml');
@@ -23,7 +23,7 @@ return function (App $app) {
 
     array_map(fn(Module $module) => $module->routes($app), $app->modules());
 
-    $app->map(['*'], '/{routes:.+}', function ($request, $response) {
+    $app->map(['*'], '/{routes:.+}', function (Request $request, Response $response) {
         throw new HttpNotFoundException($request);
     });
 

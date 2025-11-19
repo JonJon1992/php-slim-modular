@@ -19,7 +19,7 @@ return function (ContainerBuilder $builder) {
     $bindings = [];
 
     foreach ($configs->get('log', []) as $alias => $settings) {
-        if ($alias == 'default') {
+        if ($alias === 'default') {
             continue;
         }
         $bindings["log.$alias"] = function () use ($alias, $settings) {
@@ -37,7 +37,7 @@ return function (ContainerBuilder $builder) {
     }
 
     foreach ($configs->get('db', []) as $alias => $settings) {
-        if ($alias == 'default') {
+        if ($alias === 'default') {
             continue;
         }
         $bindings["db.$alias"] = function () use ($configs, $alias, $settings) {
@@ -45,7 +45,7 @@ return function (ContainerBuilder $builder) {
             $manager->addConnection($settings);
             $manager->setEventDispatcher(new Dispatcher(new Container()));
 
-            if ($alias == $configs->get('db.default')) {
+            if ($alias === $configs->get('db.default')) {
                 $manager->setAsGlobal();
             }
             $manager->bootEloquent();
@@ -54,7 +54,7 @@ return function (ContainerBuilder $builder) {
     }
 
     foreach ($configs->get('cache', []) as $alias => $settings) {
-        if ($alias == 'default') {
+        if ($alias === 'default') {
             continue;
         }
         $bindings["cache.$alias"] = function () use ($settings) {
@@ -71,7 +71,7 @@ return function (ContainerBuilder $builder) {
     }
 
     foreach ($configs->get('queue', []) as $alias => $settings) {
-        if ($alias == 'default') {
+        if ($alias === 'default') {
             continue;
         }
 
@@ -81,7 +81,7 @@ return function (ContainerBuilder $builder) {
     }
 
     foreach ($configs->get('dynamo', []) as $alias => $settings) {
-        if ($alias == 'default') {
+        if ($alias === 'default') {
             continue;
         }
 
@@ -103,18 +103,18 @@ return function (ContainerBuilder $builder) {
         if (!is_dir($dir)) {
             continue;
         }
-        
+
         $bindings["view.$alias"] = function () use ($dir) {
             return new SlimPhpRenderAdapter($dir);
         };
     }
 
     foreach ($configs->get('mailer', []) as $alias => $settings) {
-        if ($alias == 'default') {
+        if ($alias === 'default') {
             continue;
         }
 
-        $bindings["mailer.$alias"] = function () use ($settings, $configs, $alias) {
+        $bindings["mailer.$alias"] = function () use ($settings) {
             return new SmtpMailer($settings);
         };
     }

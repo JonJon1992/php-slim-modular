@@ -30,7 +30,7 @@ abstract class Serializable implements JsonSerializable
 
     private function resolveSerializable(array $data, string $prefix = ''): array
     {
-        if (is_null($this->propertitiesSerializable) && is_null($this->propertitiesNotSerializable)) {
+        if ($this->propertitiesSerializable === null && $this->propertitiesNotSerializable === null) {
             return $data;
         }
         $dataReturn = [];
@@ -54,10 +54,10 @@ abstract class Serializable implements JsonSerializable
     {
         $isSerializable = false;
 
-        if (empty ($this->propertitiesSerializable) || in_array($value, $this->propertitiesSerializable)) {
+        if (empty($this->propertitiesSerializable) || in_array($value, $this->propertitiesSerializable)) {
             $isSerializable = true;
         }
-        if (!is_null($this->propertitiesNotSerializable) && in_array($value, $this->propertitiesNotSerializable)) {
+        if ($this->propertitiesNotSerializable !== null && in_array($value, $this->propertitiesNotSerializable)) {
             $isSerializable = false;
         }
         return $isSerializable;
@@ -152,10 +152,11 @@ abstract class Serializable implements JsonSerializable
                 $methodGetter = $reflectionClass->getMethod($nameMethodGetter);
                 $value = $methodGetter->invoke($this);
 
-                $isArray = $property->getType() && $property->getType()->getName() == 'array';
-                $isArrayEmpty = $isArray && (is_null($value) || count($value) == 0);
+                $propertyType = $property->getType();
+                $isArray = $propertyType !== null && $propertyType->getName() === 'array';
+                $isArrayEmpty = $isArray && ($value === null || (is_array($value) && count($value) === 0));
 
-                if (!isset ($value) || $isArrayEmpty) {
+                if (!isset($value) || $isArrayEmpty) {
                     continue;
                 }
 

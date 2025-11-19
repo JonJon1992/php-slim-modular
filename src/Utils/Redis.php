@@ -3,6 +3,8 @@
 namespace Core\Utils;
 
 use Closure;
+use RedisException;
+use Throwable;
 
 /**
  * Class Redis
@@ -21,7 +23,7 @@ use Closure;
  * @method bool setOption($option, $value)
  * @method mixed|null getOption($option)
  * @method bool|string ping($message = null)
- * @method string echo ($message)
+ * @method string echo($message)
  * @method false|mixed|string get($key)
  * @method bool set($key, $value, $timeout = null)
  * @method bool setex($key, $ttl, $value)
@@ -202,13 +204,42 @@ use Closure;
  */
 class Redis extends \Redis
 {
+    private array $config;
+
+    private ?\Redis $redis = null;
+
     public function __construct(array $config)
     {
-        parent::__construct();
-        $host = isset($config['scheme']) ? "{$config['scheme']}://{$config['host']}" : $config['host'];
-        $this->connect($host, $config['port'], $config['timeout']);
-        if (!empty($config['password'])) {
-            $this->auth($config['password']);
+        $this->config = $config;
+    }
+
+    /**
+     * Summary of getRedis
+     * @return \Redis|null
+     */
+    protected function getRedis(): \Redis
+    {
+        if ($this->redis === null) {
+            $this->redis = new \Redis();
+        }
+        if (!$this->redis->isConnected()) {
+            $this->connectInternal();
+        }
+        return $this->redis;
+    }
+
+    /**
+     * Summary of __call
+     * @param mixed $name
+     * @param mixed $arguments
+     */
+    public function __call($name, $arguments)
+    {
+        try {
+            return $this->getRedis()->$name(...$arguments);
+        } catch (Throwable $t) {
+            logger()->error($t->getMessage());
+            throw $t;
         }
     }
 
@@ -319,6 +350,25 @@ class Redis extends \Redis
     public function delInDatabase($dbIndex, $key): mixed
     {
         return $this->inDatabase($dbIndex, fn() => $this->del($key));
+    }
+
+    protected function connectInternal(): void
+    {
+        try {
+            $config = $this->config;
+            $host = $config['host'] ?? '127.0.0.1';
+            $port = $config['port'] ?? 6379;
+            $timeout = $config['timeout'] ?? 10;
+
+            $this->redis->connect($host, $port, $timeout);
+
+            $password = $config['password'] ?? null;
+            if (!empty($password)) {
+                $this->redis->auth($password);
+            }
+        } catch (\RedisException $exception) {
+            throw new RedisException($exception->getMessage());
+        }
     }
 
 }

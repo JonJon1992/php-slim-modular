@@ -57,7 +57,7 @@ class Time
     }
 
     /**
-     * @param $time
+     * @param int|float|string $time
      * @param int $min
      * @param int $max
      * @param int $delay
@@ -65,13 +65,16 @@ class Time
      */
     public static function validate($time, int $min = 5, int $max = 5, int $delay = 5): bool
     {
-        if (!is_numeric($time) || !is_int($time + 0)) {
+        if (!is_numeric($time)) {
             return false;
         }
-        $min = time() - $min - $delay;
-        $max = time() + $max + $delay;
 
-        return $time <= $max && $time >= $min;
+        $timeValue = (int)$time;
+        $currentTime = time();
+        $minTime = $currentTime - $min - $delay;
+        $maxTime = $currentTime + $max + $delay;
+
+        return $timeValue >= $minTime && $timeValue <= $maxTime;
     }
 
 }

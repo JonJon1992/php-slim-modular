@@ -363,11 +363,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Adicionado
 - melhorias no sistema de testes e comandos de migration
 
+## [2.9.7] - 2025-01-27
+
+### Changed
+- **Redis Connection**: Melhorada implementação de conexão Redis com método `connectInternal()` separado e correção de autenticação
+- **Scrambler Enhancement**: Adicionado `declare(strict_types=1)`, substituído `rand()` por `random_int()` e melhorada legibilidade do código
+- **Serializable Improvements**: Substituído `is_null()` por `=== null`, comparador `==` por `===` e melhorada validação de tipos
+- **Str Code Generation**: Substituído `rand()` por `random_int()` e simplificado cálculo do limite no método `code()`
+- **Time Validation**: Melhorada validação do método `validate()` com conversão explícita de tipos e variáveis renomeadas
+- **Routes Optimization**: Removido parâmetro não utilizado e adicionados type hints nos callbacks
+- **Services Refactoring**: Substituído `==` por `===` em todas as comparações e removidos parâmetros não utilizados
+
+### Fixed
+- **Redis Auth**: Corrigido chamada de autenticação para usar `$this->redis->auth()` na instância correta
+- **is_null() Usage**: Removido uso de `is_null()` em favor de `=== null` para melhor performance e otimização do compilador
+- **Type Comparisons**: Corrigidas todas as comparações para usar operador estrito `===` ao invés de `==`
+- **Unused Parameters**: Removidos parâmetros não utilizados em closures e métodos
+
 ## [2.9.6] - 2025-09-26
 
 ### Added
 - **ValueObjects Enhancement**: Adicionado método `getValue()` na interface `IValueObject` e implementação na classe base `ValueObject`
-- **Improved Exception Handling**: Melhorado tratamento de exceções com import explícito da classe `Exception`
+- **Improved Exception Handling**: Melhorado tratamento de exceções com import explícito da classe `Exception**
 
 ### Fixed
 - **Str::code() Method**: Corrigido parâmetro faltante no método `code()` da classe `Str` para geração correta de códigos numéricos
