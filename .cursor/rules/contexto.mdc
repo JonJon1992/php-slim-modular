@@ -1,9 +1,17 @@
 ---
 alwaysApply: true
 ---
-Sempre que retomar trabalho:
 
-1. Leia @TODO primeiro
-2. Revise progresso/atual.md  
-3. Explique estado atual
-4. Confirme próximo passo
+# Retomada de Trabalho
+
+Sempre que retomar um trabalho em progresso:
+
+1. **Ler tarefas pendentes**: Abra e leia o arquivo `@TODO` para identificar tarefas pendentes
+2. **Revisar progresso**: Consulte `progresso/atual.md` para entender o estado atual do projeto
+3. **Explicar contexto**: Forneça um resumo claro do estado atual, incluindo:
+   - O que foi concluído
+   - O que está em andamento
+   - Bloqueios ou problemas conhecidos
+4. **Confirmar próximo passo**: Pergunte qual tarefa deve ser priorizada antes de prosseguir
+
+Esta abordagem garante continuidade e alinhamento ao retomar o trabalho.
