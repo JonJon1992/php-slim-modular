@@ -27,23 +27,18 @@ class Dynamo
     public static function create(?array $config = null, ?string $namespace = null): Dynamo
     {
         $dynamoConfig = null;
-        
         if ($config) {
             $dynamoConfig = new DynamoConfig(
-                $config['key'] ?? $_ENV['AWS_ACCESS_KEY_ID'] ?? 'test',
-                $config['secret'] ?? $_ENV['AWS_SECRET_ACCESS_KEY'] ?? 'test',
-                $config['region'] ?? $_ENV['AWS_REGION'] ?? 'us-east-1',
-                $config['endpoint'] ?? $_ENV['DYNAMODB_ENDPOINT'] ?? null
+                $config['key'],
+                $config['secret'],
+                $config['region'],
+                $config['endpoint']
             );
         }
-        
-        $manager = DynamoManager::create($dynamoConfig, $namespace);
-        return new Dynamo($manager);
+        return new Dynamo(DynamoManager::create($dynamoConfig, $namespace));
     }
 
     /**
-     * Cria uma instância com credenciais específicas
-     * 
      * @param string $key AWS Access Key
      * @param string $secret AWS Secret Key
      * @param string $region AWS Region
@@ -58,8 +53,7 @@ class Dynamo
         ?string $endpoint = null,
         ?string $namespace = null
     ): Dynamo {
-        $manager = DynamoManager::createWithCredentials($key, $secret, $region, $endpoint, $namespace);
-        return new Dynamo($manager);
+        return new Dynamo(DynamoManager::createWithCredentials($key, $secret, $region, $endpoint, $namespace));
     }
 
     /**
@@ -95,8 +89,6 @@ class Dynamo
     }
 
     /**
-     * Busca um item por chave
-     * 
      * @param string $tableName Nome da tabela
      * @param array $key Chave do item (PK, SK)
      * @param string|null $class Classe para hidratação
@@ -113,8 +105,6 @@ class Dynamo
     }
 
     /**
-     * Executa uma query no DynamoDB
-     * 
      * @param string $tableName Nome da tabela
      * @param string $keyConditionExpression Expressão de condição da chave
      * @param array $values Valores para a expressão
@@ -153,8 +143,6 @@ class Dynamo
     }
 
     /**
-     * Executa um scan na tabela
-     * 
      * @param string $tableName Nome da tabela
      * @param string|null $filterExpression Expressão de filtro
      * @param array|null $values Valores para a expressão
@@ -177,9 +165,7 @@ class Dynamo
         }
     }
 
-    /**
-     * Atualiza um item no DynamoDB
-     * 
+    /** 
      * @param string $tableName Nome da tabela
      * @param array $key Chave do item
      * @param string $updateExpression Expressão de atualização
@@ -203,8 +189,6 @@ class Dynamo
     }
 
     /**
-     * Insere múltiplos items em lote
-     * 
      * @param array $items Array de items para inserir
      * @param array $config Configuração do lote
      * @return mixed
@@ -220,8 +204,6 @@ class Dynamo
     }
 
     /**
-     * Remove múltiplos items em lote
-     * 
      * @param array $items Array de items para remover
      * @param array $config Configuração do lote
      * @return mixed
@@ -237,8 +219,6 @@ class Dynamo
     }
 
     /**
-     * Lista todas as tabelas
-     * 
      * @return array
      * @throws Exception
      */
@@ -252,8 +232,6 @@ class Dynamo
     }
 
     /**
-     * Descreve uma tabela
-     * 
      * @param string $tableName Nome da tabela
      * @return Result|array
      * @throws Exception
@@ -268,8 +246,6 @@ class Dynamo
     }
 
     /**
-     * Cria uma nova tabela
-     * 
      * @param array $tableSettings Configurações da tabela
      * @return Result|array
      * @throws Exception
@@ -284,8 +260,6 @@ class Dynamo
     }
 
     /**
-     * Remove uma tabela
-     * 
      * @param string $tableName Nome da tabela
      * @return Result|array
      * @throws Exception
@@ -300,8 +274,6 @@ class Dynamo
     }
 
     /**
-     * Converte um item para DynamoItem
-     * 
      * @param mixed $item Item a ser convertido
      * @param string $class Classe do DynamoItem
      * @return DynamoItem
@@ -317,8 +289,6 @@ class Dynamo
     }
 
     /**
-     * Converte items para diferentes formatos
-     * 
      * @param mixed $item Item a ser convertido
      * @param string $hydrate Tipo de hidratação (object, array, stdclass)
      * @param string|null $class Classe para hidratação
@@ -335,8 +305,6 @@ class Dynamo
     }
 
     /**
-     * Converte múltiplos items
-     * 
      * @param array $items Items a serem convertidos
      * @param string $hydrate Tipo de hidratação
      * @param string|null $class Classe para hidratação
@@ -353,8 +321,6 @@ class Dynamo
     }
 
     /**
-     * Obtém o DynamoManager interno
-     * 
      * @return DynamoManager
      */
     public function getManager(): DynamoManager
@@ -363,8 +329,6 @@ class Dynamo
     }
 
     /**
-     * Obtém o cliente DynamoDB interno
-     * 
      * @return mixed
      */
     public function getClient()
@@ -373,12 +337,10 @@ class Dynamo
     }
 
     /**
-     * Obtém o gerenciador de transações
-     * 
      * @return mixed
      */
     public function getTransaction()
     {
         return $this->manager->getTransaction();
     }
-} 
+}

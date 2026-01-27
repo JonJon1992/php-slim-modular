@@ -4,50 +4,27 @@ declare(strict_types=1);
 
 use Core\Exceptions\ExceptionHandler;
 
-/**
- * Exception Handler Configuration
- * 
- * This file configures global exception and error handling for the application.
- * It provides a centralized way to handle uncaught exceptions and errors,
- * ensuring proper logging and user-friendly error responses.
- */
 
-// Create a single instance of the exception handler
+
 $exceptionHandler = new ExceptionHandler();
 
-/**
- * Global Exception Handler
- * 
- * Handles uncaught exceptions and converts them to proper HTTP responses
- * with appropriate logging and error tracking.
- */
 set_exception_handler(function (Throwable $exception) use ($exceptionHandler): void {
     $errorData = $exceptionHandler->handle($exception);
     $exceptionHandler->log($exception, $errorData);
     $exceptionHandler->sendResponse($errorData);
 });
 
-/**
- * Global Error Handler
- * 
- * Converts PHP errors to exceptions for consistent error handling.
- */
 set_error_handler(function (int $severity, string $message, string $file, int $line): bool {
     if (!(error_reporting() & $severity)) {
         return false; // Error was suppressed
     }
-    
+
     throw new ErrorException($message, 0, $severity, $file, $line);
 });
 
-/**
- * Fatal Error Handler
- * 
- * Handles fatal errors that occur during shutdown.
- */
 register_shutdown_function(function () use ($exceptionHandler): void {
     $error = error_get_last();
-    
+
     if ($error !== null && isFatalError($error['type'])) {
         $exception = new ErrorException(
             $error['message'],
@@ -56,27 +33,18 @@ register_shutdown_function(function () use ($exceptionHandler): void {
             $error['file'],
             $error['line']
         );
-        
+
         $errorData = $exceptionHandler->handle($exception);
         $exceptionHandler->log($exception, $errorData);
         $exceptionHandler->sendResponse($errorData);
     }
 });
 
-/**
- * Development Environment Configuration
- * 
- * Enable detailed error reporting in development environment.
- */
 if (isDevelopmentEnvironment()) {
     ini_set('display_errors', '1');
     ini_set('display_startup_errors', '1');
     error_reporting(E_ALL);
 }
-
-/**
- * Check if error type is fatal
- */
 function isFatalError(int $type): bool
 {
     return in_array($type, [
@@ -90,18 +58,12 @@ function isFatalError(int $type): bool
     ]);
 }
 
-/**
- * Check if running in development environment
- */
 function isDevelopmentEnvironment(): bool
 {
-    return getEnvVar('APP_ENV', 'production') === 'development' || 
-           getEnvVar('APP_DEBUG', false) === true;
+    return getEnvVar('APP_ENV', 'production') === 'development' ||
+        getEnvVar('APP_DEBUG', false) === true;
 }
 
-/**
- * Get environment variable with fallback
- */
 function getEnvVar(string $key, mixed $default = null): mixed
 {
     return $_ENV[$key] ?? $_SERVER[$key] ?? $default;

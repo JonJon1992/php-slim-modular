@@ -9,7 +9,6 @@ use Throwable;
 /**
  * Class Redis
  * @package Glim\Utils
- *
  * @method bool isConnected()
  * @method false|string getHost()
  * @method false|int getPort()
@@ -202,7 +201,7 @@ use Throwable;
  * @method int xTrim($stream, $maxLen, $isApproximate)
  * @method int|bool sAddArray($key, array $values)
  */
-class Redis extends \Redis
+class Redis
 {
     private array $config;
 
@@ -219,17 +218,16 @@ class Redis extends \Redis
      */
     protected function getRedis(): \Redis
     {
-        if ($this->redis === null) {
+        if (is_null($this->redis)) {
             $this->redis = new \Redis();
         }
         if (!$this->redis->isConnected()) {
-            $this->connectInternal();
+            $this->conectar();
         }
         return $this->redis;
     }
 
     /**
-     * Summary of __call
      * @param mixed $name
      * @param mixed $arguments
      */
@@ -238,14 +236,12 @@ class Redis extends \Redis
         try {
             return $this->getRedis()->$name(...$arguments);
         } catch (Throwable $t) {
-            logger()->error($t->getMessage());
+            logger()->error("Error Redis: {$t->getMessage()}");
             throw $t;
         }
     }
 
     /**
-     * Esta função retorna a quantidade de segundos restantes até o final do dia atual.
-     *
      * @return int
      */
     public function expiresAtTheEndDay(): int
@@ -254,11 +250,6 @@ class Redis extends \Redis
     }
 
     /**
-     * Esta função aplica uma logica básica de utilização de cache.
-     * Ela deve verificar se a $key informada existe e possui valor diferente de NULL.
-     * Se verdadeiro o valor será retornado, caso contrário uma função será executada.
-     * O retorno da função será armazenado em cache e tambem retornado.
-     *
      * @param string $key
      * @param Closure $closure
      * @param int|null $expire
@@ -266,32 +257,33 @@ class Redis extends \Redis
      * @param bool $associative
      * @return mixed
      */
-    public function getOrSet(string $key, Closure $closure, int $expire = null, bool $crypt = true, bool $associative = false): mixed
+    public function getOrSet(string $key, Closure $closure, ?int $expire = null, bool $crypt = true, bool $associative = false): mixed
     {
         $key = $crypt ? md5($key) : $key;
-        $result = $this->get($key);
+        $redis = $this->getRedis();
+        $cached = $redis->get($key);
 
-        if ($result) {
-            return json_decode($result, $associative);
+        if ($cached !== false) {
+            return json_decode($cached, $associative);
         }
 
         $result = $closure();
+        $encoded = json_encode($result);
 
-        $this->setex($key, $expire, json_encode($result));
+        if ($encoded === false) {
+            return $result;
+        }
+
+        if ($expire > 0) {
+            $redis->setex($key, $expire, $encoded);
+        } else {
+            $redis->set($key, $encoded);
+        }
 
         return $result;
     }
 
     /**
-     * Retorna o indice do banco de dados a ser utilizados com base em um ID.
-     *
-     * Para utilizar todos os bancos do redis (0 a 15), utilizamos o um ID como parametro de entrada, para definir
-     * qual indice será utilizado.
-     *
-     * O resultado será sempre ZERO para IDs com valor MENOR OU IGUAL A ZERO.
-     * Para valores positivos o indice será o MODULO da divisão do ID por 15, somado ao numero UM.
-     *
-     * Dessa forma os valores armazenados pode, de forma simples, serem balanceados entre os banco de dados.
      *
      * @param string|int $id
      * @return int
@@ -302,20 +294,15 @@ class Redis extends \Redis
     }
 
     /**
-     * Esta função executa uma outra função no contexto de um $dbindex específico e
-     * depois volta para o $dbindex padrão igual a ZERO.
-     *
      * @param string|int $dbIndex
      * @param Closure $closure
      * @return mixed
      */
     public function inDatabase($dbIndex, Closure $closure): mixed
     {
-        $this->select($dbIndex);
-
+        $this->getRedis()->select($dbIndex);
         $result = $closure();
-
-        $this->select(0);
+        $this->getRedis()->select(0);
 
         return $result;
     }
@@ -329,7 +316,7 @@ class Redis extends \Redis
      */
     public function setInDatabase($dbIndex, $key, $value, $expire): mixed
     {
-        return $this->inDatabase($dbIndex, fn() => $this->set($key, $value, $expire));
+        return $this->inDatabase($dbIndex, fn() => $this->getRedis()->set($key, $value, $expire));
     }
 
     /**
@@ -339,7 +326,7 @@ class Redis extends \Redis
      */
     public function getInDatabase($dbIndex, $key): mixed
     {
-        return $this->inDatabase($dbIndex, fn() => $this->get($key));
+        return $this->inDatabase($dbIndex, fn() => $this->getRedis()->get($key));
     }
 
     /**
@@ -349,26 +336,25 @@ class Redis extends \Redis
      */
     public function delInDatabase($dbIndex, $key): mixed
     {
-        return $this->inDatabase($dbIndex, fn() => $this->del($key));
+        return $this->inDatabase($dbIndex, fn() => $this->getRedis()->del($key));
     }
 
-    protected function connectInternal(): void
+    protected function conectar(): void
     {
         try {
             $config = $this->config;
-            $host = $config['host'] ?? '127.0.0.1';
-            $port = $config['port'] ?? 6379;
-            $timeout = $config['timeout'] ?? 10;
+            $host = $config['host'];
+            $port = $config['port'];
+            $timeout = $config['timeout'];
 
             $this->redis->connect($host, $port, $timeout);
 
-            $password = $config['password'] ?? null;
+            $password = $config['password'];
             if (!empty($password)) {
                 $this->redis->auth($password);
             }
         } catch (\RedisException $exception) {
-            throw new RedisException($exception->getMessage());
+            throw new RedisException("Falha ao conectar ao Redis: {$exception->getMessage()}");
         }
     }
-
 }
