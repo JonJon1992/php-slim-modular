@@ -7,6 +7,12 @@ e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR
 
 ## [Não Lançado]
 
+## [2.9.10] - 2026-01-27
+
+### Corrigido
+
+- Bootstrap: corrigido carregamento de arquivo de configuração para `cors.php` ao invés de `config.php` em `src/bootstrap.php`.
+
 ## [2.9.9] - 2026-01-27
 
 ### Melhorado

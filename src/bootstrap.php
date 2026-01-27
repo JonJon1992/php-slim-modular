@@ -34,7 +34,7 @@ try {
 }
 
 require 'exception.php';
-require 'config.php';
+require 'cors.php';
 
 try {
     $containerBuilder = new ContainerBuilder();
