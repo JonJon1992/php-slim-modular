@@ -1,7 +1,7 @@
 {
   "name": "jonjon1992/php-slim-modular",
   "type": "library",
-  "version": "2.9.11",
+  "version": "2.9.12",
   "description": "Um framework PHP modular baseado no Slim Framework com suporte completo para AWS, autenticação, criptografia e sistema de módulos",
   "keywords": ["slim", "framework", "modular", "aws", "s3", "sqs", "php", "api"],
   "license": "MIT",
@@ -39,7 +39,7 @@
     "illuminate/hashing": "v10.37.3",
     "illuminate/pagination": "v10.37.3",
     "laminas/laminas-hydrator": "4.15.0",
-    "lcobucci/jwt": "^4.2",
+    "lcobucci/jwt": "5.5.0.0",
     "monolog/monolog": "2.3.2",
     "php-di/php-di": "^7.0",
     "predis/predis": "v1.1.6",
@@ -60,14 +60,9 @@
     "phpspec/prophecy-phpunit": "v2.1.0",
     "phpstan/extension-installer": "1.3.1",
     "phpstan/phpstan": "1.10.50",
-    "phpunit/phpunit": "10.5.3",
+    "phpunit/phpunit": "^10.5",
     "squizlabs/php_codesniffer": "3.8.0",
     "symfony/var-dumper": "v7.0.0"
-  },
-  "homepage": "https://github.com/JonJon1992/php-slim-modular",
-  "support": {
-    "issues": "https://github.com/JonJon1992/php-slim-modular/issues",
-    "source": "https://github.com/JonJon1992/php-slim-modular"
   },
   "autoload": {
     "psr-4": {

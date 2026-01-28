@@ -7,6 +7,16 @@ e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR
 
 ## [Não Lançado]
 
+## [2.9.12] - 2026-01-27
+
+### Segurança
+
+- Dependências: relaxada restrição de versão do `phpunit/phpunit` para `^10.5` para permitir correção de segurança ("PKSA-z3gr-8qht-p93v")
+
+### Alterado
+
+- Composer: removidos campos `homepage` e `support` do `composer.json`
+
 ## [2.9.11] - 2026-01-27
 
 ### Alterado
