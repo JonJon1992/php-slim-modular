@@ -96,7 +96,7 @@ class CreateClientCommand extends AbstractCommand
     {
         $now = new Carbon();
         $key = Crypt::singleton()->generate();
-        $db->query()->from('migrations')->insert([
+        $db->query()->from('module_client_keys')->insert([
             'name' => $name,
             'key' => $key,
             'created_at' => $now->toDateTimeString(),

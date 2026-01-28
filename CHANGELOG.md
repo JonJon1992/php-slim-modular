@@ -7,6 +7,12 @@ e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR
 
 ## [Não Lançado]
 
+## [2.9.13] - 2026-01-27
+
+### Corrigido
+
+- CreateClientCommand: corrigido nome da tabela de inserção de `migrations` para `module_client_keys`
+
 ## [2.9.12] - 2026-01-27
 
 ### Segurança
