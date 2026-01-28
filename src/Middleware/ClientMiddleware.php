@@ -17,11 +17,14 @@ class ClientMiddleware
         $this->client = $client;
     }
 
+    /**
+     * @throws Exception
+     */
     public function __invoke(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         $client = $request->hasHeader('x-client') ? $request->getHeaderLine('x-client') : '';
         if (empty($client)) {
-            throw new \Exception('Client não informado.', 400);
+            throw new \Exception('Client key não informado....', 400);
         }
         $this->client->use($client);
         return $handler->handle($request);

@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 /**
  * Bootstrap da Aplicação
- * 
+ *
  * Este arquivo é responsável por inicializar todos os componentes
  * necessários para o funcionamento da aplicação.
- * 
+ *
  * @package Core
  * @version 2.3.0
  */
@@ -57,29 +57,14 @@ try {
     $services($containerBuilder);
 
     $modules = config('app.modules', []);
-    if (!is_array($modules)) {
-        throw new AppException('Configuração de módulos deve ser um array');
-    }
-
-    $moduleInstances = [];
-    foreach ($modules as $moduleClass) {
-        if (!class_exists($moduleClass)) {
-            throw new AppException("Classe de módulo não encontrada: {$moduleClass}");
-        }
-
-        $module = new $moduleClass();
-
-        $moduleBindings = $module->bindings();
-        if (is_array($moduleBindings)) {
-            $containerBuilder->addDefinitions($moduleBindings);
-        }
-
-        $containerBuilder->addDefinitions([$moduleClass => $module]);
-        $moduleInstances[] = $module;
-    }
-
-    $containerBuilder->addDefinitions(['modules' => $moduleInstances]);
+    $containerBuilder->addDefinitions(['modules' => array_map(function ($class) use ($containerBuilder) {
+        $module = new $class();
+        $containerBuilder->addDefinitions($module->bindings());
+        $containerBuilder->addDefinitions([$class => $module]);
+        return $module;
+    }, $modules)]);
     $container = $containerBuilder->build();
+
 } catch (\Exception $e) {
     throw new AppException('Erro ao configurar container de dependências: ' . $e->getMessage(), 0, $e);
 }

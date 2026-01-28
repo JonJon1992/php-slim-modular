@@ -5,6 +5,7 @@ namespace Core\Middleware;
 use Core\Exceptions\Exception\InvalidRequestException;
 use Core\Utils\Env;
 use Core\Utils\Time;
+use Exception;
 use InvalidArgumentException;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface as RequestInterface;
@@ -12,7 +13,7 @@ use Psr\Http\Server\RequestHandlerInterface as HandlerInterface;
 use RuntimeException;
 use SodiumException;
 
-class ApiGatewayMiddleware
+class  ApiGatewayMiddleware
 {
     private RequestInterface $request;
     const CLIENT_HEADER = 'x-client';
@@ -26,6 +27,9 @@ class ApiGatewayMiddleware
 
     private $auth;
 
+    /**
+     * @throws Exception
+     */
     public function __invoke(RequestInterface $request, HandlerInterface $handler): ResponseInterface
     {
         $this->request = $request;
@@ -37,7 +41,7 @@ class ApiGatewayMiddleware
      * @return ResponseInterface
      * @throws Exception
      */
-    private function authRequest(HandlerInterface $handler)
+    private function authRequest(HandlerInterface $handler): ResponseInterface
     {
         $this->verifyModuleSystem();
         $this->verifyToken();
@@ -54,7 +58,7 @@ class ApiGatewayMiddleware
     /**
      * @return void
      */
-    private function verifyModuleSystem()
+    private function verifyModuleSystem(): void
     {
         $module_key = $this->getModuleKey();
 
@@ -66,9 +70,9 @@ class ApiGatewayMiddleware
 
     /**
      * @return void
-     * @throws SodiumException
+     * @throws SodiumException|InvalidRequestException
      */
-    private function verifyToken()
+    private function verifyToken(): void
     {
         $token = $this->getAuthenticationToken();
 
@@ -86,7 +90,7 @@ class ApiGatewayMiddleware
             throw new InvalidRequestException('Requisição inválida');
         }
 
-        $session = json_decode(redis('ms-auth')->get('ms-auth:sessions:' . $token->u));
+        $session = json_decode(redis()->get('auth:sessions:' . $token->u));
 
         if (empty($session)) {
             throw new InvalidRequestException('Requisição inválida');
@@ -150,13 +154,13 @@ class ApiGatewayMiddleware
             throw new InvalidRequestException('Requisição inválida');
         }
 
-        $uk = hash('sha512', 'ms-auth:utilization:' . $token->s);
+        $uk = hash('sha512', 'auth:utilization:' . $token->s);
 
-        if (Env::prod() && redis('ms-auth')->exists($uk)) {
+        if (Env::prod() && redis()->exists($uk)) {
             throw new InvalidRequestException('Requisição inválida');
         }
 
-        redis('ms-auth')->set($uk, 1, Time::_5M);
+        redis()->set($uk, 1, Time::_5M);
 
         $this->auth = $session->usuario;
     }
@@ -164,7 +168,7 @@ class ApiGatewayMiddleware
     /**
      * @return string|null
      */
-    private function getModuleKey()
+    private function getModuleKey(): ?string
     {
         if ($this->request->hasHeader(self::CLIENT_HEADER)) {
             return $this->request->getHeaderLine(self::CLIENT_HEADER);
@@ -192,10 +196,10 @@ class ApiGatewayMiddleware
     /**
      * @return mixed
      */
-    private function getModuleSystems()
+    private function getModuleSystems(): mixed
     {
-        $cacheKey = 'ms-auth:systems';
-        $redis = redis('ms-auth');
+        $cacheKey = 'auth:systems';
+        $redis = redis();
 
         $items = $redis->get($cacheKey);
 
@@ -203,16 +207,13 @@ class ApiGatewayMiddleware
             return json_decode($items, true);
         }
 
-        $items = db('ms-auth')
+        $items = db()
             ->query()
             ->select([
                 'key',
-                'secret',
-                'session_group_id',
-                'slug',
                 'id',
-                'nome'])
-            ->from('module_systems')
+                'name'])
+            ->from('module_client_keys')
             ->get()
             ->toArray();
 
@@ -231,10 +232,9 @@ class ApiGatewayMiddleware
      * @param string $key
      * @return mixed
      */
-    private function getModuleByKey(string $key)
+    private function getModuleByKey(string $key): mixed
     {
         $modules = $this->getModuleSystems();
-
         if (!array_key_exists($key, $modules)) {
             throw new InvalidArgumentException('Autenticação inválida');
         }
@@ -245,9 +245,8 @@ class ApiGatewayMiddleware
     /**
      * @return void
      */
-    private function includeClient()
+    private function includeClient(): void
     {
-
         if (empty($this->module)) {
             $this->request = $this->request->withoutHeader(self::CLIENT_HEADER);
         } else {
@@ -258,7 +257,7 @@ class ApiGatewayMiddleware
     /**
      * @return void
      */
-    private function includeAuth()
+    private function includeAuth(): void
     {
         if (empty($this->auth)) {
             $this->request = $this->request->withoutHeader(self::AUTH_HEADER);
