@@ -7,6 +7,12 @@ e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR
 
 ## [Não Lançado]
 
+## [2.9.11] - 2026-01-27
+
+### Alterado
+
+- Atualizado `aws/aws-sdk-php` para versão `3.368.0.0`
+
 ## [2.9.10] - 2026-01-27
 
 ### Corrigido
