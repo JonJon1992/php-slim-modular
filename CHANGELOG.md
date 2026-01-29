@@ -7,6 +7,14 @@ e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR
 
 ## [Não Lançado]
 
+## [2.9.14] - 2026-01-28
+
+### Corrigido
+
+- ExceptionHandler: corrigido erro de tipo "Return value must be of type int, string returned" no método `getHttpStatusCode()`
+- Conversão de tipos: adicionada conversão explícita `(int)` para `getCode()` garantir retorno de inteiro
+- Simplificação: removida verificação de método `getStatusCode()` desnecessária
+
 ## [2.9.13] - 2026-01-27
 
 ### Corrigido

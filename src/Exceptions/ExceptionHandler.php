@@ -26,21 +26,21 @@ class ExceptionHandler implements IExceptionHandler
     private LoggerInterface $logger;
     private array $statusCodeMap;
     private array $defaultMessages;
-    
+
     public function __construct()
     {
         $this->logger = $this->createLogger();
         $this->statusCodeMap = $this->getStatusCodeMap();
         $this->defaultMessages = $this->getDefaultMessages();
     }
-    
+
     /**
      * Handle an exception and return formatted response data
      */
     public function handle(Throwable $exception): array
     {
         $statusCode = $this->getHttpStatusCode($exception);
-        
+
         $data = [
             'trace-id' => Trace::uuid(),
             'status' => $statusCode,
@@ -48,15 +48,15 @@ class ExceptionHandler implements IExceptionHandler
             'timestamp' => date('c'),
             'path' => $this->getRequestPath(),
         ];
-        
+
         // Add detailed information in development environment
         if (Env::local()) {
             $data['debug'] = $this->getDebugInfo($exception);
         }
-        
+
         return $data;
     }
-    
+
     /**
      * Log exception with context
      */
@@ -65,7 +65,7 @@ class ExceptionHandler implements IExceptionHandler
         try {
             $context = $this->createLogContext($exception, $errorData);
             $logLevel = $errorData['status'] >= 500 ? 'error' : 'warning';
-            
+
             $this->logger->log($logLevel, $exception->getMessage(), $context);
         } catch (Throwable $logException) {
             // Fallback logging to prevent infinite loops
@@ -76,7 +76,7 @@ class ExceptionHandler implements IExceptionHandler
             ));
         }
     }
-    
+
     /**
      * Send error response to client
      */
@@ -85,48 +85,48 @@ class ExceptionHandler implements IExceptionHandler
         if (headers_sent()) {
             return; // Headers already sent, can't modify response
         }
-        
+
         // Clear any existing output
         if (ob_get_level()) {
             ob_end_clean();
         }
-        
+
         // Set response headers
         http_response_code($errorData['status']);
         header('Content-Type: application/json; charset=utf-8');
         header('Cache-Control: no-cache, no-store, must-revalidate');
         header('Pragma: no-cache');
         header('Expires: 0');
-        
+
         // Send JSON response
         echo json_encode($errorData, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
         exit(1);
     }
-    
+
     /**
      * Create logger instance with proper configuration
      */
     private function createLogger(): LoggerInterface
     {
         $logger = new Logger('Application');
-        
+
         try {
             $logPath = config('log.main.path', Path::logs('/app.log'));
             $logLevel = config('app.log_level', 'error');
-            
+
             $handler = new StreamHandler($logPath, $logLevel);
             $handler->setFormatter(new JsonFormatter());
-            
+
             $logger->pushHandler($handler);
             $logger->pushProcessor(fn(array $record) => Trace::processor($record));
         } catch (Throwable $e) {
             // Fallback to basic error logging
             error_log('Failed to configure logger: ' . $e->getMessage());
         }
-        
+
         return $logger;
     }
-    
+
     /**
      * Create context data for logging
      */
@@ -152,42 +152,33 @@ class ExceptionHandler implements IExceptionHandler
             'stack_trace' => $exception->getTraceAsString(),
         ];
     }
-    
+
     /**
      * Get appropriate HTTP status code for exception
      */
     private function getHttpStatusCode(Throwable $exception): int
     {
         $exceptionClass = get_class($exception);
-        
-        // Check if exception has a specific HTTP code
-        if (method_exists($exception, 'getStatusCode')) {
-            return $exception->getStatusCode();
-        }
-        
-        // Check if exception code is a valid HTTP status code
-        $code = $exception->getCode();
+
+        $code = (int) $exception->getCode();
         if ($code >= 100 && $code < 600) {
             return $code;
         }
-        
-        // Use mapped status code or default to 500
+
         return $this->statusCodeMap[$exceptionClass] ?? 500;
     }
-    
-    /**
-     * Get user-friendly error message
-     */
+
+
     private function getErrorMessage(Throwable $exception, int $statusCode): string
     {
         // Use exception message if it's not empty
         if (!empty($exception->getMessage())) {
             return $exception->getMessage();
         }
-        
+
         return $this->defaultMessages[$statusCode] ?? 'Erro inesperado.';
     }
-    
+
     /**
      * Get debug information for development environment
      */
@@ -205,7 +196,7 @@ class ExceptionHandler implements IExceptionHandler
             ] : null,
         ];
     }
-    
+
     /**
      * Get current request path
      */
@@ -213,7 +204,7 @@ class ExceptionHandler implements IExceptionHandler
     {
         return $_SERVER['REQUEST_URI'] ?? '/';
     }
-    
+
     /**
      * Get status code mapping for exception types
      */
@@ -239,7 +230,7 @@ class ExceptionHandler implements IExceptionHandler
             'Core\Exceptions\Exception\InvalidRequestException' => 400,
         ];
     }
-    
+
     /**
      * Get default error messages by status code
      */
@@ -259,4 +250,4 @@ class ExceptionHandler implements IExceptionHandler
             504 => 'Timeout do gateway.',
         ];
     }
-} 
+}
