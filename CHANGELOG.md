@@ -7,6 +7,15 @@ e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR
 
 ## [Não Lançado]
 
+## [2.9.15] - 2026-02-01
+
+### Refatorado
+
+- Refatoração: Melhorias na tipagem e limpeza de código
+- Type hinting aprimorado em diversos métodos
+- Remoção de código não utilizado e comentários redundantes
+- Ajustes em `bootstrap.php` e `helpers.php`
+
 ## [2.9.14] - 2026-01-28
 
 ### Corrigido
