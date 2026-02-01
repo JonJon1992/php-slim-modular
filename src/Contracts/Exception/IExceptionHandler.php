@@ -6,13 +6,6 @@ namespace Core\Contracts\Exception;
 
 use Throwable;
 
-/**
- * Exception Handler Interface
- * 
- * Defines the contract for exception handling implementations.
- * This interface ensures consistent exception handling across
- * different implementations and allows for easy testing and mocking.
- */
 interface IExceptionHandler
 {
     /**
@@ -22,7 +15,7 @@ interface IExceptionHandler
      * @return array Formatted error response data
      */
     public function handle(Throwable $exception): array;
-    
+
     /**
      * Log exception with context
      * 
@@ -30,11 +23,11 @@ interface IExceptionHandler
      * @param array $errorData The error response data
      */
     public function log(Throwable $exception, array $errorData): void;
-    
+
     /**
      * Send error response to client
      * 
      * @param array $errorData The error response data to send
      */
     public function sendResponse(array $errorData): void;
-} 
+}

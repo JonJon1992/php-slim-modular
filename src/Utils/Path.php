@@ -8,11 +8,6 @@ use Composer\Autoload\ClassLoader;
 use ReflectionClass;
 
 /**
- * Classe utilitária para gerenciamento de caminhos do projeto
- * 
- * Fornece métodos estáticos para acessar diferentes diretórios
- * do projeto de forma consistente e centralizada.
- * 
  * @package Core\Utils
  * @author JonJon1992
  * @version 2.4.0
@@ -20,8 +15,6 @@ use ReflectionClass;
 class Path
 {
     /**
-     * Resolve um caminho base com um caminho adicional opcional
-     * 
      * @param string $base Caminho base
      * @param string|null $path Caminho adicional opcional
      * @return string Caminho completo resolvido

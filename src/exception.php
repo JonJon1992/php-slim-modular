@@ -16,7 +16,7 @@ set_exception_handler(function (Throwable $exception) use ($exceptionHandler): v
 
 set_error_handler(function (int $severity, string $message, string $file, int $line): bool {
     if (!(error_reporting() & $severity)) {
-        return false; // Error was suppressed
+        return false;
     }
 
     throw new ErrorException($message, 0, $severity, $file, $line);

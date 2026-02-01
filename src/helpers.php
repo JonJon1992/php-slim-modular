@@ -1,11 +1,14 @@
-<?php /** @noinspection ALL */
+<?php
+
+/** @noinspection ALL */
 
 declare(strict_types=1);
 
 use Core\App\App;
 use Core\Exceptions\Exception\AppException;
 use Core\Middleware\RequestMiddleware;
-use Core\Utils\{Auth, Client, Config, Path, Render\IRendebleAdapter, Trace};
+use Core\Utils\{Auth, Client, Config, Dynamo, Path, Redis, Render\IRendebleAdapter, SqsClient, Trace};
+use Exception;
 use Illuminate\Database\Connection;
 use Psr\Http\Message\ServerRequestInterface;
 use Slim\Views\PhpRenderer;
@@ -21,7 +24,7 @@ function app(): App
 /**
  * @throws AppException
  */
-function abort(string $message, int $code = 400, \Exception $previous = null)
+function abort(string $message, int $code = 400, ?Exception $previous = null)
 {
     throw new AppException($message, $code, $previous);
 }
@@ -47,7 +50,7 @@ function service($key = null): mixed
 /**
  * @param string|null $alias
  */
-function logger(string $alias = null)
+function logger(?string $alias = null)
 {
     $alias = $alias ?? app()->module() ?? config('log.default', array_key_first(config('log')));
     return service("log.$alias");
@@ -56,7 +59,7 @@ function logger(string $alias = null)
 /**
  * @param string|null $alias
  */
-function db(string $alias = null): Connection
+function db(?string $alias = null): Connection
 {
     $alias = $alias ?? app()->module() ?? config('db.default', array_key_first(config('db')));
     return service("db.$alias");
@@ -65,11 +68,10 @@ function db(string $alias = null): Connection
 /**
  * @param string|null $alias
  */
-function redis(string $alias = null): \Core\Utils\Redis
+function redis(?string $alias = null): Redis
 {
     $alias = $alias ?? app()->module() ?? config('cache.default', array_key_first(config('cache')));
     return service("cache.$alias");
-
 }
 
 /**
@@ -86,14 +88,13 @@ function auth(): Auth
 function view(): PhpRenderer
 {
     return service('view');
-
 }
 
 /**
  * @param string|null $alias
  * @return mixed
  */
-function mailer(string $alias = null)
+function mailer(?string $alias = null)
 {
     $alias = $alias ?? app()->module() ?? config('mailer.default', array_key_first(config('mailer')));
     return service("mailer.$alias");
@@ -121,7 +122,7 @@ function keystore(string $name): string
  * @param string|null $alias
  * @return IRendebleAdapter
  */
-function renderAdapter(string $alias = null): IRendebleAdapter
+function renderAdapter(?string $alias = null): IRendebleAdapter
 {
     $alias = $alias ?: config('view.folder');
     return service("view." . $alias);
@@ -137,19 +138,18 @@ function request(): ServerRequestInterface
 
 /**
  * @param array $config
- * @return \GuzzleHttp\Client
+ * @return Client
  */
 function http(array $config = []): \GuzzleHttp\Client
 {
     return Trace::http($config);
-
 }
 
 /**
  * @param string|null $alias
- * @return \Core\Utils\SqsClient
+ * @return SqsClient
  */
-function queue(string $alias = null)
+function queue(?string $alias = null)
 {
     $alias = $alias ?? app()->module() ?? config('queue.default', array_key_first(config('queue')));
     return service("queue.$alias");
@@ -157,12 +157,10 @@ function queue(string $alias = null)
 
 /**
  * @param string|null $alias
- * @return \Core\Utils\Dynamo
+ * @return Dynamo
  */
-function dynamo(string $alias = null): \Core\Utils\Dynamo
+function dynamo(?string $alias = null): Dynamo
 {
     $alias = $alias ?? app()->module() ?? config('dynamo.default', array_key_first(config('dynamo')));
     return service("dynamo.$alias");
 }
-
-

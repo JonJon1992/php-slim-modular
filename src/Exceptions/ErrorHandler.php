@@ -13,12 +13,6 @@ use Slim\Exception\HttpNotFoundException;
 use Slim\Handlers\ErrorHandler as SlimErrorHandler;
 use Throwable;
 
-/**
- * Error Handler for Slim Framework
- * 
- * Extends Slim's ErrorHandler to provide consistent error handling
- * with the application's exception handling system.
- */
 class ErrorHandler extends SlimErrorHandler
 {
     private IExceptionHandler $exceptionHandler;
@@ -29,24 +23,18 @@ class ErrorHandler extends SlimErrorHandler
         $this->exceptionHandler = $exceptionHandler ?? new ExceptionHandler();
     }
 
-    /**
-     * Handle the error and return a response
-     */
     public function respond(): ResponseInterface
     {
         $response = $this->responseFactory->createResponse();
 
-        // Handle OPTIONS requests for CORS
         if ($this->request->getMethod() === 'OPTIONS' && !$this->exception instanceof HttpNotFoundException) {
             return $response->withStatus(200);
         }
-
-        // Use the exception handler to process the error
         $errorData = $this->exceptionHandler->handle($this->exception ?? new \RuntimeException('Unknown error'));
-        
+
         // Add Slim-specific information
         $errorData = $this->addSlimSpecificData($errorData);
-        
+
         // Log the error
         if ($this->exception) {
             $this->exceptionHandler->log($this->exception, $errorData);
@@ -59,7 +47,7 @@ class ErrorHandler extends SlimErrorHandler
 
         // Write response
         $response->getBody()->write(json_encode($errorData, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
-        
+
         return $response
             ->withHeader('Content-Type', 'application/json; charset=utf-8')
             ->withHeader('Cache-Control', 'no-cache, no-store, must-revalidate')
@@ -67,13 +55,8 @@ class ErrorHandler extends SlimErrorHandler
             ->withHeader('Expires', '0')
             ->withStatus($errorData['status']);
     }
-
-    /**
-     * Add Slim-specific data to the error response
-     */
     private function addSlimSpecificData(array $errorData): array
     {
-        // Add request information
         $errorData['request'] = [
             'method' => $this->request->getMethod(),
             'uri' => (string) $this->request->getUri(),
@@ -82,14 +65,12 @@ class ErrorHandler extends SlimErrorHandler
             'ip' => $this->getClientIp(),
         ];
 
-        // Add user information if available
         if (function_exists('auth') && auth()) {
             $errorData['user'] = [
                 'id' => auth()->id() ?? null,
             ];
         }
 
-        // Add specific information for HTTP method not allowed
         if ($this->exception instanceof HttpMethodNotAllowedException) {
             $errorData['allowed_methods'] = $this->exception->getAllowedMethods();
         }
@@ -97,9 +78,6 @@ class ErrorHandler extends SlimErrorHandler
         return $errorData;
     }
 
-    /**
-     * Get debug information for development environment
-     */
     private function getDebugInfo(array $errorData): array
     {
         $debug = [];
@@ -121,7 +99,6 @@ class ErrorHandler extends SlimErrorHandler
             }
         }
 
-        // Add request details
         $debug['request'] = [
             'method' => $this->request->getMethod(),
             'uri' => (string) $this->request->getUri(),
@@ -129,7 +106,6 @@ class ErrorHandler extends SlimErrorHandler
             'query_params' => $this->request->getQueryParams(),
         ];
 
-        // Add response details
         $debug['response'] = [
             'status_code' => $errorData['status'] ?? 500,
             'headers' => [],
@@ -138,14 +114,11 @@ class ErrorHandler extends SlimErrorHandler
         return $debug;
     }
 
-    /**
-     * Get client IP address
-     */
+
     private function getClientIp(): string
     {
         $serverParams = $this->request->getServerParams();
-        
-        // Check for forwarded IP headers
+
         $forwardedHeaders = [
             'HTTP_X_FORWARDED_FOR',
             'HTTP_X_REAL_IP',

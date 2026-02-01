@@ -14,13 +14,6 @@ use Monolog\Logger;
 use Psr\Log\LoggerInterface;
 use Throwable;
 
-/**
- * Exception Handler Class
- * 
- * Centralized exception handling with proper separation of concerns.
- * This class provides a clean interface for handling exceptions
- * with appropriate logging and response formatting.
- */
 class ExceptionHandler implements IExceptionHandler
 {
     private LoggerInterface $logger;
@@ -34,9 +27,6 @@ class ExceptionHandler implements IExceptionHandler
         $this->defaultMessages = $this->getDefaultMessages();
     }
 
-    /**
-     * Handle an exception and return formatted response data
-     */
     public function handle(Throwable $exception): array
     {
         $statusCode = $this->getHttpStatusCode($exception);
@@ -57,9 +47,6 @@ class ExceptionHandler implements IExceptionHandler
         return $data;
     }
 
-    /**
-     * Log exception with context
-     */
     public function log(Throwable $exception, array $errorData): void
     {
         try {
@@ -77,9 +64,6 @@ class ExceptionHandler implements IExceptionHandler
         }
     }
 
-    /**
-     * Send error response to client
-     */
     public function sendResponse(array $errorData): void
     {
         if (headers_sent()) {

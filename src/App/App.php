@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Core\App;
@@ -19,7 +20,7 @@ class App extends \Slim\App
      * @param Container|null $container
      * @return self
      */
-    public static function singleton(Container $container = null): self
+    public static function singleton(?Container $container = null): self
     {
         static $singleton = null;
         if (is_null($singleton)) {

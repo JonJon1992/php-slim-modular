@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Core\App;
@@ -187,7 +188,7 @@ abstract class Module implements IModule
      * @param $message
      * @return LoggerInterface
      */
-    function log(JsonSerializable $obj = null, $message = null): LoggerInterface
+    function log(?JsonSerializable $obj = null, $message = null): LoggerInterface
     {
         $logger = logger($this->namespace());
         if ($obj) {
@@ -209,19 +210,13 @@ abstract class Module implements IModule
      * @return void
      */
 
-    public function v1(Route $v1)
-    {
-
-    }
+    public function v1(Route $v1) {}
 
     /**
      * @param Route $v2
      * @return void
      */
-    public function v2(Route $v2)
-    {
-
-    }
+    public function v2(Route $v2) {}
 
     public function redis(): Redis
     {
@@ -241,7 +236,6 @@ abstract class Module implements IModule
         return Email::create()
             ->setMailer($this->mailer())
             ->setRender($this->renderAdapter());
-
     }
 
     public function mailer()

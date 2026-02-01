@@ -126,7 +126,6 @@ class  ApiGatewayMiddleware
             if ($this->isIpAllowed($session->ip, $this->getIp()) !== true) {
                 throw new InvalidRequestException('Requisição inválida');
             }
-
         }
         if (isset($signature->on) && ($signature->on === false || $signature->on === 'false')) {
             throw new InvalidRequestException('Requisição inválida');
@@ -160,14 +159,11 @@ class  ApiGatewayMiddleware
             throw new InvalidRequestException('Requisição inválida');
         }
 
-        redis()->set($uk, 1, Time::_5M);
+        redis()->set($uk, 1, Time::_1H);
 
         $this->auth = $session->usuario;
     }
 
-    /**
-     * @return string|null
-     */
     private function getModuleKey(): ?string
     {
         if ($this->request->hasHeader(self::CLIENT_HEADER)) {
@@ -176,7 +172,6 @@ class  ApiGatewayMiddleware
 
         $params = $this->request->getQueryParams();
         return isset($params[self::CLIENT_PARAM]) ? trim((string)$params[self::CLIENT_PARAM]) : null;
-
     }
 
     /**
@@ -198,7 +193,7 @@ class  ApiGatewayMiddleware
      */
     private function getModuleSystems(): mixed
     {
-        $cacheKey = 'auth:systems';
+        $cacheKey = 'auth:module_client_keys';
         $redis = redis();
 
         $items = $redis->get($cacheKey);
@@ -209,10 +204,7 @@ class  ApiGatewayMiddleware
 
         $items = db()
             ->query()
-            ->select([
-                'key',
-                'id',
-                'name'])
+            ->select()
             ->from('module_client_keys')
             ->get()
             ->toArray();
@@ -223,7 +215,7 @@ class  ApiGatewayMiddleware
             return $modules;
         }, []);
 
-        $redis->set($cacheKey, json_encode($items), Time::_10M);
+        $redis->set($cacheKey, json_encode($items), Time::_24H);
 
         return $items;
     }
@@ -329,8 +321,13 @@ class  ApiGatewayMiddleware
     {
         $trustedProxies = ['127.0.0.1', '::1'];
         $keys = [
-            'HTTP_CF_CONNECTING_IP', 'HTTP_CLIENT_IP', 'HTTP_X_FORWARDED_FOR',
-            'HTTP_X_FORWARDED', 'HTTP_FORWARDED_FOR', 'HTTP_FORWARDED', 'REMOTE_ADDR',
+            'HTTP_CF_CONNECTING_IP',
+            'HTTP_CLIENT_IP',
+            'HTTP_X_FORWARDED_FOR',
+            'HTTP_X_FORWARDED',
+            'HTTP_FORWARDED_FOR',
+            'HTTP_FORWARDED',
+            'REMOTE_ADDR',
         ];
 
         foreach ($keys as $key) {
@@ -350,6 +347,4 @@ class  ApiGatewayMiddleware
 
         return $default;
     }
-
-
 }

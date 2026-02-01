@@ -3,6 +3,7 @@
 namespace Core\Utils;
 
 use Core\Utils\Str;
+use GuzzleHttp\Client;
 
 class Trace
 {
@@ -74,9 +75,9 @@ class Trace
 
     /**
      * @param array $config
-     * @return \GuzzleHttp\Client
+     * @return Client
      */
-    public static function http(array $config = []): \GuzzleHttp\Client
+    public static function http(array $config = []): Client
     {
         if (empty($config['headers'])) {
             $config['headers'] = [];
@@ -84,6 +85,6 @@ class Trace
 
         $config['headers']['trace-id'] = self::uuid();
 
-        return new \GuzzleHttp\Client($config);
+        return new Client($config);
     }
 }

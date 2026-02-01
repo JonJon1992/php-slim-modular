@@ -2,16 +2,6 @@
 
 declare(strict_types=1);
 
-/**
- * Bootstrap da Aplicação
- *
- * Este arquivo é responsável por inicializar todos os componentes
- * necessários para o funcionamento da aplicação.
- *
- * @package Core
- * @version 2.3.0
- */
-
 use Core\App\App;
 use Core\Exceptions\Exception\AppException;
 use Core\Utils\Path;
@@ -64,9 +54,8 @@ try {
         return $module;
     }, $modules)]);
     $container = $containerBuilder->build();
-
 } catch (\Exception $e) {
-    throw new AppException('Erro ao configurar container de dependências: ' . $e->getMessage(), 0, $e);
+    throw new AppException('Erro ao configurar as dependências: ' . $e->getMessage(), 0, $e);
 }
 
 try {
@@ -88,12 +77,12 @@ try {
     if (!$app instanceof App) {
         throw new AppException('Aplicação não foi inicializada corretamente');
     }
-
+    $app->run();
     if (!$container->has('modules')) {
-        throw new AppException('Container não possui módulos configurados');
+        throw new AppException('Não foram encontrados módulos configurados');
     }
 } catch (\Exception $e) {
-    throw new AppException('Erro na validação final da aplicação: ' . $e->getMessage(), 0, $e);
+    throw new AppException('Erro na validação da aplicação: ' . $e->getMessage(), 0, $e);
 }
 
 return $app;

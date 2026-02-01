@@ -22,7 +22,6 @@ class Crypt implements ICrypt
         self::$singleton = $this;
         $this->bcrypt = new BcryptHasher(['verify' => true]);
         $this->hashids = new Hashids(env('APP_SALT_CRYPT'), 32);
-
     }
 
     /**
@@ -51,7 +50,7 @@ class Crypt implements ICrypt
     {
         try {
             return $this->bcrypt->check($value, $hash);
-        } catch (\Exception) {
+        } catch (Exception) {
             return false;
         }
     }
@@ -151,14 +150,12 @@ class Crypt implements ICrypt
             $data->setItems(
                 array_map(fn(Paginator $paginator) => $this->doTransform($paginator->jsonSerialize(), $keys), $data->getItems())
             );
-
         } else if ($data instanceof JsonSerializable) {
             $data = $this->doTransform($data->jsonSerialize(), $keys);
         } else if (is_array($data)) {
             $data = array_map(fn($item) => $item instanceof JsonSerializable ? $this->doTransform($item->jsonSerialize(), $keys) : $this->doTransform($item, $keys), $data);
         }
         return $data;
-
     }
 
     private function doTransform(array $data, array $keys, bool $encode = true): array
@@ -167,6 +164,5 @@ class Crypt implements ICrypt
             $data = $this->transform($data, explode('.', $key), $encode);
         }
         return $data;
-
     }
 }

@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Core\Contracts;
@@ -33,8 +34,7 @@ interface IModule
 
     function eventSubscribers(App $app): void;
 
-    function log(JsonSerializable $obj = null, $message = null): LoggerInterface;
+    function log(?JsonSerializable $obj = null, $message = null): LoggerInterface;
 
     function redis(): Redis;
-
 }

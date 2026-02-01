@@ -19,7 +19,7 @@ class Validate implements IValidate
      * @param array $messages
      * @throws ValidatorException
      */
-    public static function value($value, array $rules, string $key, string $group = null, array $messages = []): void
+    public static function value($value, array $rules, string $key, ?string $group = null, array $messages = []): void
     {
         self::validate($value, $rules, $messages);
     }
@@ -33,7 +33,7 @@ class Validate implements IValidate
      * @throws ValidatorException
      */
     public
-    static function request(array $data, array $rules, string $group = null, array $messages = [], $default = null): void
+    static function request(array $data, array $rules, ?string $group = null, array $messages = [], $default = null): void
     {
         self::validate($data, $rules, $messages);
     }
@@ -47,8 +47,6 @@ class Validate implements IValidate
      */
     private static function validate($subject, array $rules, array $messages = []): void
     {
-        // Para Value Objects, vamos usar uma abordagem mais simples
-        // já que os rules são passados como array de regras do Respect\Validation
         if (isset($rules['rules'])) {
             $validator = $rules['rules'];
             if (!$validator->validate($subject)) {
@@ -65,8 +63,6 @@ class Validate implements IValidate
     }
 
     /**
-     * Creates a new Validator instance with a rule that was called on the static method.
-     *
      * @param mixed[] $arguments
      *
      * @throws ComponentException
@@ -76,5 +72,4 @@ class Validate implements IValidate
     {
         return Validator::create()->__call($ruleName, $arguments);
     }
-
 }

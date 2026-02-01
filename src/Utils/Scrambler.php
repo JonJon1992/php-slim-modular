@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Core\Utils;
@@ -35,9 +36,6 @@ class Scrambler
             $randChar = ord($chars[0]);
             $encryptedChar = ord($chars[1]);
 
-            // Reverte o cálculo do encode: offset = ((ord($chr) - 33) + $rand) % 94) + 33
-            // Calcula: (ord($chr) - 33) = (offset - 33) - (rand % 94)
-            // Se o resultado for negativo, adiciona 94
             $offset = $encryptedChar - 33;
             $randMod = $randChar % 94;
             $originalOffset = $offset - $randMod;
