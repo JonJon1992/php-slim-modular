@@ -2,34 +2,27 @@
 
 namespace Core\Utils;
 
-use Aws\Credentials\Credentials;
+
+use Core\Traits\AwsClientBase;
+use Exception;
 
 class SnsClient extends \Aws\Sns\SnsClient
 {
-    private $topics;
+    use AwsClientBase;
 
-    private array $configs;
+    private $topics;
 
     public function __construct(array $configs)
     {
-        $this->configs = $configs;
-        $credentials = new Credentials($configs['key'], $configs['secret']);
-        $config = [
-            'region' => $configs['region'],
-            'version' => $configs['version'],
-            'credentials' => $credentials,
-        ];
-        if (!empty($configs['endpoint'])) {
-            $config['endpoint'] = $configs['endpoint'];
-        }
+        $config = $this->buildAwsConfig($configs);
         parent::__construct($config);
     }
 
     /**
      * Summary of topic
      * @param string $alias
-     * @throws \Exception
      * @return Topic
+     * @throws Exception
      */
     public function topic(string $alias)
     {
@@ -37,7 +30,7 @@ class SnsClient extends \Aws\Sns\SnsClient
             return $this->topics[$alias];
         }
         if (!!isset($this->configs['topics'][$alias])) {
-            throw new \Exception("Topic $alias not found");
+            throw new Exception("Topic $alias not found");
         }
         return $this->topics[$alias] = new Topic($this, $this->configs['topics'][$alias]);
     }
