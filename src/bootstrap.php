@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 use Core\App\App;
 use Core\Exceptions\Exception\AppException;
-use Core\Traits\Path;
-use Core\Traits\Trace;
+use Core\Utils\Path;
+use Core\Utils\Trace;
 use DI\ContainerBuilder;
 use Dotenv\Dotenv;
 use function DI\autowire;

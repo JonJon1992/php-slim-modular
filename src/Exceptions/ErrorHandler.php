@@ -5,8 +5,7 @@ declare(strict_types=1);
 namespace Core\Exceptions;
 
 use Core\Contracts\Exception\IExceptionHandler;
-use Core\Traits\Env;
-use Core\Traits\Trace;
+use Core\Utils\Env;
 use Psr\Http\Message\ResponseInterface;
 use Slim\Exception\HttpMethodNotAllowedException;
 use Slim\Exception\HttpNotFoundException;
@@ -32,10 +31,8 @@ class ErrorHandler extends SlimErrorHandler
         }
         $errorData = $this->exceptionHandler->handle($this->exception ?? new \RuntimeException('Unknown error'));
 
-        // Add Slim-specific information
         $errorData = $this->addSlimSpecificData($errorData);
 
-        // Log the error
         if ($this->exception) {
             $this->exceptionHandler->log($this->exception, $errorData);
         }
