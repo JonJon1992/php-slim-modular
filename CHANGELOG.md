@@ -7,6 +7,15 @@ e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR
 
 ## [Não Lançado]
 
+## [2.9.17] - 2026-02-01
+
+### Refatorado
+
+- Migração de Traits para Utils: movidas classes `Env`, `Path` e `Trace` de traits para utils
+- ErrorHandler: atualizado para usar `Core\Utils\Env` ao invés de `Core\Traits\Env`
+- Bootstrap: atualizado para usar `Core\Utils\Path` e `Core\Utils\Trace`
+- Limpeza: removidos comentários redundantes no ErrorHandler
+
 ## [2.9.16] - 2026-02-01
 
 ### Refatorado
