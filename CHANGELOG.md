@@ -7,6 +7,16 @@ e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR
 
 ## [Não Lançado]
 
+## [2.9.16] - 2026-02-01
+
+### Refatorado
+
+- Clients AWS: extraída lógica comum de inicialização para trait `AwsClientBase`
+- SnsClient: refatorado para usar trait `AwsClientBase`, eliminando código duplicado
+- SqsClient: refatorado para usar trait `AwsClientBase`, eliminando código duplicado
+- DRY: reduzido duplicação de código entre clients AWS (de ~30 linhas duplicadas para trait reutilizável)
+- Manutenibilidade: mudanças futuras em configuração AWS agora centralizadas em um único local
+
 ## [2.9.15] - 2026-02-01
 
 ### Refatorado
