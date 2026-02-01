@@ -6,7 +6,7 @@ use Carbon\Carbon;
 use Core\Abstract\AbstractCommand;
 use Core\App\Module;
 use Core\Exceptions\Exception\CommandException;
-use Core\Utils\Crypt;
+use Core\Traits\Crypt;
 use Illuminate\Database\Connection;
 use Illuminate\Database\Schema\Blueprint;
 use Symfony\Component\Console\Input\InputArgument;

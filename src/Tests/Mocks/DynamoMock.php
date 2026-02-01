@@ -2,7 +2,7 @@
 
 namespace Core\Tests\Mocks;
 
-use Core\Utils\Dynamo;
+use Core\Traits\Dynamo;
 use Aws\Result;
 use Jonjon\PhpDynamo\Item\DynamoItem;
 use Jonjon\PhpDynamo\DynamoManager;

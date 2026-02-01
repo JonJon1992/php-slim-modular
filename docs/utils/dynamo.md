@@ -20,7 +20,7 @@ O util já está incluído no projeto e depende da package `jonjon1992/php-dynam
 ### Ambiente Local (LocalStack)
 
 ```php
-use Core\Utils\Dynamo;
+use Core\Traits\Dynamo;
 
 // Configuração manual para LocalStack
 $dynamo = Dynamo::createWithCredentials(

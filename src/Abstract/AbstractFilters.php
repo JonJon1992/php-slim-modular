@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace Core\Abstract;
 
-use Core\Utils\Serializable;
+use Core\Traits\Serializable;
 
 abstract class AbstractFilters extends Serializable
 {

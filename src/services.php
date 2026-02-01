@@ -1,10 +1,12 @@
 <?php
+
 declare(strict_types=1);
 
-use Core\Utils\{Arr, Config, Path, Redis, Render\SlimPhpRenderAdapter, SqsClient, Trace, Dynamo};
+use Core\Traits\{Arr, Config, Path, Redis, Render\SlimPhpRenderAdapter, Trace, Dynamo};
 use DI\ContainerBuilder;
 use Illuminate\Container\Container;
 use Illuminate\Database\Capsule\Manager;
+use Illuminate\Database\Connection;
 use Illuminate\Events\Dispatcher;
 use Monolog\Formatter\JsonFormatter;
 use Monolog\Handler\StreamHandler;
@@ -12,6 +14,7 @@ use Monolog\Logger;
 use Nette\Mail\SmtpMailer;
 use S3\Lib\S3;
 use Slim\Views\PhpRenderer;
+use Illuminate\Queue\Capsule\Manager as QueueManager;
 
 
 return function (ContainerBuilder $builder) {
@@ -70,15 +73,44 @@ return function (ContainerBuilder $builder) {
         S3::singleton()->use($alias, $settings);
     }
 
-    foreach ($configs->get('queue', []) as $alias => $settings) {
-        if ($alias === 'default') {
-            continue;
+    $bindings['queue'] = function () use ($configs) {
+        $container = new Container();
+        $container->bind('db', function () {
+            return new class {
+                public function connection($name = null): Connection
+                {
+                    return Manager::connection($name);
+                }
+            };
+        });
+
+        $container->bind('exception.handler', function () {
+            return new class {
+                public function report(\Throwable $e): void
+                {
+                    if (function_exists('logger')) {
+                        logger()->error($e->getMessage(), ['exception' => $e]);
+                    }
+                }
+                public function shouldReport(\Throwable $e)
+                {
+                    return true;
+                }
+            };
+        });
+
+        $capsule = new QueueManager($container);
+        $config = $configs->get('queue');
+        if (isset($config['connections'])) {
+            foreach ($config['connections'] as $name => $conn) {
+                $capsule->addConnection($conn, $name);
+            }
         }
 
-        $bindings["queue.$alias"] = function () use ($settings) {
-            return new SqsClient($settings);
-        };
-    }
+        $capsule->setAsGlobal();
+
+        return $capsule;
+    };
 
     foreach ($configs->get('dynamo', []) as $alias => $settings) {
         if ($alias === 'default') {

@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace Core\ValueObjects;
 
-use Core\Utils\Validate;
+use Core\Traits\Validate;
 use DateTime;
 
 class Date extends ValueObject

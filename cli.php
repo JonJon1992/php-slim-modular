@@ -1,4 +1,5 @@
 <?php
+
 use Core\App\App;
 use Core\Commands\MigrateCreateCommand;
 use Core\Commands\MigrateRunCommand;
@@ -14,5 +15,6 @@ $cli->addCommands($app->commands());
 
 $cli->add(new MigrateCreateCommand());
 $cli->add(new MigrateRunCommand());
+$cli->add(new \Core\Commands\QueueWorkCommand());
 
 $cli->run();

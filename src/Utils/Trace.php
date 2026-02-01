@@ -1,8 +1,6 @@
 <?php
 
 namespace Core\Utils;
-
-use Core\Utils\Str;
 use GuzzleHttp\Client;
 
 class Trace

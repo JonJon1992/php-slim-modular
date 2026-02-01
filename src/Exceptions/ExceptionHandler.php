@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace Core\Exceptions;
 
 use Core\Contracts\Exception\IExceptionHandler;
-use Core\Utils\Env;
-use Core\Utils\Path;
-use Core\Utils\Trace;
+use Core\Traits\Env;
+use Core\Traits\Path;
+use Core\Traits\Trace;
 use Monolog\Formatter\JsonFormatter;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;

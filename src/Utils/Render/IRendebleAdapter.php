@@ -1,6 +1,6 @@
 <?php
 
-namespace Core\Utils\Render;
+namespace Core\Traits\Render;
 
 use Psr\Http\Message\ResponseInterface;
 

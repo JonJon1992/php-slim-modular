@@ -3,8 +3,8 @@ declare(strict_types=1);
 
 namespace Core\ValueObjects;
 
-use Core\Utils\Mask;
-use Core\Utils\Str;
+use Core\Traits\Mask;
+use Core\Traits\Str;
 
 class Telefone extends ValueObject
 {

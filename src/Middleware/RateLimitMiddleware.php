@@ -3,7 +3,6 @@
 declare(strict_types=1);
 
 namespace Core\Middleware;
-
 use Core\Utils\Redis;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -61,7 +60,6 @@ class RateLimitMiddleware implements MiddlewareInterface
     private function getRateLimitKey(ServerRequestInterface $request): string
     {
         $identifier = match ($this->identifier) {
-            'ip' => $this->getClientIp($request),
             'user' => $this->getUserId($request),
             'token' => $this->getToken($request),
             default => $this->getClientIp($request)

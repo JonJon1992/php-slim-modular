@@ -5,7 +5,7 @@ use Core\Action\ImAliveAction;
 use Core\Action\VersionAction;
 use Core\App\App;
 use Core\App\Module;
-use Core\Utils\Path;
+use Core\Traits\Path;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Slim\Exception\HttpNotFoundException;

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Core\Abstract;
 
-use Core\Utils\Arr;
+use Core\Traits\Arr;
 use JsonSerializable;
 
 /**

@@ -6,7 +6,7 @@ namespace Core\Contracts;
 
 use Core\App\App;
 use Core\Contracts\Event\IEventDispatcher;
-use Core\Utils\Redis;
+use Core\Traits\Redis;
 use Illuminate\Database\Connection;
 use JsonSerializable;
 use Psr\Log\LoggerInterface;

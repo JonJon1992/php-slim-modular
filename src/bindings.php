@@ -1,7 +1,7 @@
 <?php
 
 use Core\Contracts\{IAuth, IClient, ICrypt, IValidate};
-use Core\Utils\{Auth, Client, Crypt, Validate};
+use Core\Traits\{Auth, Client, Crypt, Validate};
 
 return [
     ICrypt::class => Crypt::class,

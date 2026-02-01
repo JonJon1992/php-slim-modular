@@ -7,7 +7,7 @@ declare(strict_types=1);
 use Core\App\App;
 use Core\Exceptions\Exception\AppException;
 use Core\Middleware\RequestMiddleware;
-use Core\Utils\{Auth, Client, Config, Dynamo, Path, Redis, Render\IRendebleAdapter, SqsClient, Trace};
+use Core\Traits\{Auth, Client, Config, Dynamo, Path, Redis, Render\IRendebleAdapter, SqsClient, Trace};
 use Exception;
 use Illuminate\Database\Connection;
 use Psr\Http\Message\ServerRequestInterface;
@@ -149,10 +149,13 @@ function http(array $config = []): \GuzzleHttp\Client
  * @param string|null $alias
  * @return SqsClient
  */
-function queue(?string $alias = null)
+function queue(?string $connection = null)
 {
-    $alias = $alias ?? app()->module() ?? config('queue.default', array_key_first(config('queue')));
-    return service("queue.$alias");
+    $manager = service('queue');
+    if ($connection) {
+        return $manager->connection($connection);
+    }
+    return $manager;
 }
 
 /**

@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Core\Exceptions;
 
 use Core\Contracts\Exception\IExceptionHandler;
-use Core\Utils\Env;
-use Core\Utils\Trace;
+use Core\Traits\Env;
+use Core\Traits\Trace;
 use Psr\Http\Message\ResponseInterface;
 use Slim\Exception\HttpMethodNotAllowedException;
 use Slim\Exception\HttpNotFoundException;

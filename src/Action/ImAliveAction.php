@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace Core\Action;
 
 use Core\App\Action;
-use Core\Utils\Path;
-use Core\Utils\Str;
-use Core\Utils\Time;
+use Core\Traits\Path;
+use Core\Traits\Str;
+use Core\Traits\Time;
 use Exception;
 use Illuminate\Filesystem\Filesystem;
 use Psr\Http\Message\ResponseInterface;

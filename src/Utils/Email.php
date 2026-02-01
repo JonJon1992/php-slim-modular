@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace Core\Utils;
 
 use Core\Traits\Create;
-use Core\Utils\Render\IRendebleAdapter;
+use Core\Traits\Render\IRendebleAdapter;
 use Nette\Mail\Message;
 use Nette\Mail\SmtpMailer;
 

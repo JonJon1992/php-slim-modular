@@ -8,7 +8,7 @@ use Core\Traits\Attr\DataAlteracao;
 use Core\Traits\Attr\DataCriacao;
 use Core\Traits\Attr\DataExclusao;
 use Core\Traits\Attr\Id;
-use Core\Utils\Serializable;
+use Core\Traits\Serializable;
 
 class AbstractEntity extends Serializable
 {

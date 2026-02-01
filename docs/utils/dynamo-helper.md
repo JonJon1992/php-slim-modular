@@ -157,7 +157,7 @@ O helper integra automaticamente com o sistema de injeção de dependência:
 ```php
 class UserService
 {
-    public function __construct(private \Core\Utils\Dynamo $dynamo) {}
+    public function __construct(private \Core\Traits\Dynamo $dynamo) {}
     
     public function createUser(string $email, string $name): User
     {
