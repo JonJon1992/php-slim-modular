@@ -6,7 +6,7 @@ namespace Core\Tests;
 use Core\App\App;
 use Core\Tests\Mocks\DynamoMock;
 use Core\Tests\Mocks\RedisMock;
-use Core\Traits\Config;
+use Core\Utils\Config;
 use DI\Container;
 use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerInterface;

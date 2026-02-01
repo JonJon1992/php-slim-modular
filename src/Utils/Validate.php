@@ -1,8 +1,6 @@
 <?php
 
 namespace Core\Utils;
-
-use Respect\Validation\Validator as RespectValidator;
 use Core\Contracts\IValidate;
 use Core\Exceptions\Exception\ValidatorException;
 use Respect\Validation\Exceptions\ComponentException;
@@ -63,8 +61,10 @@ class Validate implements IValidate
     }
 
     /**
-     * @param mixed[] $arguments
+     * @param string $ruleName
+     * @param array $arguments
      *
+     * @return Validator
      * @throws ComponentException
      */
     public

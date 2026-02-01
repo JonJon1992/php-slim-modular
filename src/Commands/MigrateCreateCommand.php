@@ -7,8 +7,8 @@ use Carbon\Carbon;
 use Core\Abstract\AbstractCommand;
 use Core\App\Module;
 use Core\Exceptions\Exception\CommandException;
-use Core\Traits\Path;
-use Core\Traits\Str;
+use Core\Utils\Path;
+use Core\Utils\Str;
 use Illuminate\Filesystem\Filesystem;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
@@ -47,8 +47,7 @@ class MigrateCreateCommand extends AbstractCommand
         
         $moduleName = $this->input->getArgument('module');
         $migrationName = $this->input->getArgument('name');
-        
-        // Validação dos argumentos
+
         if (empty($moduleName) || empty($migrationName)) {
             $this->io->error('Nome do módulo e da migration são obrigatórios');
             return;
@@ -63,11 +62,9 @@ class MigrateCreateCommand extends AbstractCommand
         }
 
         $this->io->section(sprintf('Módulo: %s', get_class($module)));
-        
-        // Interação para melhorar o nome da migration se necessário
+
         $migrationName = $this->interactiveMigrationName($migrationName);
-        
-        // Determinar o tipo de migration
+
         $migrationType = $this->determineMigrationType();
         $tableName = $this->input->getOption('table');
         

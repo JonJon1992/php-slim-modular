@@ -3,7 +3,8 @@ declare(strict_types=1);
 
 namespace Core\Abstract;
 
-use Core\Traits\Serializable;
+
+use Core\Utils\Serializable;
 
 abstract class AbstractFilters extends Serializable
 {
@@ -163,7 +164,6 @@ abstract class AbstractFilters extends Serializable
             ->setColumns($data->propertities ?? null)
             ->setNotColumns($data->not_propertities ?? null)
             ->setWithAssociations($data->with_associations ?? null);
-
     }
 
 }

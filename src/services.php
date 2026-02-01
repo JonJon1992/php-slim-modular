@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use Core\Traits\{Arr, Config, Path, Redis, Render\SlimPhpRenderAdapter, Trace, Dynamo};
+use Core\Utils\{Arr, Config, Path, Redis, Render\SlimPhpRenderAdapter, Trace, Dynamo};
 use DI\ContainerBuilder;
 use Illuminate\Container\Container;
 use Illuminate\Database\Capsule\Manager;

@@ -2,7 +2,7 @@
 
 namespace Core\ValueObjects;
 
-use Core\Traits\Validate;
+use Core\Utils\Validate;
 use Exception;
 use Stringable;
 

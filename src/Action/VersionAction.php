@@ -3,7 +3,7 @@
 namespace Core\Action;
 
 use Core\App\Action;
-use Core\Traits\Path;
+use Core\Utils\Path;
 
 class VersionAction extends Action
 {

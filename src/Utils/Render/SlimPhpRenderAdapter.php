@@ -1,6 +1,6 @@
 <?php
 
-namespace Core\Traits\Render;
+namespace Core\Utils\Render;
 
 use Slim\Views\PhpRenderer;
 

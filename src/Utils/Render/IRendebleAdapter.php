@@ -1,6 +1,6 @@
 <?php
 
-namespace Core\Traits\Render;
+namespace Core\Utils\Render;
 
 use Psr\Http\Message\ResponseInterface;
 
@@ -24,5 +24,4 @@ interface IRendebleAdapter
      * @param array $data
      */
     public function renderToString(string $templateName, array $data = []);
-
 }

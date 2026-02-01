@@ -5,24 +5,14 @@ declare(strict_types=1);
 namespace Core\Action;
 
 use Core\App\Action;
-use Core\Traits\Path;
-use Core\Traits\Str;
-use Core\Traits\Time;
+use Core\Utils\Path;
+use Core\Utils\Str;
+use Core\Utils\Time;
 use Exception;
 use Illuminate\Filesystem\Filesystem;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Log\LoggerInterface;
 
-/**
- * Health Check Action
- *
- * Endpoint para verificação de saúde dos serviços da aplicação.
- * Verifica conectividade com cache (Redis), banco de dados, storage (S3) e DynamoDB.
- *
- * @package Core\Action
- * @author JonJon1992
- * @version 2.3.0
- */
 class ImAliveAction extends Action
 {
     private const HEALTHY_CHECK_FILE = '/im-alive.log';

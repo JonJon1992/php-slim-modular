@@ -4,10 +4,7 @@ declare(strict_types=1);
 
 use Core\Exceptions\ExceptionHandler;
 
-
-
 $exceptionHandler = new ExceptionHandler();
-
 set_exception_handler(function (Throwable $exception) use ($exceptionHandler): void {
     $errorData = $exceptionHandler->handle($exception);
     $exceptionHandler->log($exception, $errorData);

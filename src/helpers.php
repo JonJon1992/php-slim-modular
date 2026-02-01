@@ -7,8 +7,7 @@ declare(strict_types=1);
 use Core\App\App;
 use Core\Exceptions\Exception\AppException;
 use Core\Middleware\RequestMiddleware;
-use Core\Traits\{Auth, Client, Config, Dynamo, Path, Redis, Render\IRendebleAdapter, SqsClient, Trace};
-use Exception;
+use Core\Utils\{Auth, Client, Config, Dynamo, Path, Redis, Render\IRendebleAdapter, SqsClient, Trace};
 use Illuminate\Database\Connection;
 use Psr\Http\Message\ServerRequestInterface;
 use Slim\Views\PhpRenderer;
@@ -24,7 +23,7 @@ function app(): App
 /**
  * @throws AppException
  */
-function abort(string $message, int $code = 400, ?Exception $previous = null)
+function abort(string $message, int $code = 400, ?\Exception $previous = null)
 {
     throw new AppException($message, $code, $previous);
 }
@@ -35,7 +34,7 @@ function abort(string $message, int $code = 400, ?Exception $previous = null)
  */
 function config(string $key, $default = null)
 {
-    return Config::singleton()->get($key, $default);
+    return \Core\Utils\Config::singleton()->get($key, $default);
 }
 
 /**

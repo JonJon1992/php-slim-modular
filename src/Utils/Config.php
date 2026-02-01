@@ -1,7 +1,6 @@
 <?php
 
 namespace Core\Utils;
-
 use Core\Traits\Singleton;
 use Illuminate\Support\Arr;
 
@@ -22,11 +21,7 @@ class Config
             $this->configs[substr($config, 0, -4)] = require Path::configs() . "/$config";
         }
     }
-
-    /**
-     * @param string $key
-     * @param $default
-     */
+    
     public function get(string $key, $default = null)
     {
         return Arr::get($this->configs, $key, $default);

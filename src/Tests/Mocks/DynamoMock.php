@@ -1,9 +1,8 @@
 <?php
 
 namespace Core\Tests\Mocks;
-
-use Core\Traits\Dynamo;
 use Aws\Result;
+use Core\Utils\Dynamo;
 use Jonjon\PhpDynamo\Item\DynamoItem;
 use Jonjon\PhpDynamo\DynamoManager;
 
@@ -21,18 +20,15 @@ class DynamoMock extends Dynamo
     {
         $this->data = $data;
         $this->tables = $tables;
-        
-        // Cria uma instância da classe pai usando o método estático
         $parentInstance = parent::create([
             'key' => 'mock-key',
             'secret' => 'mock-secret',
             'region' => 'us-east-1'
         ]);
         
-        // Armazena o manager original
+
         $this->originalManager = $parentInstance->getManager();
-        
-        // Copia as propriedades da instância pai usando reflection
+
         $this->copyParentProperties($parentInstance);
     }
 

@@ -7,11 +7,6 @@ namespace Core\Utils;
 use Composer\Autoload\ClassLoader;
 use ReflectionClass;
 
-/**
- * @package Core\Utils
- * @author JonJon1992
- * @version 2.4.0
- */
 class Path
 {
     /**

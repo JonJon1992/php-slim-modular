@@ -2,7 +2,8 @@
 
 namespace Core\Tests\Mocks;
 
-use Core\Traits\Redis;
+
+use Core\Utils\Redis;
 
 class RedisMock extends Redis
 {

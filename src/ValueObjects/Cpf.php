@@ -3,9 +3,8 @@ declare(strict_types=1);
 
 namespace Core\ValueObjects;
 
-use Core\Traits\Mask;
-use Core\Traits\Str;
-use Core\Traits\Validate;
+use Core\Utils\Mask;
+use Core\Utils\Validate;
 
 class Cpf extends ValueObject
 {

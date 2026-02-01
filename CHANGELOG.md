@@ -7,6 +7,24 @@ e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR
 
 ## [Não Lançado]
 
+## [2.9.18] - 2026-02-01
+
+### Corrigido
+
+- Namespaces: corrigidos imports incorretos em `helpers.php` e `ExceptionHandler.php`
+- Imports: movidos imports de `Core\Traits` para `Core\Utils` para classes: `Auth`, `Client`, `Config`, `Dynamo`, `Env`, `Path`, `Redis`, `SqsClient`, `Trace`
+- Exception: corrigida referência ao `Exception` global com prefixo `\` em `helpers.php`
+- IRendebleAdapter: movida de `Core\Traits\Render` para `Core\Utils\Render` para melhor organização
+- SlimPhpRenderAdapter: atualizado namespace de `Core\Traits\Render` para `Core\Utils\Render`
+- Autoload: corrigidos erros "Class not found" para `Core\Traits\Path` e `Core\Traits\Trace`
+- PHP Warnings: removido warning "The use statement with non-compound name 'Exception' has no effect"
+
+### Refatorado
+
+- Organização de código: melhor organização de classes entre `Core\Traits` e `Core\Utils`
+- Namespace consistency: todos os utils agora estão corretamente no namespace `Core\Utils`
+- Code cleanup: removidos comentários redundantes e espaços em branco desnecessários em `Config.php`
+
 ## [2.9.17] - 2026-02-01
 
 ### Refatorado

@@ -1,10 +1,11 @@
 <?php
 declare(strict_types=1);
-
 namespace Core\ValueObjects;
 
-use Core\Traits\Mask;
-use Core\Traits\Str;
+
+
+use Core\Utils\Mask;
+use Core\Utils\Str;
 
 class Cnpj extends ValueObject
 {
