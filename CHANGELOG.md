@@ -7,6 +7,28 @@ e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR
 
 ## [Não Lançado]
 
+## [2.10.1] - 2026-02-01
+
+### Corrigido
+
+- **QueueWorkCommand**: corrigido comando `queue:work` para usar estrutura modular `queue.{module}.{connection}`
+- **Helper queue()**: atualizado helper `queue()` para suportar a nova estrutura modular
+  - Agora aceita parâmetros `$module` e `$connection`
+  - Usa módulo padrão de `queue.default` quando não especificado
+  - Usa conexão `database` como padrão quando não especificada
+- **Erro "No entry or class found for 'queue'"**: resolvido erro ao executar `queue:work`
+
+### Adicionado
+
+- **Opção --module**: adicionada opção `--module` no comando `queue:work` para especificar o módulo
+- **Documentação**: criado guia completo de uso em `docs/QUEUE_USAGE.md` com exemplos práticos
+- **Validações**: adicionada validação para garantir que módulo padrão está configurado
+
+### Alterado
+
+- **queue:work**: opção `--connection` agora refere-se ao tipo de conexão (sync, database, redis, sqs) ao invés do nome da conexão
+- **Conexão padrão**: alterada de `default` para `database` no comando queue:work
+
 ## [2.10.0] - 2026-02-01
 
 ### Adicionado

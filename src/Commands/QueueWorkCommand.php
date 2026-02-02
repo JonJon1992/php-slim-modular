@@ -23,8 +23,9 @@ class QueueWorkCommand extends AbstractCommand
     {
         $this->setName('queue:work')
             ->setDescription('Start processing jobs on the queue')
+            ->addOption('module', null, InputOption::VALUE_OPTIONAL, 'The queue module to use', null)
             ->addOption('queue', null, InputOption::VALUE_OPTIONAL, 'The queue to listen on', 'default')
-            ->addOption('connection', null, InputOption::VALUE_OPTIONAL, 'The name of the connection to work', 'default')
+            ->addOption('connection', null, InputOption::VALUE_OPTIONAL, 'The name of the connection to work', null)
             ->addOption('sleep', null, InputOption::VALUE_OPTIONAL, 'Number of seconds to sleep when no job is available', 3)
             ->addOption('timeout', null, InputOption::VALUE_OPTIONAL, 'The number of seconds a child process can run', 60)
             ->addOption('tries', null, InputOption::VALUE_OPTIONAL, 'Number of times to attempt a job before logging it failed', 0)
@@ -36,15 +37,22 @@ class QueueWorkCommand extends AbstractCommand
         $io = new SymfonyStyle($this->input, $this->output);
         $io->title('Queue Worker Started');
 
-        $connectionName = $this->input->getOption('connection');
+        $module = $this->input->getOption('module') ?? config('queue.default');
+        $connectionName = $this->input->getOption('connection') ?? 'database';
         $queueName = $this->input->getOption('queue');
 
+        if (!$module) {
+            $io->error('No queue module specified and no default configured');
+            return;
+        }
+
+        $io->text("Module: {$module}");
         $io->text("Connection: {$connectionName}");
         $io->text("Queue: {$queueName}");
 
         try {
             /** @var QueueCapsule $queueManager */
-            $queueManager = service('queue');
+            $queueManager = service("queue.{$module}.{$connectionName}");
         } catch (Throwable $e) {
             $io->error("Queue not configured correctly: " . $e->getMessage());
             return;
@@ -65,9 +73,7 @@ class QueueWorkCommand extends AbstractCommand
                 return true;
             }
 
-            public function render($request, Throwable $e)
-            {
-            }
+            public function render($request, Throwable $e) {}
 
             public function renderForConsole($output, Throwable $e)
             {
