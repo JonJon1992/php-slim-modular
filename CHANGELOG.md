@@ -7,6 +7,17 @@ e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR
 
 ## [Não Lançado]
 
+## [2.11.29] - 2026-02-02
+
+### Corrigido
+
+- **Configuração SQS**: atualizados padrões de configuração
+  - **Problema**: A configuração padrão do SQS usava um prefixo dummy `us-east-1` que causava a formação de URLs de fila inválidas (ex: `https://sqs.sa-east-1.amazonaws.com/`) quando o usuário tentava usar filas em outras regiões.
+  - **Solução**:
+    1. Removido valor padrão de `SQS_PREFIX` (agora vazio por padrão), permitindo o uso de URLs completas em `SQS_QUEUE`.
+    2. Atualizada região padrão para `sa-east-1`.
+    3. Definida fila de exemplo funcional como padrão para facilitar testes.
+
 ## [2.11.28] - 2026-02-02
 
 ### Corrigido
