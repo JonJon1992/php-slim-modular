@@ -7,6 +7,15 @@ e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR
 
 ## [Não Lançado]
 
+## [2.11.21] - 2026-02-02
+
+### Corrigido
+
+- **Redis Util**: uso de `func_get_args()` no método `eval()`
+  - **Problema**: Erro persistente `Redis::eval() expects at most 3 arguments, 5 given`
+  - **Causa**: A assinatura explícita do método na classe PHP `Redis` é estrita. Ao passar argumentos via spread operator ou assinatura fixa, a validação de quantidade de argumentos ocorria ANTES da execução real.
+  - **Solução**: Alterado para usar `...func_get_args()` dinamicamente, permitindo que a extensão subjacente lide com os argumentos conforme recebidos, bypassando validações de assinatura intermediárias.
+
 ## [2.11.20] - 2026-02-02
 
 ### Corrigido
