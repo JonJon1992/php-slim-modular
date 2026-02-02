@@ -7,6 +7,15 @@ e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR
 
 ## [Não Lançado]
 
+## [2.11.2] - 2026-02-01
+
+### Corrigido
+
+- **QueueServiceTrait**: removido `setDefaultConnection()` que não existe em SyncQueue
+  - Resolvido erro: "Call to undefined method SyncQueue::setDefaultConnection()"
+  - Alias 'default' agora aponta para conexão 'database' quando disponível
+  - Se 'database' não existir, usa a primeira conexão configurada
+
 ## [2.11.1] - 2026-02-01
 
 ### Corrigido

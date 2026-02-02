@@ -19,11 +19,8 @@ trait QueueServiceTrait
                 continue;
             }
 
-            // Create ONE QueueManager per module with ALL connections
             $bindings["queue.$module"] = function () use ($configs, $module, $moduleSettings) {
                 $container = new Container();
-
-                // Bind db as ConnectionResolverInterface
                 $container->bind('db', function () {
                     return new class implements ConnectionResolverInterface {
                         public function connection($name = null): Connection
@@ -59,24 +56,14 @@ trait QueueServiceTrait
                 });
 
                 $capsule = new QueueManager($container);
-
-                // Add ALL connections from this module
-                $defaultConnection = null;
                 foreach ($moduleSettings['connections'] as $alias => $settings) {
                     $capsule->addConnection($settings, $alias);
-                    if ($defaultConnection === null) {
-                        $defaultConnection = $alias;
-                    }
                 }
-
-                // Also add the first connection as 'default' alias
-                if ($defaultConnection && isset($moduleSettings['connections'][$defaultConnection])) {
-                    $capsule->addConnection($moduleSettings['connections'][$defaultConnection], 'default');
-                }
-
-                // Set the first connection as default
-                if ($defaultConnection) {
-                    $capsule->getQueueManager()->setDefaultConnection($defaultConnection);
+                if (isset($moduleSettings['connections']['database'])) {
+                    $capsule->addConnection($moduleSettings['connections']['database'], 'default');
+                } elseif (!empty($moduleSettings['connections'])) {
+                    $firstKey = array_key_first($moduleSettings['connections']);
+                    $capsule->addConnection($moduleSettings['connections'][$firstKey], 'default');
                 }
 
                 if ($module === $configs->get('queue.default')) {
