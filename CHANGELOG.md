@@ -7,6 +7,37 @@ e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR
 
 ## [Não Lançado]
 
+## [2.10.0] - 2026-02-01
+
+### Adicionado
+
+- **Service Traits**: criadas 8 traits modulares para organização de serviços em `src/Traits/Services/`:
+  - `LogServiceTrait` - gerenciamento de serviços de log (Monolog)
+  - `DatabaseServiceTrait` - gerenciamento de conexões de banco de dados (Eloquent)
+  - `CacheServiceTrait` - gerenciamento de serviços de cache (Redis)
+  - `StorageServiceTrait` - gerenciamento de serviços de storage (S3)
+  - `QueueServiceTrait` - gerenciamento de serviços de queue (Laravel Queue)
+  - `DynamoServiceTrait` - gerenciamento de serviços de DynamoDB
+  - `ViewServiceTrait` - gerenciamento de serviços de view/render
+  - `MailerServiceTrait` - gerenciamento de serviços de email (SMTP)
+- **Documentação**: criado `src/Traits/Services/README.md` com guia completo de uso das traits
+- **Queue Modular**: implementado suporte a múltiplos módulos de queue com estrutura aninhada
+
+### Refatorado
+
+- **services.php**: refatorado completamente de ~156 linhas para ~47 linhas usando traits modulares
+- **Queue System**: ajustado sistema de queue para funcionar por módulos, seguindo padrão dos outros serviços
+  - Estrutura de configuração agora suporta múltiplos módulos (ex: `ms-keys`, `outro-modulo`)
+  - Cada módulo tem suas próprias conexões (sync, database, redis, sqs)
+  - Bindings no formato: `queue.{module}.{connection}` (ex: `queue.ms-keys.database`)
+- **Organização**: melhor separação de responsabilidades com cada trait gerenciando um tipo de serviço
+- **Manutenibilidade**: código mais limpo, organizado e fácil de manter
+
+### Alterado
+
+- **configs/queue.php**: atualizado para estrutura modular aninhada com suporte a múltiplos módulos
+- **Padrão de código**: todos os serviços agora seguem o mesmo padrão modular consistente
+
 ## [2.9.18] - 2026-02-01
 
 ### Corrigido
