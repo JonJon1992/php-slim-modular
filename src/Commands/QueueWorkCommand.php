@@ -46,6 +46,9 @@ class QueueWorkCommand extends AbstractCommand
             return;
         }
 
+        // Set the current module context so helpers like logger() work correctly
+        app()->setModule($module);
+
         $io->text("Module: {$module}");
         $io->text("Connection: {$connectionName}");
         $io->text("Queue: {$queueName}");

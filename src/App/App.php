@@ -56,27 +56,37 @@ class App extends \Slim\App
     /**
      * @return string|string[]|null
      */
+    protected ?string $currentModule = null;
+
+    /**
+     * @return string|string[]|null
+     */
     public function module(): array|string|null
     {
-        static $current = '';
-        if ($current != '') {
-            return $current;
+        if ($this->currentModule) {
+            return $this->currentModule;
         }
+
         if (php_sapi_name() == 'cli' && $this->command) {
             $name = $this->command->getName();
-            return $current = $name ? explode(':', $name)[0] : null;
+            return $this->currentModule = $name ? explode(':', $name)[0] : null;
         }
         $uri = explode('/', $_SERVER['REQUEST_URI'] ?? null);
 
         if (count($uri) < 2 || !is_string($uri[1])) {
-            return $current = null;
+            return $this->currentModule = null;
         }
         foreach (app()->modules() as $module) {
             if ($module->namespace() == $uri[1]) {
-                return $current = $uri[1];
+                return $this->currentModule = $uri[1];
             }
         }
-        return $current = null;
+        return $this->currentModule = null;
+    }
+
+    public function setModule(string $module): void
+    {
+        $this->currentModule = $module;
     }
 
     /**

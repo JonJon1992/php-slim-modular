@@ -7,6 +7,15 @@ e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR
 
 ## [Não Lançado]
 
+## [2.11.16] - 2026-02-02
+
+### Corrigido
+
+- **QueueWorkCommand**: definido contexto do módulo manualmente
+  - **Problema**: `logger()` falhava em jobs com erro `No entry or class found for 'log.queue'`
+  - **Causa**: O command `queue:work` fazia o App deduzir o módulo como "queue". Como não existe módulo "queue", o `logger()` tentava resolver `log.queue` que não existe no DI Container.
+  - **Solução**: `app()->setModule($module)` adicionado no início do command para forçar o App a usar o módulo correto (ex: `ms-keys`), permitindo que `logger()` resolva `log.ms-keys` corretamente.
+
 ## [2.11.15] - 2026-02-02
 
 ### Corrigido
