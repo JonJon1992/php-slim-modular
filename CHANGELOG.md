@@ -7,6 +7,14 @@ e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR
 
 ## [Não Lançado]
 
+## [2.11.25] - 2026-02-02
+
+### Corrigido
+
+- **QueueWorkCommand**: corrigida seleção padrão de conexão
+  - **Problema**: O comando `queue:work` estava ignorando a configuração de conexão padrão e usando sempre 'database' se nenhum argumento `--connection` fosse passado explicitamente.
+  - **Solução**: Alterado para buscar `config('queue.connections.default')` antes de fazer fallback para 'database', garantindo que configurações no arquivo `queue.php` sejam respeitadas.
+
 ## [2.11.24] - 2026-02-02
 
 ### Corrigido
