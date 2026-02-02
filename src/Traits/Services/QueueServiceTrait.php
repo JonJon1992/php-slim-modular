@@ -22,11 +22,7 @@ trait QueueServiceTrait
 
             // Create ONE QueueCapsule per module with ALL connections
             $bindings["queue.$module"] = function () use ($configs, $module, $moduleSettings) {
-                // Get the database connection from the service container
-                // This ensures the database is initialized before we use it
                 $defaultDbAlias = $configs->get('db.default', 'default');
-
-                // Create a proper ConnectionResolver that uses the service container
                 $dbResolver = new class($defaultDbAlias) implements ConnectionResolverInterface {
                     private string $defaultConnection;
 
@@ -37,7 +33,6 @@ trait QueueServiceTrait
 
                     public function connection($name = null)
                     {
-                        // Use the service() helper to get the database connection
                         $alias = $name ?? $this->defaultConnection;
                         return service("db.{$alias}");
                     }
@@ -65,6 +60,8 @@ trait QueueServiceTrait
                 $container->bind(\Illuminate\Contracts\Bus\Dispatcher::class, function ($c) {
                     return new \Illuminate\Bus\Dispatcher($c);
                 });
+
+                $container->alias(\Illuminate\Contracts\Bus\Dispatcher::class, 'bus');
 
                 // Bind db
                 $container->singleton('db', function () use ($dbResolver) {

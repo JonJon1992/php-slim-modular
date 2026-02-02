@@ -7,6 +7,14 @@ e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR
 
 ## [Não Lançado]
 
+## [2.11.13] - 2026-02-02
+
+### Corrigido
+
+- **QueueServiceTrait**: adicionado alias `bus` para o `Bus\Dispatcher`
+  - **Problema**: Compatibilidade com alguns componentes que resolvem o dispatcher apenas pelo alias "bus"
+  - **Solução**: Adicionado alias manual `$container->alias(Dispatcher::class, 'bus')`
+
 ## [2.11.12] - 2026-02-02
 
 ### Corrigido
