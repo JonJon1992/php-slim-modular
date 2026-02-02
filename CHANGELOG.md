@@ -7,6 +7,19 @@ e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR
 
 ## [Não Lançado]
 
+## [2.10.5] - 2026-02-01
+
+### Corrigido
+
+- **QueueWorkCommand**: corrigido `WorkerOptions` para usar `$connectionName` dinâmico ao invés de `'default'` hardcoded
+  - Resolvido erro: "The [default] queue connection has not been configured"
+  - Worker agora usa o nome correto da conexão (database, redis, sqs, sync)
+  - WorkerOptions alinhado com o nome real da conexão configurada
+
+### Alterado
+
+- **WorkerOptions**: primeiro parâmetro alterado de `'default'` para `$connectionName`
+
 ## [2.10.4] - 2026-02-01
 
 ### Corrigido

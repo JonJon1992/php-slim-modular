@@ -95,7 +95,7 @@ class QueueWorkCommand extends AbstractCommand
         );
 
         $options = new WorkerOptions(
-            'default',
+            $connectionName,
             0,
             (int)$this->input->getOption('memory'),
             (int)$this->input->getOption('timeout'),
