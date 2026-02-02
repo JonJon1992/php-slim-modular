@@ -111,6 +111,10 @@ trait QueueServiceTrait
                     return new \Illuminate\Queue\Connectors\RedisConnector($container['redis']);
                 });
 
+                $manager->addConnector('sqs', function () {
+                    return new \Illuminate\Queue\Connectors\SqsConnector();
+                });
+
                 if ($module === $configs->get('queue.default')) {
                     $capsule->setAsGlobal();
                 }

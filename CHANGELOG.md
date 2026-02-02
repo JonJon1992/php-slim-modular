@@ -7,6 +7,14 @@ e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR
 
 ## [Não Lançado]
 
+## [2.11.28] - 2026-02-02
+
+### Corrigido
+
+- **QueueServiceTrait**: adicionado suporte a SQS Connector
+  - **Problema**: O driver `sqs` não estava registrado no `QueueManager`, impossibilitando o uso de filas AWS SQS.
+  - **Solução**: Registrado manualmente o `SqsConnector` no manager, igualando o suporte aos drivers `sync`, `database` e `redis`.
+
 ## [2.11.27] - 2026-02-02
 
 ### Corrigido
