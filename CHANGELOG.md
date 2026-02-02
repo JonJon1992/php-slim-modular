@@ -7,6 +7,20 @@ e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR
 
 ## [Não Lançado]
 
+## [2.11.32] - 2026-02-02
+
+### Corrigido
+
+- **StorageServiceTrait**: evita erro "Storage: Alias cannot be empty"
+  - **Problema**: O bootstrap falhava quando `storage.default` não estava configurado ou estava vazio, pois um alias vazio era passado para S3.
+  - **Solução**: Só incluir o default em `$storages` quando não for vazio; ignorar aliases vazios ou nulos no loop de registro.
+
+### Adicionado
+
+- **GitHub Actions**: workflow para criar tag e release a partir da versão do composer
+  - Dispara em push na branch `main`.
+  - Lê a versão do `composer.json`, cria a tag `v{versão}` (se não existir) e gera a GitHub Release com notas automáticas.
+
 ## [2.11.30] - 2026-02-02
 
 ### Corrigido
