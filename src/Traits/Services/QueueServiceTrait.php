@@ -58,8 +58,12 @@ trait QueueServiceTrait
                         };
                     });
 
+
                     $capsule = new QueueManager($container);
                     $capsule->addConnection($settings, $alias);
+
+                    // Set this connection as default for this QueueManager instance
+                    $capsule->getQueueManager()->setDefaultConnection($alias);
 
                     if ($module === $configs->get('queue.default')) {
                         $capsule->setAsGlobal();

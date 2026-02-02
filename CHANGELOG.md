@@ -7,6 +7,19 @@ e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR
 
 ## [Não Lançado]
 
+## [2.10.4] - 2026-02-01
+
+### Corrigido
+
+- **QueueServiceTrait**: adicionado `setDefaultConnection()` ao QueueManager
+  - Resolvido erro: "Call to a member function getConnection() on null" no Worker
+  - Cada instância do QueueManager agora tem sua conexão padrão configurada corretamente
+  - Worker consegue acessar a conexão através do QueueManager
+
+### Adicionado
+
+- **Default connection**: agora cada QueueManager tem sua conexão configurada como padrão via `$capsule->getQueueManager()->setDefaultConnection($alias)`
+
 ## [2.10.3] - 2026-02-01
 
 ### Corrigido
