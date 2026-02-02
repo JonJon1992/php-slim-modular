@@ -37,7 +37,10 @@ class QueueWorkCommand extends AbstractCommand
         $io = new SymfonyStyle($this->input, $this->output);
         $io->title('Queue Worker Started');
 
-        $module = $this->input->getOption('module') ?? config('queue.default');
+        $queueConfig = config('queue', []);
+        $module = $this->input->getOption('module')
+            ?? config('queue.default')
+            ?? array_key_first(array_diff_key($queueConfig, array_flip(['default'])));
 
         $connectionName = $this->input->getOption('connection');
 
@@ -63,6 +66,7 @@ class QueueWorkCommand extends AbstractCommand
 
         if (!$module) {
             $io->error('No queue module specified and no default configured');
+            $io->text('Configure <comment>queue.default</comment> in configs/queue.php (e.g. <comment>\'default\' => \'ms-keys\'</comment>) or run with <comment>--module=NomeDoModulo</comment>.');
             return;
         }
 
