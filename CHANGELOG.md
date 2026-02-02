@@ -7,6 +7,16 @@ e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR
 
 ## [Não Lançado]
 
+## [2.11.3] - 2026-02-01
+
+### Corrigido
+
+- **QueueServiceTrait**: refatorado com singleton bindings para db e exception.handler
+  - Resolvido erro: "Call to a member function getConnection() on null"
+  - Adicionado binding 'config' que o QueueManager precisa internamente
+  - Conexão 'default' configurada para apontar para 'database'
+  - Bindings alterados de `bind()` para `singleton()` para garantir mesma instância
+
 ## [2.11.2] - 2026-02-01
 
 ### Corrigido
