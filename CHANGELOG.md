@@ -7,6 +7,14 @@ e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR
 
 ## [Não Lançado]
 
+## [2.11.20] - 2026-02-02
+
+### Corrigido
+
+- **Redis Util**: relaxada assinatura do método `eval()`
+  - **Problema**: `Redis::eval()` ainda apresentava erro de contagem de argumentos dependendo da versão da extensão Redis
+  - **Solução**: Adicionado suporte a argumentos variáveis `...$extra` para garantir compatibilidade com qualquer chamada que o framework/library fizer ao método eval.
+
 ## [2.11.19] - 2026-02-02
 
 ### Corrigido
