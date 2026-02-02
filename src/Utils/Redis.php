@@ -227,9 +227,14 @@ class Redis
      * @param int $numKeys
      * @return mixed
      */
-    public function eval()
+    /**
+     * Adapter for eval to translate Predis-style command (variadic) to PhpRedis (array).
+     * Laravel Queue sends: eval(script, numKeys, key1, key2, arg1, arg2...)
+     * PhpRedis expects: eval(script, [key1, key2, arg1, arg2], numKeys)
+     */
+    public function eval($script, $numKeys, ...$arguments)
     {
-        return $this->getRedis()->eval(...func_get_args());
+        return $this->getRedis()->eval($script, $arguments, $numKeys);
     }
 
     /**

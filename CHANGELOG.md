@@ -7,6 +7,15 @@ e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR
 
 ## [Não Lançado]
 
+## [2.11.23] - 2026-02-02
+
+### Corrigido
+
+- **Redis Util**: implementado adaptador no método `eval()`
+  - **Problema**: Erro `Redis::eval() expects at most 3 arguments, 5 given` no RedisQueue do Laravel
+  - **Causa**: O Laravel `RedisQueue` envia comandos `eval` no formato do driver **Predis** ou **Redis nativo em modo raw** (`script, numKeys, arg1, arg2...`), enquanto a extensão `PhpRedis` espera `script, [args], numKeys`. Como nossa classe Redis Util é um proxy para o PhpRedis, a chamada direta falhava com excesso de argumentos.
+  - **Solução**: O método `eval($script, $numKeys, ...$arguments)` agora intercepta a chamada variádica e a converte para o formato array esperado pela extensão nativa: `eval($script, $arguments, $numKeys)`.
+
 ## [2.11.22] - 2026-02-02
 
 ### Corrigido
