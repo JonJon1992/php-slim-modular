@@ -7,6 +7,14 @@ e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR
 
 ## [Não Lançado]
 
+## [2.11.27] - 2026-02-02
+
+### Corrigido
+
+- **QueueWorkCommand**: suporte a conexão 'default' em módulos
+  - **Problema**: Mesmo com a configuração, o comando não reconhecia conexões nomeadas como 'default' dentro da lista de `connections` do módulo.
+  - **Solução**: Adicionada verificação explícita: se nenhuma conexão for informada e existir uma chave `connections.default` na config do módulo, ela será usada automaticamente.
+
 ## [2.11.26] - 2026-02-02
 
 ### Corrigido

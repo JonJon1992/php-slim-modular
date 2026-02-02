@@ -49,6 +49,14 @@ class QueueWorkCommand extends AbstractCommand
             $connectionName = config("queue.{$module}.default_connection");
         }
 
+        // Check if there is a connection explicitly named 'default' in the module's connections list
+        if (!$connectionName && $module) {
+            $moduleConnections = config("queue.{$module}.connections");
+            if (isset($moduleConnections['default'])) {
+                $connectionName = 'default';
+            }
+        }
+
         $connectionName = $connectionName ?: 'database';
 
         $queueName = $this->input->getOption('queue');
@@ -58,7 +66,6 @@ class QueueWorkCommand extends AbstractCommand
             return;
         }
 
-        // Set the current module context so helpers like logger() work correctly
         app()->setModule($module);
 
         $io->text("Module: {$module}");
