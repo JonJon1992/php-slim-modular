@@ -59,6 +59,8 @@ trait QueueServiceTrait
                 });
 
                 $capsule = new QueueManager($container);
+
+                // Add ALL connections from this module
                 $defaultConnection = null;
                 foreach ($moduleSettings['connections'] as $alias => $settings) {
                     $capsule->addConnection($settings, $alias);
@@ -66,6 +68,13 @@ trait QueueServiceTrait
                         $defaultConnection = $alias;
                     }
                 }
+
+                // Also add the first connection as 'default' alias
+                if ($defaultConnection && isset($moduleSettings['connections'][$defaultConnection])) {
+                    $capsule->addConnection($moduleSettings['connections'][$defaultConnection], 'default');
+                }
+
+                // Set the first connection as default
                 if ($defaultConnection) {
                     $capsule->getQueueManager()->setDefaultConnection($defaultConnection);
                 }

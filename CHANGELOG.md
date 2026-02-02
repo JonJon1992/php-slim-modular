@@ -7,6 +7,20 @@ e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR
 
 ## [Não Lançado]
 
+## [2.11.1] - 2026-02-01
+
+### Corrigido
+
+- **QueueServiceTrait**: adicionado alias 'default' apontando para a primeira conexão configurada
+  - Resolvido erro: "The [default] queue connection has not been configured"
+  - Worker agora encontra a conexão 'default' internamente
+  - Alias 'default' aponta para a primeira conexão do módulo (geralmente 'sync')
+
+### Adicionado
+
+- Alias automático 'default' para compatibilidade com Laravel Queue Worker
+- Primeira conexão do módulo agora é registrada duas vezes: com seu nome original e como 'default'
+
 ## [2.11.0] - 2026-02-01
 
 ### BREAKING CHANGE
