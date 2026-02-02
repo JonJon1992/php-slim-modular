@@ -63,7 +63,8 @@ class App extends \Slim\App
             return $current;
         }
         if (php_sapi_name() == 'cli' && $this->command) {
-            return $current = explode(':', $this->command->getName()[0]);
+            $name = $this->command->getName();
+            return $current = $name ? explode(':', $name)[0] : null;
         }
         $uri = explode('/', $_SERVER['REQUEST_URI'] ?? null);
 

@@ -7,6 +7,15 @@ e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR
 
 ## [Não Lançado]
 
+## [2.11.15] - 2026-02-02
+
+### Corrigido
+
+- **App**: corrigido método `module()` em ambiente CLI
+  - **Problema**: Erro "Array to string conversion" ao usar helpers (como `logger()`) em commands/jobs
+  - **Causa**: `App::module()` estava retornando um array `['q']` devido a uma lógica incorreta de parsing do nome do comando (`explode` no índice 0 da string)
+  - **Solução**: Corrigido para fazer o explode corretamente no nome completo do comando e retornar a primeira parte (o namespace/módulo)
+
 ## [2.11.14] - 2026-02-02
 
 ### Corrigido
