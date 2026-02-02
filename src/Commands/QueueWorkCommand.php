@@ -111,6 +111,9 @@ class QueueWorkCommand extends AbstractCommand
             $eventDispatcher->listen(JobProcessing::class, function ($event) use ($io) {
                 $name = $event->job->resolveName();
                 $io->text("Processing: " . (is_string($name) ? $name : json_encode($name)));
+                if (!is_string($name)) {
+                    throw new \RuntimeException("Invalid Job Name type: " . gettype($name) . ". Expected string. Payload: " . json_encode($name));
+                }
             });
 
             $eventDispatcher->listen(JobProcessed::class, function ($event) use ($io) {

@@ -7,6 +7,15 @@ e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR
 
 ## [Não Lançado]
 
+## [2.11.11] - 2026-02-02
+
+### Corrigido
+
+- **QueueWorkCommand**: tratamento de exceção para nomes de job inválidos
+  - **Problema**: Mensagens com formato não esperado causavam crash no worker com erro `str_contains(): Argument #1 ($haystack) must be of type string, array given`
+  - **Causa**: Worker do Laravel espera que o nome do job seja uma string (nome da classe), mas alguns payloads podem vir como array
+  - **Solução**: Adicionada validação estrita no listener `JobProcessing`. Se o nome não for string, lança `RuntimeException` capturada pelo worker, marcando o job como falho ao invés de derrubar o processo.
+
 ## [2.11.10] - 2026-02-02
 
 ### Corrigido
