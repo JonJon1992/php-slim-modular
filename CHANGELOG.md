@@ -7,6 +7,18 @@ e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR
 
 ## [Não Lançado]
 
+## [2.11.26] - 2026-02-02
+
+### Corrigido
+
+- **QueueWorkCommand**: aprimorada lógica de fallback de conexão
+  - **Problema**: Dificuldade em definir a conexão padrão via configuração.
+  - **Solução**: Implementada verificação em cascata para conexão:
+    1. Argumento CLI `--connection`
+    2. Config global `queue.default_connection`
+    3. Config do módulo `queue.{module}.default_connection`
+    4. Fallback 'database'
+
 ## [2.11.25] - 2026-02-02
 
 ### Corrigido

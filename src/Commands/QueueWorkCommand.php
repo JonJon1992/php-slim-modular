@@ -38,7 +38,19 @@ class QueueWorkCommand extends AbstractCommand
         $io->title('Queue Worker Started');
 
         $module = $this->input->getOption('module') ?? config('queue.default');
-        $connectionName = $this->input->getOption('connection') ?: config('queue.connections.default', 'database');
+
+        $connectionName = $this->input->getOption('connection');
+
+        if (!$connectionName) {
+            $connectionName = config('queue.default_connection');
+        }
+
+        if (!$connectionName && $module) {
+            $connectionName = config("queue.{$module}.default_connection");
+        }
+
+        $connectionName = $connectionName ?: 'database';
+
         $queueName = $this->input->getOption('queue');
 
         if (!$module) {
