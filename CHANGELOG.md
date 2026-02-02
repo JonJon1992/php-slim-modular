@@ -7,6 +7,16 @@ e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR
 
 ## [Não Lançado]
 
+## [2.11.6] - 2026-02-01
+
+### Corrigido
+
+- **QueueServiceTrait**: ajustada ordem de inicialização após análise do QueueManager.php
+  - Conexões são adicionadas ao Capsule ANTES de pegar o QueueManager interno
+  - Connectors são re-registrados DEPOIS para sobrescrever os do provider
+  - O QueueManager.getConfig() usa $app['config']["queue.connections.{$name}"]
+  - Capsule.addConnection() popula exatamente essa estrutura de config
+
 ## [2.11.5] - 2026-02-01
 
 ### Corrigido
