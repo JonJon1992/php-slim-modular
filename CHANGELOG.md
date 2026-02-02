@@ -7,6 +7,19 @@ e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR
 
 ## [Não Lançado]
 
+## [2.10.2] - 2026-02-01
+
+### Corrigido
+
+- **QueueServiceTrait**: corrigida implementação do binding `db` para implementar `ConnectionResolverInterface`
+  - Adicionados métodos `getDefaultConnection()` e `setDefaultConnection()`
+  - Resolvido erro: "Argument #1 ($connections) must be of type ConnectionResolverInterface, class@anonymous given"
+- **DatabaseConnector**: agora funciona corretamente com a classe anônima que implementa a interface correta
+
+### Alterado
+
+- **Classe anônima do db**: agora implementa `Illuminate\Database\ConnectionResolverInterface` adequadamente
+
 ## [2.10.1] - 2026-02-01
 
 ### Corrigido

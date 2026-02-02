@@ -7,6 +7,7 @@ namespace Core\Traits\Services;
 use Illuminate\Container\Container;
 use Illuminate\Database\Connection;
 use Illuminate\Database\Capsule\Manager;
+use Illuminate\Database\ConnectionResolverInterface;
 use Illuminate\Queue\Capsule\Manager as QueueManager;
 
 trait QueueServiceTrait
@@ -21,11 +22,23 @@ trait QueueServiceTrait
             foreach ($moduleSettings['connections'] as $alias => $settings) {
                 $bindings["queue.$module.$alias"] = function () use ($configs, $module, $alias, $settings) {
                     $container = new Container();
+
+                    // Bind db as ConnectionResolverInterface
                     $container->bind('db', function () {
-                        return new class {
+                        return new class implements ConnectionResolverInterface {
                             public function connection($name = null): Connection
                             {
                                 return Manager::connection($name);
+                            }
+
+                            public function getDefaultConnection(): string
+                            {
+                                return Manager::getDefaultConnection();
+                            }
+
+                            public function setDefaultConnection($name): void
+                            {
+                                Manager::setDefaultConnection($name);
                             }
                         };
                     });
