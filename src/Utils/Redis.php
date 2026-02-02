@@ -222,6 +222,17 @@ class Redis
     }
 
     /**
+     * @param string $script
+     * @param array $args
+     * @param int $numKeys
+     * @return mixed
+     */
+    public function eval($script, $args = [], $numKeys = 0)
+    {
+        return $this->getRedis()->eval($script, $args, $numKeys);
+    }
+
+    /**
      * Summary of getRedis
      * @return \Redis|null
      */

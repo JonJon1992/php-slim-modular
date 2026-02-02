@@ -7,6 +7,15 @@ e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR
 
 ## [Não Lançado]
 
+## [2.11.19] - 2026-02-02
+
+### Corrigido
+
+- **Redis Util**: adicionado método público `eval()`
+  - **Problema**: Erro `Redis::eval() expects at most 3 arguments, 5 given`
+  - **Causa**: O método mágico `__call` repassa todos os argumentos para o método nativo. O driver do Laravel pode passar argumentos adicionais (como flags de variadic) ou a extensão Redis PHP tem uma assinatura estrita que pode conflitar com como os argumentos opcionais são passados via `...$arguments`.
+  - **Solução**: Implementado método público `eval($script, $args, $numKeys)` explicitamente para garantir a assinatura correta ao chamar o método nativo.
+
 ## [2.11.18] - 2026-02-02
 
 ### Corrigido
