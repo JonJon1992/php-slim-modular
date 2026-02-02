@@ -7,6 +7,15 @@ e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR
 
 ## [Não Lançado]
 
+## [2.11.22] - 2026-02-02
+
+### Corrigido
+
+- **Redis Util**: assinatura do método `eval()` totalmente removida
+  - **Problema**: Erro `Redis::eval() expects at most 3 arguments, 5 given` continuava
+  - **Causa**: Mesmo usando `func_get_args()`, a definição `public function eval($script, ...)` já impunha uma validação inicial de contagem de argumentos antes mesmo do corpo do método ser executado, conflitante com o que o driver nativo esperava ou como a chamada estava sendo construída.
+  - **Solução**: Removida completamente a lista de argumentos da definição (`public function eval()`), deixando o PHP aceitar qualquer coisa, e repassando tudo via `func_get_args()`.
+
 ## [2.11.21] - 2026-02-02
 
 ### Corrigido
