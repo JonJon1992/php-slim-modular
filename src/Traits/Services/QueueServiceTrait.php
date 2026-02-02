@@ -93,6 +93,9 @@ trait QueueServiceTrait
 
                 // Add ALL connections from this module
                 foreach ($moduleSettings['connections'] as $alias => $settings) {
+                    if (empty($alias)) {
+                        continue;
+                    }
                     $capsule->addConnection($settings, $alias);
                 }
 

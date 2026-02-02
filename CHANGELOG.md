@@ -7,6 +7,14 @@ e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR
 
 ## [Não Lançado]
 
+## [2.11.30] - 2026-02-02
+
+### Corrigido
+
+- **QueueServiceTrait**: prevenção de erro 'Alias cannot be empty'
+  - **Problema**: O framework quebrava ao iniciar se houvesse configurações de conexão malformadas (com chaves vazias ou implícitas numéricas) no array de conexões.
+  - **Solução**: Adicionada verificação `!empty($alias)` antes de registrar a conexão no Capsule.
+
 ## [2.11.29] - 2026-02-02
 
 ### Corrigido
