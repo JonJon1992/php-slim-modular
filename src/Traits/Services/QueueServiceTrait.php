@@ -83,7 +83,7 @@ trait QueueServiceTrait
                             // If name is null/default, we use the module's default redis
                             // Depending on your setup, you might need to map 'default' to your specific redis service
                             // For now, let's assume service("cache.$module") returns a Predis client or compatible
-                            return service("cache.{$this->module}")->client();
+                            return service("cache.{$this->module}");
                         }
                     };
                 });

@@ -7,6 +7,15 @@ e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR
 
 ## [Não Lançado]
 
+## [2.11.24] - 2026-02-02
+
+### Corrigido
+
+- **QueueServiceTrait**: corrigido retorno do `RedisConnector`
+  - **Problema**: O `RedisQueue` continuava falhando com erro de argumentos no `eval()` mesmo após o fix no wrapper `Core\Utils\Redis`.
+  - **Causa**: O factory do Redis estava retornando a conexão bruta (`->client()`), ignorando completamente nosso wrapper e o fix implementado nele.
+  - **Solução**: Alterado o factory para retornar a instância de `Core\Utils\Redis`, garantindo que todas as chamadas do Queue (incluindo `eval`) passem pelo nosso proxy/wrapper.
+
 ## [2.11.23] - 2026-02-02
 
 ### Corrigido
