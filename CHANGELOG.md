@@ -7,6 +7,16 @@ e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR
 
 ## [Não Lançado]
 
+## [2.11.5] - 2026-02-01
+
+### Corrigido
+
+- **QueueServiceTrait**: registrando connectors manualmente após análise do QueueServiceProvider
+  - O QueueServiceProvider usa `$this->app['db']` que é o container do provider, não nosso
+  - Solução: registrar SyncConnector e DatabaseConnector manualmente no QueueManager
+  - DatabaseConnector agora recebe o dbResolver correto diretamente
+  - Evita dependência do provider que usa bindings do Laravel App
+
 ## [2.11.4] - 2026-02-01
 
 ### Corrigido
