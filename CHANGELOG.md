@@ -7,6 +7,17 @@ e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR
 
 ## [Não Lançado]
 
+## [2.11.17] - 2026-02-02
+
+### Corrigido
+
+- **QueueServiceTrait**: adicionado suporte a Redis Queue
+  - **Problema**: Erro `Argument #1 ($redis) must be of type Illuminate\Contracts\Redis\Factory` ao tentar usar conexão redis na fila
+  - **Causa**: O container da Queue não tinha o binding 'redis' configurado, e o `RedisConnector` exige um `Factory`
+  - **Solução**:
+    1. Registrado manualmente o `RedisConnector` no QueueManager
+    2. Adicionado binding de `Illuminate\Contracts\Redis\Factory` no container, adaptando para o serviço de cache existente (`service("cache.$module")`)
+
 ## [2.11.16] - 2026-02-02
 
 ### Corrigido

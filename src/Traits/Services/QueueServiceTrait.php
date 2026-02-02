@@ -66,6 +66,28 @@ trait QueueServiceTrait
                     return $dbResolver;
                 });
 
+                // Bind redis factory
+                $container->singleton('redis', function () use ($module) {
+                    // Create an adapter that implements Illuminate\Contracts\Redis\Factory
+                    return new class($module) implements \Illuminate\Contracts\Redis\Factory {
+                        private $module;
+
+                        public function __construct($module)
+                        {
+                            $this->module = $module;
+                        }
+
+                        public function connection($name = null)
+                        {
+                            // Map Laravel's connection request to our service
+                            // If name is null/default, we use the module's default redis
+                            // Depending on your setup, you might need to map 'default' to your specific redis service
+                            // For now, let's assume service("cache.$module") returns a Predis client or compatible
+                            return service("cache.{$this->module}")->client();
+                        }
+                    };
+                });
+
                 // Create the QueueCapsule
                 $capsule = new QueueCapsule($container);
 
@@ -83,6 +105,10 @@ trait QueueServiceTrait
 
                 $manager->addConnector('database', function () use ($dbResolver) {
                     return new DatabaseConnector($dbResolver);
+                });
+
+                $manager->addConnector('redis', function () use ($container) {
+                    return new \Illuminate\Queue\Connectors\RedisConnector($container['redis']);
                 });
 
                 if ($module === $configs->get('queue.default')) {
