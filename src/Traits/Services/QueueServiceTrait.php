@@ -5,13 +5,11 @@ declare(strict_types=1);
 namespace Core\Traits\Services;
 
 use Illuminate\Container\Container;
-use Illuminate\Database\Capsule\Manager;
 use Illuminate\Database\ConnectionResolverInterface;
 use Illuminate\Events\Dispatcher;
 use Illuminate\Queue\Capsule\Manager as QueueCapsule;
 use Illuminate\Queue\Connectors\DatabaseConnector;
 use Illuminate\Queue\Connectors\SyncConnector;
-use Illuminate\Queue\QueueManager;
 
 trait QueueServiceTrait
 {
@@ -24,21 +22,34 @@ trait QueueServiceTrait
 
             // Create ONE QueueCapsule per module with ALL connections
             $bindings["queue.$module"] = function () use ($configs, $module, $moduleSettings) {
-                // Create a proper ConnectionResolver for database queue
-                $dbResolver = new class implements ConnectionResolverInterface {
+                // Get the database connection from the service container
+                // This ensures the database is initialized before we use it
+                $defaultDbAlias = $configs->get('db.default', 'default');
+
+                // Create a proper ConnectionResolver that uses the service container
+                $dbResolver = new class($defaultDbAlias) implements ConnectionResolverInterface {
+                    private string $defaultConnection;
+
+                    public function __construct(string $defaultConnection)
+                    {
+                        $this->defaultConnection = $defaultConnection;
+                    }
+
                     public function connection($name = null)
                     {
-                        return Manager::connection($name);
+                        // Use the service() helper to get the database connection
+                        $alias = $name ?? $this->defaultConnection;
+                        return service("db.{$alias}");
                     }
 
                     public function getDefaultConnection(): string
                     {
-                        return 'default';
+                        return $this->defaultConnection;
                     }
 
                     public function setDefaultConnection($name): void
                     {
-                        // No-op
+                        $this->defaultConnection = $name;
                     }
                 };
 
@@ -55,16 +66,15 @@ trait QueueServiceTrait
                     return $dbResolver;
                 });
 
-                // Create the QueueCapsule first - this sets up config
+                // Create the QueueCapsule
                 $capsule = new QueueCapsule($container);
 
-                // Add ALL connections from this module BEFORE getting the manager
+                // Add ALL connections from this module
                 foreach ($moduleSettings['connections'] as $alias => $settings) {
                     $capsule->addConnection($settings, $alias);
                 }
 
-                // Now get the internal manager and re-register our connectors
-                // This overrides the ones from QueueServiceProvider that have wrong bindings
+                // Get the internal manager and register our connectors
                 $manager = $capsule->getQueueManager();
 
                 $manager->addConnector('sync', function () {

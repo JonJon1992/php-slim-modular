@@ -7,6 +7,17 @@ e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR
 
 ## [Não Lançado]
 
+## [2.11.8] - 2026-02-01
+
+### Corrigido
+
+- **QueueServiceTrait**: corrigido dbResolver para usar `service()` ao invés de `Manager::connection()` estático
+  - **Problema**: `Manager::connection()` depende de `static::$instance` que era null
+  - **Causa raiz**: O Database Capsule precisa ter `setAsGlobal()` chamado antes
+  - **Solução**: Usar `service("db.{$alias}")` que busca a conexão do container de serviços
+  - Garante que o Database está inicializado antes de ser usado pelo Queue
+  - dbResolver agora armazena o defaultConnection e usa o service container
+
 ## [2.11.6] - 2026-02-01
 
 ### Corrigido
