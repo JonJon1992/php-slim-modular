@@ -61,6 +61,11 @@ trait QueueServiceTrait
                     return new Dispatcher($c);
                 });
 
+                // Bind bus dispatcher
+                $container->bind(\Illuminate\Contracts\Bus\Dispatcher::class, function ($c) {
+                    return new \Illuminate\Bus\Dispatcher($c);
+                });
+
                 // Bind db
                 $container->singleton('db', function () use ($dbResolver) {
                     return $dbResolver;

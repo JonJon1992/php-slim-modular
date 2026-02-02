@@ -7,6 +7,15 @@ e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR
 
 ## [Não Lançado]
 
+## [2.11.12] - 2026-02-02
+
+### Corrigido
+
+- **QueueServiceTrait**: adicionado binding do `Bus\Dispatcher`
+  - **Problema**: Erro `Target [Illuminate\Contracts\Bus\Dispatcher] is not instantiable` ao processar jobs no worker
+  - **Causa**: O container do QueueManager não tinha o binding da interface Dispatcher necessário para o `CallQueuedHandler`
+  - **Solução**: Adicionado binding explícito de `Illuminate\Contracts\Bus\Dispatcher` para `Illuminate\Bus\Dispatcher`
+
 ## [2.11.11] - 2026-02-02
 
 ### Corrigido
