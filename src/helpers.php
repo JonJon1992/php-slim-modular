@@ -146,19 +146,12 @@ function http(array $config = []): \GuzzleHttp\Client
 
 /**
  * @param string|null $module
- * @param string|null $connection
  * @return mixed
  */
-function queue(?string $module = null, ?string $connection = null)
+function queue(?string $alias = null)
 {
-    $module = $module ?? config('queue.default');
-    $connection = $connection ?? 'database';
-
-    if (!$module) {
-        throw new \RuntimeException('No default queue module configured');
-    }
-
-    return service("queue.$module.$connection");
+    $alias = $alias ?? app()->module() ?? config('queue.default', array_key_first(config('queue')));
+    return service("queue.$alias");
 }
 
 /**

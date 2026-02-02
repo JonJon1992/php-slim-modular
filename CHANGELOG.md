@@ -7,6 +7,35 @@ e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR
 
 ## [Não Lançado]
 
+## [2.11.0] - 2026-02-01
+
+### BREAKING CHANGE
+
+- **Estrutura de Queue**: refatorada estrutura de queue para ter UM QueueManager por módulo com TODAS as conexões
+  - **ANTES**: `service('queue.ms-keys.database')` - um QueueManager por conexão
+  - **DEPOIS**: `service('queue.ms-keys')` - um QueueManager com todas as conexões
+  - **Helper**: `queue()` agora retorna o QueueManager, use `queue()->connection('redis')` para escolher conexão
+  - **Service bindings**: `queue.$module` ao invés de `queue.$module.$connection`
+
+### Corrigido
+
+- **Queue Worker**: resolvido erro "The [default] queue connection has not been configured"
+  - QueueManager agora tem TODAS as conexões do módulo registradas
+  - Worker pode alternar entre conexões (database, redis, sqs, sync)
+  - Configuração de conexão padrão funciona corretamente
+
+### Alterado
+
+- **QueueServiceTrait**: refatorado para criar um único QueueManager por módulo
+- **QueueWorkCommand**: atualizado para usar `queue.$module`
+- **Helper queue()**: simplificado para aceitar apenas `$module`, removido parâmetro `$connection`
+- **Uso**: `queue()` retorna QueueManager, depois use `->connection('nome')` se precisar de conexão específica
+
+### Adicionado
+
+- Suporte completo a múltiplas conexões no mesmo QueueManager
+- Todas as conexões de um módulo (sync, database, redis, sqs) disponíveis no mesmo manager
+
 ## [2.10.5] - 2026-02-01
 
 ### Corrigido

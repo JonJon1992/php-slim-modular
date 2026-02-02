@@ -52,7 +52,7 @@ class QueueWorkCommand extends AbstractCommand
 
         try {
             /** @var QueueCapsule $queueManager */
-            $queueManager = service("queue.{$module}.{$connectionName}");
+            $queueManager = service("queue.{$module}");
         } catch (Throwable $e) {
             $io->error("Queue not configured correctly: " . $e->getMessage());
             return;

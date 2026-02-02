@@ -49,29 +49,31 @@ return [
 ### Helper Function
 
 ```php
-// Usar módulo e conexão padrão (ms-keys + database)
-$queue = queue();
+// Obter o QueueManager do módulo padrão (ms-keys)
+$queueManager = queue();
 
 // Especificar módulo
-$queue = queue('ms-keys');
+$queueManager = queue('ms-keys');
 
-// Especificar módulo e conexão
-$queue = queue('ms-keys', 'redis');
-$queue = queue('ms-keys', 'sqs');
-$queue = queue('ms-keys', 'sync');
+// Usar conexão específica
+$queueManager->connection('database')->push(new MyJob());
+$queueManager->connection('redis')->push(new MyJob());
+$queueManager->connection('sqs')->push(new MyJob());
+$queueManager->connection('sync')->push(new MyJob());
 
-// Enviar job
-$queue->push(new MyJob());
+// Usar conexão padrão (primeira configurada, normalmente'sync')
+$queueManager->push(new MyJob());
 ```
 
 ### Service Container
 
 ```php
 // Acessar diretamente pelo service container
-$queue = service('queue.ms-keys.database');
-$queue = service('queue.ms-keys.redis');
-$queue = service('queue.ms-keys.sqs');
-$queue = service('queue.ms-keys.sync');
+$queueManager = service('queue.ms-keys');
+
+// Depois escolher a conexão
+$queueManager->connection('database')->push(new MyJob());
+$queueManager->connection('redis')->push(new MyJob());
 ```
 
 ### Queue Worker (CLI)
@@ -128,10 +130,10 @@ php artisan queue:work \
 ```php
 use App\Jobs\SendEmailJob;
 
-// Usando helper
-queue('ms-keys', 'database')->push(new SendEmailJob($user));
+// Usando helper e conexão database
+queue()->connection('database')->push(new SendEmailJob($user));
 
-// Ou usar o padrão
+// Ou usar conexão padrão
 queue()->push(new SendEmailJob($user));
 ```
 
@@ -141,7 +143,7 @@ queue()->push(new SendEmailJob($user));
 use App\Jobs\ProcessWebhookJob;
 
 // Usar conexão Redis para performance
-queue('ms-keys', 'redis')->push(new ProcessWebhookJob($data));
+queue()->connection('redis')->push(new ProcessWebhookJob($data));
 ```
 
 ### Enviar para SQS
@@ -150,7 +152,7 @@ queue('ms-keys', 'redis')->push(new ProcessWebhookJob($data));
 use App\Jobs\SyncDataJob;
 
 // Usar SQS para processar em outra instância
-queue('ms-keys', 'sqs')->push(new SyncDataJob($payload));
+queue()->connection('sqs')->push(new SyncDataJob($payload));
 ```
 
 ### Processamento Síncrono (Sync)
@@ -159,7 +161,7 @@ queue('ms-keys', 'sqs')->push(new SyncDataJob($payload));
 use App\Jobs\QuickTaskJob;
 
 // Processar imediatamente (útil para testes)
-queue('ms-keys', 'sync')->push(new QuickTaskJob());
+queue()->connection('sync')->push(new QuickTaskJob());
 ```
 
 ## 🔧 Criar Job
