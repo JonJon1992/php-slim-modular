@@ -29,14 +29,53 @@ return new class {
     {
         $configs = Config::singleton();
         $bindings = [];
-        $this->registerLogServices($bindings, $configs);
-        $this->registerDatabaseServices($bindings, $configs);
-        $this->registerCacheServices($bindings, $configs);
-        $this->registerStorageServices($configs);
-        $this->registerQueueServices($bindings, $configs);
-        $this->registerDynamoServices($bindings, $configs);
-        $this->registerViewServices($bindings, $configs);
-        $this->registerMailerServices($bindings, $configs);
+        try {
+            $this->registerLogServices($bindings, $configs);
+        } catch (\Throwable $e) {
+            throw new \Exception("Log: " . $e->getMessage());
+        }
+
+        try {
+            $this->registerDatabaseServices($bindings, $configs);
+        } catch (\Throwable $e) {
+            throw new \Exception("Database: " . $e->getMessage());
+        }
+
+        try {
+            $this->registerCacheServices($bindings, $configs);
+        } catch (\Throwable $e) {
+            throw new \Exception("Cache: " . $e->getMessage());
+        }
+
+        try {
+            $this->registerStorageServices($configs);
+        } catch (\Throwable $e) {
+            throw new \Exception("Storage: " . $e->getMessage());
+        }
+
+        try {
+            $this->registerQueueServices($bindings, $configs);
+        } catch (\Throwable $e) {
+            throw new \Exception("Queue: " . $e->getMessage());
+        }
+
+        try {
+            $this->registerDynamoServices($bindings, $configs);
+        } catch (\Throwable $e) {
+            throw new \Exception("Dynamo: " . $e->getMessage());
+        }
+
+        try {
+            $this->registerViewServices($bindings, $configs);
+        } catch (\Throwable $e) {
+            throw new \Exception("View: " . $e->getMessage());
+        }
+
+        try {
+            $this->registerMailerServices($bindings, $configs);
+        } catch (\Throwable $e) {
+            throw new \Exception("Mailer: " . $e->getMessage());
+        }
 
         $builder->addDefinitions($bindings);
     }
