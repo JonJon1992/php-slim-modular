@@ -65,7 +65,7 @@ trait QueueServiceTrait
                         $capsule->setAsGlobal();
                     }
 
-                    return $capsule->getConnection($alias);
+                    return $capsule;
                 };
             }
         }

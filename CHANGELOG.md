@@ -7,6 +7,19 @@ e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR
 
 ## [Não Lançado]
 
+## [2.10.3] - 2026-02-01
+
+### Corrigido
+
+- **QueueServiceTrait**: corrigido retorno do service binding para retornar `QueueManager` ao invés de `getConnection()`
+  - Resolvido erro: "Call to a member function getConnection() on null"
+  - O QueueManager agora gerencia as conexões corretamente
+  - Worker pode acessar as conexões através do manager
+
+### Alterado
+
+- **Return type**: alterado de `$capsule->getConnection($alias)` para `$capsule` no binding da queue
+
 ## [2.10.2] - 2026-02-01
 
 ### Corrigido
