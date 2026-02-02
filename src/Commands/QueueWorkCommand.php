@@ -22,20 +22,23 @@ class QueueWorkCommand extends AbstractCommand
     protected function configure(): void
     {
         $this->setName('queue:work')
-            ->setDescription('Start processing jobs on the queue')
-            ->addOption('module', null, InputOption::VALUE_OPTIONAL, 'The queue module to use', null)
-            ->addOption('queue', null, InputOption::VALUE_OPTIONAL, 'The queue to listen on', 'default')
-            ->addOption('connection', null, InputOption::VALUE_OPTIONAL, 'The name of the connection to work', null)
-            ->addOption('sleep', null, InputOption::VALUE_OPTIONAL, 'Number of seconds to sleep when no job is available', 3)
-            ->addOption('timeout', null, InputOption::VALUE_OPTIONAL, 'The number of seconds a child process can run', 60)
-            ->addOption('tries', null, InputOption::VALUE_OPTIONAL, 'Number of times to attempt a job before logging it failed', 0)
-            ->addOption('memory', null, InputOption::VALUE_OPTIONAL, 'The memory limit in megabytes', 128);
+            ->setDescription('Inicia o processamento de jobs na fila')
+            ->addOption('module', null, InputOption::VALUE_OPTIONAL, 'Módulo de fila a usar', null)
+            ->addOption('queue', null, InputOption::VALUE_OPTIONAL, 'Nome da fila(s) a escutar (vírgula = prioridade)', 'default')
+            ->addOption('connection', null, InputOption::VALUE_OPTIONAL, 'Nome da conexão a usar', null)
+            ->addOption('sleep', null, InputOption::VALUE_OPTIONAL, 'Segundos de espera quando não houver job disponível', 3)
+            ->addOption('timeout', null, InputOption::VALUE_OPTIONAL, 'Tempo máximo em segundos que um job pode executar', 60)
+            ->addOption('tries', null, InputOption::VALUE_OPTIONAL, 'Tentativas antes de marcar o job como falha', 0)
+            ->addOption('memory', null, InputOption::VALUE_OPTIONAL, 'Limite de memória em megabytes', 128)
+            ->addOption('max-jobs', null, InputOption::VALUE_OPTIONAL, 'Reiniciar worker após N jobs (evita vazamento de memória)', 0)
+            ->addOption('max-time', null, InputOption::VALUE_OPTIONAL, 'Reiniciar worker após N segundos', 0)
+            ->addOption('verbose', 'v', InputOption::VALUE_NONE, 'Exibir mensagens de debug');
     }
 
     protected function handler(): void
     {
         $io = new SymfonyStyle($this->input, $this->output);
-        $io->title('Queue Worker Started');
+        $io->title('Worker de fila');
 
         $queueConfig = config('queue', []);
         $module = $this->input->getOption('module')
@@ -52,7 +55,6 @@ class QueueWorkCommand extends AbstractCommand
             $connectionName = config("queue.{$module}.default_connection");
         }
 
-        // Check if there is a connection explicitly named 'default' in the module's connections list
         if (!$connectionName && $module) {
             $moduleConnections = config("queue.{$module}.connections");
             if (isset($moduleConnections['default'])) {
@@ -64,7 +66,6 @@ class QueueWorkCommand extends AbstractCommand
 
         $queueName = $this->input->getOption('queue');
 
-        // SQS: quando --queue=default, usar o nome da fila da config (evita URL prefix + '/default')
         if ($connectionName && $queueName === 'default') {
             $connConfig = config("queue.{$module}.connections.{$connectionName}");
             if (isset($connConfig['driver']) && $connConfig['driver'] === 'sqs' && !empty($connConfig['queue'])) {
@@ -76,29 +77,34 @@ class QueueWorkCommand extends AbstractCommand
         }
 
         if (!$module) {
-            $io->error('No queue module specified and no default configured');
-            $io->text('Configure <comment>queue.default</comment> in configs/queue.php (e.g. <comment>\'default\' => \'ms-keys\'</comment>) or run with <comment>--module=NomeDoModulo</comment>.');
+            $io->error('Nenhum módulo de fila informado e nenhum padrão configurado');
+            $io->text('Configure <comment>queue.default</comment> em configs/queue.php ou use <comment>--module=NomeDoModulo</comment>.');
             return;
         }
 
         app()->setModule($module);
 
-        $io->text("Module: {$module}");
-        $io->text("Connection: {$connectionName}");
-        $io->text("Queue: {$queueName}");
+        $verbose = (bool) $this->input->getOption('verbose');
+        $io->text("Módulo: {$module}");
+        $io->text("Conexão: {$connectionName}");
+        $io->text("Fila(s): {$queueName}");
 
         try {
             /** @var QueueCapsule $queueManager */
             $queueManager = service("queue.{$module}");
-
-            // Debug: verificar se o capsule está ok
-            $io->text("Capsule OK: " . get_class($queueManager));
+            if ($verbose) {
+                $io->text("Capsule: " . get_class($queueManager));
+            }
 
             $internalManager = $queueManager->getQueueManager();
-            $io->text("Internal Manager OK: " . get_class($internalManager));
+            if ($verbose) {
+                $io->text("Manager: " . get_class($internalManager));
+            }
         } catch (Throwable $e) {
-            $io->error("Queue not configured correctly: " . $e->getMessage());
-            $io->error("Stack: " . $e->getTraceAsString());
+            $io->error("Fila não configurada corretamente: " . $e->getMessage());
+            if ($verbose) {
+                $io->error("Stack: " . $e->getTraceAsString());
+            }
             return;
         }
 
@@ -136,31 +142,38 @@ class QueueWorkCommand extends AbstractCommand
                 $isDownForMaintenance
             );
 
+            $maxJobs = (int) $this->input->getOption('max-jobs');
+            $maxTime = (int) $this->input->getOption('max-time');
             $options = new WorkerOptions(
                 $connectionName,
                 0,
-                (int)$this->input->getOption('memory'),
-                (int)$this->input->getOption('timeout'),
-                (int)$this->input->getOption('sleep'),
-                (int)$this->input->getOption('tries')
+                (int) $this->input->getOption('memory'),
+                (int) $this->input->getOption('timeout'),
+                (int) $this->input->getOption('sleep'),
+                (int) $this->input->getOption('tries'),
+                false,
+                false,
+                $maxJobs > 0 ? $maxJobs : 0,
+                $maxTime > 0 ? $maxTime : 0,
+                0
             );
 
             $eventDispatcher->listen(JobProcessing::class, function ($event) use ($io) {
                 $name = $event->job->resolveName();
-                $io->text("Processing: " . (is_string($name) ? $name : json_encode($name)));
+                $io->text("Processando: " . (is_string($name) ? $name : json_encode($name)));
                 if (!is_string($name)) {
-                    throw new \RuntimeException("Invalid Job Name type: " . gettype($name) . ". Expected string. Payload: " . json_encode($name));
+                    throw new \RuntimeException("Nome do job inválido (tipo: " . gettype($name) . "). Esperado: string.");
                 }
             });
 
             $eventDispatcher->listen(JobProcessed::class, function ($event) use ($io) {
                 $name = $event->job->resolveName();
-                $io->success("Processed:  " . (is_string($name) ? $name : json_encode($name)));
+                $io->success("Processado: " . (is_string($name) ? $name : json_encode($name)));
             });
 
             $eventDispatcher->listen(JobFailed::class, function ($event) use ($io) {
                 $name = $event->job->resolveName();
-                $io->error("Failed:     " . (is_string($name) ? $name : json_encode($name)) . " - " . $event->exception->getMessage());
+                $io->error("Falhou: " . (is_string($name) ? $name : json_encode($name)) . " - " . $event->exception->getMessage());
             });
 
             $worker->daemon(
@@ -169,9 +182,11 @@ class QueueWorkCommand extends AbstractCommand
                 $options
             );
         } catch (Throwable $e) {
-            $io->error("Worker error: " . $e->getMessage());
-            $io->error("File: " . $e->getFile() . ":" . $e->getLine());
-            $io->error("Stack: " . $e->getTraceAsString());
+            $io->error("Erro no worker: " . $e->getMessage());
+            $io->error("Arquivo: " . $e->getFile() . ":" . $e->getLine());
+            if (!empty($verbose)) {
+                $io->error("Stack: " . $e->getTraceAsString());
+            }
         }
     }
 }

@@ -7,6 +7,17 @@ e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR
 
 ## [Não Lançado]
 
+## [2.11.35] - 2026-02-02
+
+### Removido
+
+- Arquivos e documentação obsoletos: @TODO.md, PUBLISHING.md, configs/queue.php, public/index.php, scripts (README, quick-commit, release, setup-aliases), docs (EXCEPTION_HANDLING, IMPROVEMENTS_PLAN, PACKAGE_CONFLICTS_RESOLUTION, PHP-DI-7.0-MIGRATION, QUEUE_USAGE, TESTING_IMPROVEMENTS, utils/dynamo-helper, utils/dynamo), src/Traits/Services/README.md.
+
+### Alterado
+
+- **.gitignore**: ajustes de entradas ignoradas.
+- **QueueWorkCommand**: alterações de manutenção.
+
 ## [2.11.32] - 2026-02-02
 
 ### Corrigido
