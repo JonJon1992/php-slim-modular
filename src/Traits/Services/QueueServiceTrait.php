@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace Core\Traits\Services;
 
 use Illuminate\Container\Container;
-use Illuminate\Database\Connection;
 use Illuminate\Database\Capsule\Manager;
 use Illuminate\Database\ConnectionResolverInterface;
+use Illuminate\Events\Dispatcher;
 use Illuminate\Queue\Capsule\Manager as QueueCapsule;
 
 trait QueueServiceTrait
@@ -23,74 +23,37 @@ trait QueueServiceTrait
             $bindings["queue.$module"] = function () use ($configs, $module, $moduleSettings) {
                 $container = new Container();
 
-                // Bind db as ConnectionResolverInterface
+                // Bind events dispatcher
+                $container->singleton('events', function () use ($container) {
+                    return new Dispatcher($container);
+                });
+
+                // Bind db as ConnectionResolverInterface - required by DatabaseConnector
                 $container->singleton('db', function () {
                     return new class implements ConnectionResolverInterface {
-                        public function connection($name = null): Connection
+                        public function connection($name = null)
                         {
                             return Manager::connection($name);
                         }
 
                         public function getDefaultConnection(): string
                         {
-                            return Manager::getDefaultConnection();
+                            return 'default';
                         }
 
                         public function setDefaultConnection($name): void
                         {
-                            Manager::setDefaultConnection($name);
+                            // No-op
                         }
                     };
                 });
 
-                $container->singleton('exception.handler', function () {
-                    return new class {
-                        public function report(\Throwable $e): void
-                        {
-                            if (function_exists('logger')) {
-                                logger()->error($e->getMessage(), ['exception' => $e]);
-                            }
-                        }
-                        public function shouldReport(\Throwable $e)
-                        {
-                            return true;
-                        }
-                    };
-                });
-
-                // Bind config for queue
-                $container->singleton('config', function () use ($moduleSettings) {
-                    return new class($moduleSettings) {
-                        private array $config;
-
-                        public function __construct(array $config)
-                        {
-                            $this->config = $config;
-                        }
-
-                        public function get($key, $default = null)
-                        {
-                            if ($key === 'queue.default') {
-                                return 'database';
-                            }
-                            if ($key === 'queue.connections') {
-                                return $this->config['connections'] ?? [];
-                            }
-                            return $default;
-                        }
-                    };
-                });
-
+                // Create capsule - it handles config internally
                 $capsule = new QueueCapsule($container);
 
                 // Add ALL connections from this module
                 foreach ($moduleSettings['connections'] as $alias => $settings) {
                     $capsule->addConnection($settings, $alias);
-                }
-
-                // Add 'default' connection pointing to 'database'
-                if (isset($moduleSettings['connections']['database'])) {
-                    $capsule->addConnection($moduleSettings['connections']['database'], 'default');
                 }
 
                 if ($module === $configs->get('queue.default')) {

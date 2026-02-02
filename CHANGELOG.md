@@ -7,6 +7,16 @@ e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR
 
 ## [Não Lançado]
 
+## [2.11.4] - 2026-02-01
+
+### Corrigido
+
+- **QueueServiceTrait**: simplificado seguindo padrão do DatabaseServiceTrait
+  - QueueCapsule agora gerencia 'config' internamente (como deve ser)
+  - Adicionado binding 'events' com Dispatcher (necessário pelo Queue)
+  - Removidos bindings desnecessários de exception.handler e config custom
+  - Código mais limpo e alinhado com outros services da aplicação
+
 ## [2.11.3] - 2026-02-01
 
 ### Corrigido
