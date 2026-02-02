@@ -109,15 +109,18 @@ class QueueWorkCommand extends AbstractCommand
             );
 
             $eventDispatcher->listen(JobProcessing::class, function ($event) use ($io) {
-                $io->text("Processing: " . $event->job->resolveName());
+                $name = $event->job->resolveName();
+                $io->text("Processing: " . (is_string($name) ? $name : json_encode($name)));
             });
 
             $eventDispatcher->listen(JobProcessed::class, function ($event) use ($io) {
-                $io->success("Processed:  " . $event->job->resolveName());
+                $name = $event->job->resolveName();
+                $io->success("Processed:  " . (is_string($name) ? $name : json_encode($name)));
             });
 
             $eventDispatcher->listen(JobFailed::class, function ($event) use ($io) {
-                $io->error("Failed:     " . $event->job->resolveName() . " - " . $event->exception->getMessage());
+                $name = $event->job->resolveName();
+                $io->error("Failed:     " . (is_string($name) ? $name : json_encode($name)) . " - " . $event->exception->getMessage());
             });
 
             $worker->daemon(

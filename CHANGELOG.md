@@ -7,6 +7,15 @@ e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR
 
 ## [Não Lançado]
 
+## [2.11.10] - 2026-02-02
+
+### Corrigido
+
+- **QueueWorkCommand**: resolvido erro "Array to string conversion" em logs do worker
+  - **Problema**: `Job::resolveName()` pode retornar array em alguns casos (ex: payload bruto)
+  - **Solução**: Adicionada verificação e conversão para JSON quando o nome do job não for string
+  - Garante que os logs de _Processing_, _Processed_ e _Failed_ funcionem sem crashes
+
 ## [2.11.9] - 2026-02-01
 
 ### Adicionado
