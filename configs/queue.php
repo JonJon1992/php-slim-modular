@@ -8,7 +8,6 @@ return [
             'sync' => [
                 'driver' => 'sync',
             ],
-
             'database' => [
                 'driver' => 'database',
                 'table' => 'jobs',
@@ -44,17 +43,4 @@ return [
             'table' => 'failed_jobs',
         ]
     ],
-
-    // Você pode adicionar mais módulos aqui
-    // 'outro-modulo' => [
-    //     'connections' => [
-    //         'sync' => [
-    //             'driver' => 'sync',
-    //         ],
-    //         // ... outras conexões
-    //     ],
-    //     'failed' => [
-    //         'table' => 'outro_modulo_failed_jobs',
-    //     ]
-    // ]
 ];

@@ -64,6 +64,17 @@ class QueueWorkCommand extends AbstractCommand
 
         $queueName = $this->input->getOption('queue');
 
+        // SQS: quando --queue=default, usar o nome da fila da config (evita URL prefix + '/default')
+        if ($connectionName && $queueName === 'default') {
+            $connConfig = config("queue.{$module}.connections.{$connectionName}");
+            if (isset($connConfig['driver']) && $connConfig['driver'] === 'sqs' && !empty($connConfig['queue'])) {
+                $sqsQueue = $connConfig['queue'];
+                $queueName = filter_var($sqsQueue, FILTER_VALIDATE_URL) !== false
+                    ? basename(parse_url($sqsQueue, PHP_URL_PATH))
+                    : $sqsQueue;
+            }
+        }
+
         if (!$module) {
             $io->error('No queue module specified and no default configured');
             $io->text('Configure <comment>queue.default</comment> in configs/queue.php (e.g. <comment>\'default\' => \'ms-keys\'</comment>) or run with <comment>--module=NomeDoModulo</comment>.');
