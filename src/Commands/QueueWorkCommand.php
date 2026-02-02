@@ -53,19 +53,22 @@ class QueueWorkCommand extends AbstractCommand
         try {
             /** @var QueueCapsule $queueManager */
             $queueManager = service("queue.{$module}");
+
+            // Debug: verificar se o capsule está ok
+            $io->text("Capsule OK: " . get_class($queueManager));
+
+            $internalManager = $queueManager->getQueueManager();
+            $io->text("Internal Manager OK: " . get_class($internalManager));
         } catch (Throwable $e) {
             $io->error("Queue not configured correctly: " . $e->getMessage());
+            $io->error("Stack: " . $e->getTraceAsString());
             return;
         }
 
         $exceptionHandler = new class implements ExceptionHandler {
             public function report(Throwable $e)
             {
-                if (function_exists('logger')) {
-                    logger()->error("[Queue Error] " . $e->getMessage(), ['exception' => $e]);
-                } else {
-                    error_log("[Queue Error] " . $e->getMessage());
-                }
+                error_log("[Queue Error] " . $e->getMessage() . "\n" . $e->getTraceAsString());
             }
 
             public function shouldReport(Throwable $e)
@@ -78,6 +81,7 @@ class QueueWorkCommand extends AbstractCommand
             public function renderForConsole($output, Throwable $e)
             {
                 $output->writeln("<error>{$e->getMessage()}</error>");
+                $output->writeln("<comment>{$e->getTraceAsString()}</comment>");
             }
         };
 
@@ -87,38 +91,44 @@ class QueueWorkCommand extends AbstractCommand
             return false;
         };
 
-        $worker = new Worker(
-            $queueManager->getQueueManager(),
-            $eventDispatcher,
-            $exceptionHandler,
-            $isDownForMaintenance
-        );
+        try {
+            $worker = new Worker(
+                $internalManager,
+                $eventDispatcher,
+                $exceptionHandler,
+                $isDownForMaintenance
+            );
 
-        $options = new WorkerOptions(
-            $connectionName,
-            0,
-            (int)$this->input->getOption('memory'),
-            (int)$this->input->getOption('timeout'),
-            (int)$this->input->getOption('sleep'),
-            (int)$this->input->getOption('tries')
-        );
+            $options = new WorkerOptions(
+                $connectionName,
+                0,
+                (int)$this->input->getOption('memory'),
+                (int)$this->input->getOption('timeout'),
+                (int)$this->input->getOption('sleep'),
+                (int)$this->input->getOption('tries')
+            );
 
-        $eventDispatcher->listen(JobProcessing::class, function ($event) use ($io) {
-            $io->text("Processing: " . $event->job->resolveName());
-        });
+            $eventDispatcher->listen(JobProcessing::class, function ($event) use ($io) {
+                $io->text("Processing: " . $event->job->resolveName());
+            });
 
-        $eventDispatcher->listen(JobProcessed::class, function ($event) use ($io) {
-            $io->success("Processed:  " . $event->job->resolveName());
-        });
+            $eventDispatcher->listen(JobProcessed::class, function ($event) use ($io) {
+                $io->success("Processed:  " . $event->job->resolveName());
+            });
 
-        $eventDispatcher->listen(JobFailed::class, function ($event) use ($io) {
-            $io->error("Failed:     " . $event->job->resolveName() . " - " . $event->exception->getMessage());
-        });
+            $eventDispatcher->listen(JobFailed::class, function ($event) use ($io) {
+                $io->error("Failed:     " . $event->job->resolveName() . " - " . $event->exception->getMessage());
+            });
 
-        $worker->daemon(
-            $connectionName,
-            $queueName,
-            $options
-        );
+            $worker->daemon(
+                $connectionName,
+                $queueName,
+                $options
+            );
+        } catch (Throwable $e) {
+            $io->error("Worker error: " . $e->getMessage());
+            $io->error("File: " . $e->getFile() . ":" . $e->getLine());
+            $io->error("Stack: " . $e->getTraceAsString());
+        }
     }
 }
