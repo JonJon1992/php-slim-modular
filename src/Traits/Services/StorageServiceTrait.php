@@ -12,10 +12,16 @@ trait StorageServiceTrait
     protected function registerStorageServices($configs): void
     {
         $default = $configs->get('storage.default', '');
+
         $storages = Arr::except($configs->get('storage', []), ['default', $default]);
-        $storages = Arr::merge([$default => $configs->get("storage.$default", [])], $storages);
+        if ($default !== '') {
+            $storages = Arr::merge([$default => $configs->get("storage.$default", [])], $storages);
+        }
 
         foreach ($storages as $alias => $settings) {
+            if ($alias === '' || $alias === null) {
+                continue;
+            }
             S3::singleton()->use($alias, $settings);
         }
     }
