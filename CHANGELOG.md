@@ -7,6 +7,15 @@ e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR
 
 ## [Não Lançado]
 
+## [2.11.18] - 2026-02-02
+
+### Corrigido
+
+- **Redis Util**: adicionado método público `client()`
+  - **Problema**: Erro `Redis::client() expects at least 1 argument, 0 given` no QueueServiceTrait
+  - **Causa**: O método mágico `__call` interceptava a chamada `client()` e tentava executá-la no objeto `\Redis` nativo (onde `client` é um comando que exige argumentos), ao invés de retornar o objeto client como esperado pela nossa implementação da Factory.
+  - **Solução**: Implementado método público `client()` que retorna a instância de conexão `\Redis` diretamente.
+
 ## [2.11.17] - 2026-02-02
 
 ### Corrigido

@@ -213,6 +213,15 @@ class Redis
     }
 
     /**
+     * Get the underlying Redis instance.
+     * @return \Redis
+     */
+    public function client(): \Redis
+    {
+        return $this->getRedis();
+    }
+
+    /**
      * Summary of getRedis
      * @return \Redis|null
      */
