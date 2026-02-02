@@ -7,6 +7,15 @@ e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR
 
 ## [Não Lançado]
 
+## [2.11.14] - 2026-02-02
+
+### Corrigido
+
+- **QueueServiceTrait**: adicionado binding da interface `Container`
+  - **Problema**: Erro `Target [Illuminate\Contracts\Container\Container] is not instantiable` ao processar jobs
+  - **Causa**: O `CallQueuedHandler` depende da interface do Container, que não estava vinculada à instância criada manualmente
+  - **Solução**: ` $container->instance(ContainerInterface::class, $container)`
+
 ## [2.11.13] - 2026-02-02
 
 ### Corrigido

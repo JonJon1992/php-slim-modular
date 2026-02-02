@@ -20,7 +20,6 @@ trait QueueServiceTrait
                 continue;
             }
 
-            // Create ONE QueueCapsule per module with ALL connections
             $bindings["queue.$module"] = function () use ($configs, $module, $moduleSettings) {
                 $defaultDbAlias = $configs->get('db.default', 'default');
                 $dbResolver = new class($defaultDbAlias) implements ConnectionResolverInterface {
@@ -48,15 +47,14 @@ trait QueueServiceTrait
                     }
                 };
 
-                // Create container with all required bindings
                 $container = new Container();
+                $container->instance(\Illuminate\Contracts\Container\Container::class, $container);
 
-                // Bind events dispatcher
                 $container->singleton('events', function ($c) {
                     return new Dispatcher($c);
                 });
 
-                // Bind bus dispatcher
+
                 $container->bind(\Illuminate\Contracts\Bus\Dispatcher::class, function ($c) {
                     return new \Illuminate\Bus\Dispatcher($c);
                 });
