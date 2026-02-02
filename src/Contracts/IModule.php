@@ -6,7 +6,7 @@ namespace Core\Contracts;
 
 use Core\App\App;
 use Core\Contracts\Event\IEventDispatcher;
-use Core\Traits\Redis;
+use Core\Utils\Redis;
 use Illuminate\Database\Connection;
 use JsonSerializable;
 use Psr\Log\LoggerInterface;
@@ -37,4 +37,6 @@ interface IModule
     function log(?JsonSerializable $obj = null, $message = null): LoggerInterface;
 
     function redis(): Redis;
+
+    function queue();
 }

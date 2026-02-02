@@ -7,10 +7,7 @@ namespace Core\App;
 use Core\Contracts\Event\IEventDispatcher;
 use Core\Contracts\IModule;
 use Core\Event\EventDispatcher;
-use Core\Traits\Email;
-use Core\Traits\Path;
-use Core\Traits\Redis;
-use Core\Traits\Render\IRendebleAdapter;
+use Core\Utils\{Email, Path, Redis, Render\IRendebleAdapter};
 use Illuminate\Database\Connection;
 use JsonSerializable;
 use Psr\Log\LoggerInterface;
@@ -246,5 +243,9 @@ abstract class Module implements IModule
     public function renderAdapter(): IRendebleAdapter
     {
         return renderAdapter($this->namespace());
+    }
+    public function queue()
+    {
+        return queue($this->namespace());
     }
 }

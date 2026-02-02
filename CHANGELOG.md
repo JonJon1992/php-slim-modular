@@ -7,6 +7,17 @@ e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR
 
 ## [Não Lançado]
 
+## [2.11.9] - 2026-02-01
+
+### Adicionado
+
+- **Module**: adicionado método `queue()` na interface `IModule` e classe `Module` para acesso facilitado ao QueueManager do módulo
+
+### Refatorado
+
+- **Imports**: atualizados imports em `Module.php` e `IModule.php` para usar `Core\Utils` ao invés de `Core\Traits`
+- **Limpeza**: agrupados imports de Utils em `Module.php`
+
 ## [2.11.8] - 2026-02-01
 
 ### Corrigido
