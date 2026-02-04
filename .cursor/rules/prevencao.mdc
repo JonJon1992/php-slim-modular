@@ -1,9 +1,0 @@
----
-alwaysApply: true
----
-Antes de implementar:
-
-1. Liste casos de erro possíveis
-2. Defina como tratar cada um
-3. Implemente validações primeiro
-4. Adicione logs/debug
