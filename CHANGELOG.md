@@ -1,1007 +1,273 @@
-# Changelog
+# CHANGELOG
 
-Todas as mudanças notáveis neste projeto serão documentadas neste arquivo.
+v2.12.0
+Adiciona IAuth, IJwtValidator, ApiGatewayMiddleware e Auth
+Remove JwtAuthMiddleware (substituído por ApiGatewayMiddleware)
+Alterações em cli.php, QueueWorkCommand, BaseCollection e SnsClient
 
-O formato é baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/),
-e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR/).
+v2.11.35
+Remove arquivos e documentação obsoletos
+Ajustes em .gitignore e QueueWorkCommand
 
-## [Não Lançado]
+v2.11.32
+StorageServiceTrait: evita erro "Storage: Alias cannot be empty"
+Adiciona workflow GitHub Actions para criar tag e release a partir do composer
 
-## [2.12.0] - 2026-03-04
+v2.11.30
+QueueServiceTrait: prevenção de erro 'Alias cannot be empty'
 
-### Adicionado
+v2.11.29
+Configuração SQS: atualizados padrões (região sa-east-1, URLs completas)
 
-- **IAuth**: interface para contrato de autenticação com métodos `login`, `logout`, `id`, `tenantId`, `data`, `raw`, `attr`, `on`, `off`, `ip`, `agent`.
-- **IJwtValidator**: interface para validação de tokens JWT e extração de claims.
-- **ApiGatewayMiddleware**: middleware para autenticação via API Gateway com suporte a JWT, validação de módulo via `x-client`/`xclient` e propagação de dados via `x-auth`.
-- **Auth**: implementação da interface `IAuth` com suporte a usuário, tenant, login/logout e helpers de sessão.
+v2.11.28
+QueueServiceTrait: adicionado suporte a SQS Connector
 
-### Removido
+v2.11.27
+QueueWorkCommand: suporte a conexão 'default' em módulos
 
-- **JwtAuthMiddleware**: substituído por `ApiGatewayMiddleware` com suporte ampliado a API Gateway.
+v2.11.26
+QueueWorkCommand: aprimorada lógica de fallback de conexão
 
-### Alterado
+v2.11.25
+QueueWorkCommand: corrigida seleção padrão de conexão
 
-- **cli.php**: ajustes nos comandos CLI.
-- **QueueWorkCommand**: alterações de manutenção.
-- **BaseCollection**: alterações de manutenção.
-- **SnsClient**: alterações de manutenção.
+v2.11.24
+QueueServiceTrait: corrigido retorno do RedisConnector para usar wrapper Redis
 
-## [2.11.35] - 2026-02-02
+v2.11.23
+Redis Util: implementado adaptador no método eval() para PhpRedis
 
-### Removido
+v2.11.22
+Redis Util: assinatura do método eval() totalmente removida
 
-- Arquivos e documentação obsoletos: @TODO.md, PUBLISHING.md, configs/queue.php, public/index.php, scripts (README, quick-commit, release, setup-aliases), docs (EXCEPTION_HANDLING, IMPROVEMENTS_PLAN, PACKAGE_CONFLICTS_RESOLUTION, PHP-DI-7.0-MIGRATION, QUEUE_USAGE, TESTING_IMPROVEMENTS, utils/dynamo-helper, utils/dynamo), src/Traits/Services/README.md.
+v2.11.21
+Redis Util: uso de func_get_args() no método eval()
 
-### Alterado
+v2.11.20
+Redis Util: relaxada assinatura do método eval()
 
-- **.gitignore**: ajustes de entradas ignoradas.
-- **QueueWorkCommand**: alterações de manutenção.
+v2.11.19
+Redis Util: adicionado método público eval()
 
-## [2.11.32] - 2026-02-02
+v2.11.18
+Redis Util: adicionado método público client()
 
-### Corrigido
+v2.11.17
+QueueServiceTrait: adicionado suporte a Redis Queue
 
-- **StorageServiceTrait**: evita erro "Storage: Alias cannot be empty"
-  - **Problema**: O bootstrap falhava quando `storage.default` não estava configurado ou estava vazio, pois um alias vazio era passado para S3.
-  - **Solução**: Só incluir o default em `$storages` quando não for vazio; ignorar aliases vazios ou nulos no loop de registro.
+v2.11.16
+QueueWorkCommand: definido contexto do módulo manualmente
 
-### Adicionado
+v2.11.15
+App: corrigido método module() em ambiente CLI
 
-- **GitHub Actions**: workflow para criar tag e release a partir da versão do composer
-  - Dispara em push na branch `main`.
-  - Lê a versão do `composer.json`, cria a tag `v{versão}` (se não existir) e gera a GitHub Release com notas automáticas.
+v2.11.14
+QueueServiceTrait: adicionado binding da interface Container
 
-## [2.11.30] - 2026-02-02
+v2.11.13
+QueueServiceTrait: adicionado alias bus para Bus\Dispatcher
 
-### Corrigido
+v2.11.12
+QueueServiceTrait: adicionado binding do Bus\Dispatcher
 
-- **QueueServiceTrait**: prevenção de erro 'Alias cannot be empty'
-  - **Problema**: O framework quebrava ao iniciar se houvesse configurações de conexão malformadas (com chaves vazias ou implícitas numéricas) no array de conexões.
-  - **Solução**: Adicionada verificação `!empty($alias)` antes de registrar a conexão no Capsule.
+v2.11.11
+QueueWorkCommand: tratamento de exceção para nomes de job inválidos
 
-## [2.11.29] - 2026-02-02
+v2.11.10
+QueueWorkCommand: resolvido erro "Array to string conversion" em logs do worker
 
-### Corrigido
+v2.11.9
+Module: adicionado método queue() na interface IModule e classe Module
+Imports atualizados para Core\Utils
 
-- **Configuração SQS**: atualizados padrões de configuração
-  - **Problema**: A configuração padrão do SQS usava um prefixo dummy `us-east-1` que causava a formação de URLs de fila inválidas (ex: `https://sqs.sa-east-1.amazonaws.com/`) quando o usuário tentava usar filas em outras regiões.
-  - **Solução**:
-    1. Removido valor padrão de `SQS_PREFIX` (agora vazio por padrão), permitindo o uso de URLs completas em `SQS_QUEUE`.
-    2. Atualizada região padrão para `sa-east-1`.
-    3. Definida fila de exemplo funcional como padrão para facilitar testes.
+v2.11.8
+QueueServiceTrait: corrigido dbResolver para usar service()
 
-## [2.11.28] - 2026-02-02
+v2.11.6
+QueueServiceTrait: ajustada ordem de inicialização
 
-### Corrigido
+v2.11.5
+QueueServiceTrait: registrando connectors manualmente
 
-- **QueueServiceTrait**: adicionado suporte a SQS Connector
-  - **Problema**: O driver `sqs` não estava registrado no `QueueManager`, impossibilitando o uso de filas AWS SQS.
-  - **Solução**: Registrado manualmente o `SqsConnector` no manager, igualando o suporte aos drivers `sync`, `database` e `redis`.
+v2.11.4
+QueueServiceTrait: simplificado seguindo padrão do DatabaseServiceTrait
 
-## [2.11.27] - 2026-02-02
+v2.11.3
+QueueServiceTrait: refatorado com singleton bindings
 
-### Corrigido
+v2.11.2
+QueueServiceTrait: removido setDefaultConnection() que não existe em SyncQueue
 
-- **QueueWorkCommand**: suporte a conexão 'default' em módulos
-  - **Problema**: Mesmo com a configuração, o comando não reconhecia conexões nomeadas como 'default' dentro da lista de `connections` do módulo.
-  - **Solução**: Adicionada verificação explícita: se nenhuma conexão for informada e existir uma chave `connections.default` na config do módulo, ela será usada automaticamente.
+v2.11.1
+QueueServiceTrait: adicionado alias default para compatibilidade com Laravel Queue Worker
 
-## [2.11.26] - 2026-02-02
+v2.11.0
+Refatora estrutura de Queue: um QueueManager por módulo com todas as conexões
+Helper queue() simplificado para aceitar apenas módulo
 
-### Corrigido
+v2.10.5
+QueueWorkCommand: corrigido WorkerOptions para usar connectionName dinâmico
 
-- **QueueWorkCommand**: aprimorada lógica de fallback de conexão
-  - **Problema**: Dificuldade em definir a conexão padrão via configuração.
-  - **Solução**: Implementada verificação em cascata para conexão:
-    1. Argumento CLI `--connection`
-    2. Config global `queue.default_connection`
-    3. Config do módulo `queue.{module}.default_connection`
-    4. Fallback 'database'
+v2.10.4
+QueueServiceTrait: adicionado setDefaultConnection() ao QueueManager
 
-## [2.11.25] - 2026-02-02
+v2.10.3
+QueueServiceTrait: corrigido retorno do service binding para QueueManager
 
-### Corrigido
+v2.10.2
+QueueServiceTrait: corrigida implementação do binding db para ConnectionResolverInterface
 
-- **QueueWorkCommand**: corrigida seleção padrão de conexão
-  - **Problema**: O comando `queue:work` estava ignorando a configuração de conexão padrão e usando sempre 'database' se nenhum argumento `--connection` fosse passado explicitamente.
-  - **Solução**: Alterado para buscar `config('queue.connections.default')` antes de fazer fallback para 'database', garantindo que configurações no arquivo `queue.php` sejam respeitadas.
+v2.10.1
+QueueWorkCommand: corrigido para usar estrutura modular queue.{module}.{connection}
+Adicionada opção --module no comando queue:work
 
-## [2.11.24] - 2026-02-02
+v2.10.0
+Service Traits: criadas 8 traits modulares (Log, Database, Cache, Storage, Queue, Dynamo, View, Mailer)
+Queue Modular: suporte a múltiplos módulos com estrutura aninhada
 
-### Corrigido
+v2.9.18
+Corrigidos namespaces e imports (Core\Traits para Core\Utils)
 
-- **QueueServiceTrait**: corrigido retorno do `RedisConnector`
-  - **Problema**: O `RedisQueue` continuava falhando com erro de argumentos no `eval()` mesmo após o fix no wrapper `Core\Utils\Redis`.
-  - **Causa**: O factory do Redis estava retornando a conexão bruta (`->client()`), ignorando completamente nosso wrapper e o fix implementado nele.
-  - **Solução**: Alterado o factory para retornar a instância de `Core\Utils\Redis`, garantindo que todas as chamadas do Queue (incluindo `eval`) passem pelo nosso proxy/wrapper.
+v2.9.17
+Migração de Traits para Utils: Env, Path e Trace
 
-## [2.11.23] - 2026-02-02
+v2.9.16
+Clients AWS: extraída lógica comum para trait AwsClientBase
 
-### Corrigido
+v2.9.15
+Melhorias na tipagem e limpeza de código
 
-- **Redis Util**: implementado adaptador no método `eval()`
-  - **Problema**: Erro `Redis::eval() expects at most 3 arguments, 5 given` no RedisQueue do Laravel
-  - **Causa**: O Laravel `RedisQueue` envia comandos `eval` no formato do driver **Predis** ou **Redis nativo em modo raw** (`script, numKeys, arg1, arg2...`), enquanto a extensão `PhpRedis` espera `script, [args], numKeys`. Como nossa classe Redis Util é um proxy para o PhpRedis, a chamada direta falhava com excesso de argumentos.
-  - **Solução**: O método `eval($script, $numKeys, ...$arguments)` agora intercepta a chamada variádica e a converte para o formato array esperado pela extensão nativa: `eval($script, $arguments, $numKeys)`.
+v2.9.14
+ExceptionHandler: corrigido erro de tipo em getHttpStatusCode()
 
-## [2.11.22] - 2026-02-02
+v2.9.13
+CreateClientCommand: corrigido nome da tabela para module_client_keys
 
-### Corrigido
+v2.9.12
+Relaxada restrição do phpunit para ^10.5 (correção de segurança)
+Removidos campos homepage e support do composer.json
 
-- **Redis Util**: assinatura do método `eval()` totalmente removida
-  - **Problema**: Erro `Redis::eval() expects at most 3 arguments, 5 given` continuava
-  - **Causa**: Mesmo usando `func_get_args()`, a definição `public function eval($script, ...)` já impunha uma validação inicial de contagem de argumentos antes mesmo do corpo do método ser executado, conflitante com o que o driver nativo esperava ou como a chamada estava sendo construída.
-  - **Solução**: Removida completamente a lista de argumentos da definição (`public function eval()`), deixando o PHP aceitar qualquer coisa, e repassando tudo via `func_get_args()`.
+v2.9.11
+Atualizado aws/aws-sdk-php para 3.368.0.0
 
-## [2.11.21] - 2026-02-02
+v2.9.10
+Bootstrap: corrigido carregamento para cors.php ao invés de config.php
 
-### Corrigido
+v2.9.9
+Redis getOrSet: verificação estrita e melhor tratamento de expiração
 
-- **Redis Util**: uso de `func_get_args()` no método `eval()`
-  - **Problema**: Erro persistente `Redis::eval() expects at most 3 arguments, 5 given`
-  - **Causa**: A assinatura explícita do método na classe PHP `Redis` é estrita. Ao passar argumentos via spread operator ou assinatura fixa, a validação de quantidade de argumentos ocorria ANTES da execução real.
-  - **Solução**: Alterado para usar `...func_get_args()` dinamicamente, permitindo que a extensão subjacente lide com os argumentos conforme recebidos, bypassando validações de assinatura intermediárias.
+v2.9.8
+Atualiza documentação de contexto
 
-## [2.11.20] - 2026-02-02
+v2.9.7
+Redis: método connectInternal() e correção de autenticação
+Substituído rand() por random_int(), == por ===
 
-### Corrigido
+v2.9.6
+ValueObjects: adicionado método getValue()
+Str::code(): corrigido parâmetro faltante
 
-- **Redis Util**: relaxada assinatura do método `eval()`
-  - **Problema**: `Redis::eval()` ainda apresentava erro de contagem de argumentos dependendo da versão da extensão Redis
-  - **Solução**: Adicionado suporte a argumentos variáveis `...$extra` para garantir compatibilidade com qualquer chamada que o framework/library fizer ao método eval.
+v2.9.5
+Melhorias no sistema de testes e comandos de migração
 
-## [2.11.19] - 2026-02-02
+v2.9.4
+Melhorias no BaseTestCase com tipagem e organização
 
-### Corrigido
+v2.9.3
+Implementação do DynamoMock
 
-- **Redis Util**: adicionado método público `eval()`
-  - **Problema**: Erro `Redis::eval() expects at most 3 arguments, 5 given`
-  - **Causa**: O método mágico `__call` repassa todos os argumentos para o método nativo. O driver do Laravel pode passar argumentos adicionais (como flags de variadic) ou a extensão Redis PHP tem uma assinatura estrita que pode conflitar com como os argumentos opcionais são passados via `...$arguments`.
-  - **Solução**: Implementado método público `eval($script, $args, $numKeys)` explicitamente para garantir a assinatura correta ao chamar o método nativo.
+v2.9.2
+BaseTestCase: assertJsonResponse, createTestData, cleanTestData, RedisMock
+Segurança com escapeshellarg()
 
-## [2.11.18] - 2026-02-02
+v2.9.1
+Crypt: corrigido erro de tipo no encode() com Hashids
+Conflito de funções dd() e d() com VarDumper
 
-### Corrigido
+v2.9.0
+Sistema de exceções: melhorada ordem de carregamento no bootstrap
 
-- **Redis Util**: adicionado método público `client()`
-  - **Problema**: Erro `Redis::client() expects at least 1 argument, 0 given` no QueueServiceTrait
-  - **Causa**: O método mágico `__call` interceptava a chamada `client()` e tentava executá-la no objeto `\Redis` nativo (onde `client` é um comando que exige argumentos), ao invés de retornar o objeto client como esperado pela nossa implementação da Factory.
-  - **Solução**: Implementado método público `client()` que retorna a instância de conexão `\Redis` diretamente.
+v2.8.9
+Funções de debug dd() e d()
 
-## [2.11.17] - 2026-02-02
+v2.8.8
+Conflito env() com Laravel: renomeada para getEnvVar()
 
-### Corrigido
+v2.8.7
+Conflito env() com Laravel: renomeada para getEnvVar()
 
-- **QueueServiceTrait**: adicionado suporte a Redis Queue
-  - **Problema**: Erro `Argument #1 ($redis) must be of type Illuminate\Contracts\Redis\Factory` ao tentar usar conexão redis na fila
-  - **Causa**: O container da Queue não tinha o binding 'redis' configurado, e o `RedisConnector` exige um `Factory`
-  - **Solução**:
-    1. Registrado manualmente o `RedisConnector` no QueueManager
-    2. Adicionado binding de `Illuminate\Contracts\Redis\Factory` no container, adaptando para o serviço de cache existente (`service("cache.$module")`)
+v2.8.6
+Sistema de exceções: corrigido carregamento no bootstrap
+ErrorHandler: corrigida propriedade $response
 
-## [2.11.16] - 2026-02-02
+v2.8.5
+Proteção contra TypeError em str_ends_with
 
-### Corrigido
+v2.8.4
+TypeError em str_ends_with com chaves numéricas
 
-- **QueueWorkCommand**: definido contexto do módulo manualmente
-  - **Problema**: `logger()` falhava em jobs com erro `No entry or class found for 'log.queue'`
-  - **Causa**: O command `queue:work` fazia o App deduzir o módulo como "queue". Como não existe módulo "queue", o `logger()` tentava resolver `log.queue` que não existe no DI Container.
-  - **Solução**: `app()->setModule($module)` adicionado no início do command para forçar o App a usar o módulo correto (ex: `ms-keys`), permitindo que `logger()` resolva `log.ms-keys` corretamente.
+v2.8.3
+Bootstrap: removido autoloader
 
-## [2.11.15] - 2026-02-02
+v2.8.2
+Conflito de tipo na propriedade response do ImAliveAction
 
-### Corrigido
+v2.8.1
+Problemas com substr e valores null no AbstractAction
 
-- **App**: corrigido método `module()` em ambiente CLI
-  - **Problema**: Erro "Array to string conversion" ao usar helpers (como `logger()`) em commands/jobs
-  - **Causa**: `App::module()` estava retornando um array `['q']` devido a uma lógica incorreta de parsing do nome do comando (`explode` no índice 0 da string)
-  - **Solução**: Corrigido para fazer o explode corretamente no nome completo do comando e retornar a primeira parte (o namespace/módulo)
+v2.8.0
+Scripts de automação para commits e releases
 
-## [2.11.14] - 2026-02-02
+v2.7.0
+Atualização de datas nos documentos
 
-### Corrigido
+v2.6.0
+Sistema de validação com Respect\Validation
+Scripts de automação (release, quick-commit, setup-aliases)
 
-- **QueueServiceTrait**: adicionado binding da interface `Container`
-  - **Problema**: Erro `Target [Illuminate\Contracts\Container\Container] is not instantiable` ao processar jobs
-  - **Causa**: O `CallQueuedHandler` depende da interface do Container, que não estava vinculada à instância criada manualmente
-  - **Solução**: ` $container->instance(ContainerInterface::class, $container)`
+v2.5.0
+Tipagem forte declare(strict_types=1) em todo o projeto
+Compatibilidade PHP 8.2+
 
-## [2.11.13] - 2026-02-02
+v2.4.0
+Health check avançado no ImAliveAction
+Suporte DynamoDB, métricas detalhadas, cache inteligente
 
-### Corrigido
+v2.3.0
+Atualizado jonjon1992/s3-php para v2.4.0
 
-- **QueueServiceTrait**: adicionado alias `bus` para o `Bus\Dispatcher`
-  - **Problema**: Compatibilidade com alguns componentes que resolvem o dispatcher apenas pelo alias "bus"
-  - **Solução**: Adicionado alias manual `$container->alias(Dispatcher::class, 'bus')`
+v2.2.9
+Melhorias na documentação e organização do código
 
-## [2.11.12] - 2026-02-02
+v2.2.8
+Versão estável com integração AWS completa
+Sistema de helpers e middlewares
 
-### Corrigido
+v2.2.7
+Helper dynamo() para DynamoDB
 
-- **QueueServiceTrait**: adicionado binding do `Bus\Dispatcher`
-  - **Problema**: Erro `Target [Illuminate\Contracts\Bus\Dispatcher] is not instantiable` ao processar jobs no worker
-  - **Causa**: O container do QueueManager não tinha o binding da interface Dispatcher necessário para o `CallQueuedHandler`
-  - **Solução**: Adicionado binding explícito de `Illuminate\Contracts\Bus\Dispatcher` para `Illuminate\Bus\Dispatcher`
+v2.2.6
+Conflito de função s3() e assinaturas na classe Str
+Compatibilidade com illuminate/support
 
-## [2.11.11] - 2026-02-02
+v2.2.5
+Util DynamoDB: Core\Utils\Dynamo com CRUD completo
 
-### Corrigido
+v2.2.4
+Classes de exceção personalizadas (AuthenticationException, InvalidRequestException, etc.)
 
-- **QueueWorkCommand**: tratamento de exceção para nomes de job inválidos
-  - **Problema**: Mensagens com formato não esperado causavam crash no worker com erro `str_contains(): Argument #1 ($haystack) must be of type string, array given`
-  - **Causa**: Worker do Laravel espera que o nome do job seja uma string (nome da classe), mas alguns payloads podem vir como array
-  - **Solução**: Adicionada validação estrita no listener `JobProcessing`. Se o nome não for string, lança `RuntimeException` capturada pelo worker, marcando o job como falho ao invés de derrubar o processo.
+v2.2.3
+Conflito de dependências slim/psr7 e slim/slim
 
-## [2.11.10] - 2026-02-02
+v2.2.2
+Conflito AWS SDK com slim/php-view
 
-### Corrigido
+v2.2.1
+Atualizado jonjon1992/s3-php para v2.1.0
 
-- **QueueWorkCommand**: resolvido erro "Array to string conversion" em logs do worker
-  - **Problema**: `Job::resolveName()` pode retornar array em alguns casos (ex: payload bruto)
-  - **Solução**: Adicionada verificação e conversão para JSON quando o nome do job não for string
-  - Garante que os logs de _Processing_, _Processed_ e _Failed_ funcionem sem crashes
+v2.2.0
+AWS SDK PHP ^3.350, helpers s3() e queue()
+Métodos Str: endsWith, camel, ucfirst, studly
 
-## [2.11.9] - 2026-02-01
-
-### Adicionado
-
-- **Module**: adicionado método `queue()` na interface `IModule` e classe `Module` para acesso facilitado ao QueueManager do módulo
-
-### Refatorado
-
-- **Imports**: atualizados imports em `Module.php` e `IModule.php` para usar `Core\Utils` ao invés de `Core\Traits`
-- **Limpeza**: agrupados imports de Utils em `Module.php`
-
-## [2.11.8] - 2026-02-01
-
-### Corrigido
-
-- **QueueServiceTrait**: corrigido dbResolver para usar `service()` ao invés de `Manager::connection()` estático
-  - **Problema**: `Manager::connection()` depende de `static::$instance` que era null
-  - **Causa raiz**: O Database Capsule precisa ter `setAsGlobal()` chamado antes
-  - **Solução**: Usar `service("db.{$alias}")` que busca a conexão do container de serviços
-  - Garante que o Database está inicializado antes de ser usado pelo Queue
-  - dbResolver agora armazena o defaultConnection e usa o service container
-
-## [2.11.6] - 2026-02-01
-
-### Corrigido
-
-- **QueueServiceTrait**: ajustada ordem de inicialização após análise do QueueManager.php
-  - Conexões são adicionadas ao Capsule ANTES de pegar o QueueManager interno
-  - Connectors são re-registrados DEPOIS para sobrescrever os do provider
-  - O QueueManager.getConfig() usa $app['config']["queue.connections.{$name}"]
-  - Capsule.addConnection() popula exatamente essa estrutura de config
-
-## [2.11.5] - 2026-02-01
-
-### Corrigido
-
-- **QueueServiceTrait**: registrando connectors manualmente após análise do QueueServiceProvider
-  - O QueueServiceProvider usa `$this->app['db']` que é o container do provider, não nosso
-  - Solução: registrar SyncConnector e DatabaseConnector manualmente no QueueManager
-  - DatabaseConnector agora recebe o dbResolver correto diretamente
-  - Evita dependência do provider que usa bindings do Laravel App
-
-## [2.11.4] - 2026-02-01
-
-### Corrigido
-
-- **QueueServiceTrait**: simplificado seguindo padrão do DatabaseServiceTrait
-  - QueueCapsule agora gerencia 'config' internamente (como deve ser)
-  - Adicionado binding 'events' com Dispatcher (necessário pelo Queue)
-  - Removidos bindings desnecessários de exception.handler e config custom
-  - Código mais limpo e alinhado com outros services da aplicação
-
-## [2.11.3] - 2026-02-01
-
-### Corrigido
-
-- **QueueServiceTrait**: refatorado com singleton bindings para db e exception.handler
-  - Resolvido erro: "Call to a member function getConnection() on null"
-  - Adicionado binding 'config' que o QueueManager precisa internamente
-  - Conexão 'default' configurada para apontar para 'database'
-  - Bindings alterados de `bind()` para `singleton()` para garantir mesma instância
-
-## [2.11.2] - 2026-02-01
-
-### Corrigido
-
-- **QueueServiceTrait**: removido `setDefaultConnection()` que não existe em SyncQueue
-  - Resolvido erro: "Call to undefined method SyncQueue::setDefaultConnection()"
-  - Alias 'default' agora aponta para conexão 'database' quando disponível
-  - Se 'database' não existir, usa a primeira conexão configurada
-
-## [2.11.1] - 2026-02-01
-
-### Corrigido
-
-- **QueueServiceTrait**: adicionado alias 'default' apontando para a primeira conexão configurada
-  - Resolvido erro: "The [default] queue connection has not been configured"
-  - Worker agora encontra a conexão 'default' internamente
-  - Alias 'default' aponta para a primeira conexão do módulo (geralmente 'sync')
-
-### Adicionado
-
-- Alias automático 'default' para compatibilidade com Laravel Queue Worker
-- Primeira conexão do módulo agora é registrada duas vezes: com seu nome original e como 'default'
-
-## [2.11.0] - 2026-02-01
-
-### BREAKING CHANGE
-
-- **Estrutura de Queue**: refatorada estrutura de queue para ter UM QueueManager por módulo com TODAS as conexões
-  - **ANTES**: `service('queue.ms-keys.database')` - um QueueManager por conexão
-  - **DEPOIS**: `service('queue.ms-keys')` - um QueueManager com todas as conexões
-  - **Helper**: `queue()` agora retorna o QueueManager, use `queue()->connection('redis')` para escolher conexão
-  - **Service bindings**: `queue.$module` ao invés de `queue.$module.$connection`
-
-### Corrigido
-
-- **Queue Worker**: resolvido erro "The [default] queue connection has not been configured"
-  - QueueManager agora tem TODAS as conexões do módulo registradas
-  - Worker pode alternar entre conexões (database, redis, sqs, sync)
-  - Configuração de conexão padrão funciona corretamente
-
-### Alterado
-
-- **QueueServiceTrait**: refatorado para criar um único QueueManager por módulo
-- **QueueWorkCommand**: atualizado para usar `queue.$module`
-- **Helper queue()**: simplificado para aceitar apenas `$module`, removido parâmetro `$connection`
-- **Uso**: `queue()` retorna QueueManager, depois use `->connection('nome')` se precisar de conexão específica
-
-### Adicionado
-
-- Suporte completo a múltiplas conexões no mesmo QueueManager
-- Todas as conexões de um módulo (sync, database, redis, sqs) disponíveis no mesmo manager
-
-## [2.10.5] - 2026-02-01
-
-### Corrigido
-
-- **QueueWorkCommand**: corrigido `WorkerOptions` para usar `$connectionName` dinâmico ao invés de `'default'` hardcoded
-  - Resolvido erro: "The [default] queue connection has not been configured"
-  - Worker agora usa o nome correto da conexão (database, redis, sqs, sync)
-  - WorkerOptions alinhado com o nome real da conexão configurada
-
-### Alterado
-
-- **WorkerOptions**: primeiro parâmetro alterado de `'default'` para `$connectionName`
-
-## [2.10.4] - 2026-02-01
-
-### Corrigido
-
-- **QueueServiceTrait**: adicionado `setDefaultConnection()` ao QueueManager
-  - Resolvido erro: "Call to a member function getConnection() on null" no Worker
-  - Cada instância do QueueManager agora tem sua conexão padrão configurada corretamente
-  - Worker consegue acessar a conexão através do QueueManager
-
-### Adicionado
-
-- **Default connection**: agora cada QueueManager tem sua conexão configurada como padrão via `$capsule->getQueueManager()->setDefaultConnection($alias)`
-
-## [2.10.3] - 2026-02-01
-
-### Corrigido
-
-- **QueueServiceTrait**: corrigido retorno do service binding para retornar `QueueManager` ao invés de `getConnection()`
-  - Resolvido erro: "Call to a member function getConnection() on null"
-  - O QueueManager agora gerencia as conexões corretamente
-  - Worker pode acessar as conexões através do manager
-
-### Alterado
-
-- **Return type**: alterado de `$capsule->getConnection($alias)` para `$capsule` no binding da queue
-
-## [2.10.2] - 2026-02-01
-
-### Corrigido
-
-- **QueueServiceTrait**: corrigida implementação do binding `db` para implementar `ConnectionResolverInterface`
-  - Adicionados métodos `getDefaultConnection()` e `setDefaultConnection()`
-  - Resolvido erro: "Argument #1 ($connections) must be of type ConnectionResolverInterface, class@anonymous given"
-- **DatabaseConnector**: agora funciona corretamente com a classe anônima que implementa a interface correta
-
-### Alterado
-
-- **Classe anônima do db**: agora implementa `Illuminate\Database\ConnectionResolverInterface` adequadamente
-
-## [2.10.1] - 2026-02-01
-
-### Corrigido
-
-- **QueueWorkCommand**: corrigido comando `queue:work` para usar estrutura modular `queue.{module}.{connection}`
-- **Helper queue()**: atualizado helper `queue()` para suportar a nova estrutura modular
-  - Agora aceita parâmetros `$module` e `$connection`
-  - Usa módulo padrão de `queue.default` quando não especificado
-  - Usa conexão `database` como padrão quando não especificada
-- **Erro "No entry or class found for 'queue'"**: resolvido erro ao executar `queue:work`
-
-### Adicionado
-
-- **Opção --module**: adicionada opção `--module` no comando `queue:work` para especificar o módulo
-- **Documentação**: criado guia completo de uso em `docs/QUEUE_USAGE.md` com exemplos práticos
-- **Validações**: adicionada validação para garantir que módulo padrão está configurado
-
-### Alterado
-
-- **queue:work**: opção `--connection` agora refere-se ao tipo de conexão (sync, database, redis, sqs) ao invés do nome da conexão
-- **Conexão padrão**: alterada de `default` para `database` no comando queue:work
-
-## [2.10.0] - 2026-02-01
-
-### Adicionado
-
-- **Service Traits**: criadas 8 traits modulares para organização de serviços em `src/Traits/Services/`:
-  - `LogServiceTrait` - gerenciamento de serviços de log (Monolog)
-  - `DatabaseServiceTrait` - gerenciamento de conexões de banco de dados (Eloquent)
-  - `CacheServiceTrait` - gerenciamento de serviços de cache (Redis)
-  - `StorageServiceTrait` - gerenciamento de serviços de storage (S3)
-  - `QueueServiceTrait` - gerenciamento de serviços de queue (Laravel Queue)
-  - `DynamoServiceTrait` - gerenciamento de serviços de DynamoDB
-  - `ViewServiceTrait` - gerenciamento de serviços de view/render
-  - `MailerServiceTrait` - gerenciamento de serviços de email (SMTP)
-- **Documentação**: criado `src/Traits/Services/README.md` com guia completo de uso das traits
-- **Queue Modular**: implementado suporte a múltiplos módulos de queue com estrutura aninhada
-
-### Refatorado
-
-- **services.php**: refatorado completamente de ~156 linhas para ~47 linhas usando traits modulares
-- **Queue System**: ajustado sistema de queue para funcionar por módulos, seguindo padrão dos outros serviços
-  - Estrutura de configuração agora suporta múltiplos módulos (ex: `ms-keys`, `outro-modulo`)
-  - Cada módulo tem suas próprias conexões (sync, database, redis, sqs)
-  - Bindings no formato: `queue.{module}.{connection}` (ex: `queue.ms-keys.database`)
-- **Organização**: melhor separação de responsabilidades com cada trait gerenciando um tipo de serviço
-- **Manutenibilidade**: código mais limpo, organizado e fácil de manter
-
-### Alterado
-
-- **configs/queue.php**: atualizado para estrutura modular aninhada com suporte a múltiplos módulos
-- **Padrão de código**: todos os serviços agora seguem o mesmo padrão modular consistente
-
-## [2.9.18] - 2026-02-01
-
-### Corrigido
-
-- Namespaces: corrigidos imports incorretos em `helpers.php` e `ExceptionHandler.php`
-- Imports: movidos imports de `Core\Traits` para `Core\Utils` para classes: `Auth`, `Client`, `Config`, `Dynamo`, `Env`, `Path`, `Redis`, `SqsClient`, `Trace`
-- Exception: corrigida referência ao `Exception` global com prefixo `\` em `helpers.php`
-- IRendebleAdapter: movida de `Core\Traits\Render` para `Core\Utils\Render` para melhor organização
-- SlimPhpRenderAdapter: atualizado namespace de `Core\Traits\Render` para `Core\Utils\Render`
-- Autoload: corrigidos erros "Class not found" para `Core\Traits\Path` e `Core\Traits\Trace`
-- PHP Warnings: removido warning "The use statement with non-compound name 'Exception' has no effect"
-
-### Refatorado
-
-- Organização de código: melhor organização de classes entre `Core\Traits` e `Core\Utils`
-- Namespace consistency: todos os utils agora estão corretamente no namespace `Core\Utils`
-- Code cleanup: removidos comentários redundantes e espaços em branco desnecessários em `Config.php`
-
-## [2.9.17] - 2026-02-01
-
-### Refatorado
-
-- Migração de Traits para Utils: movidas classes `Env`, `Path` e `Trace` de traits para utils
-- ErrorHandler: atualizado para usar `Core\Utils\Env` ao invés de `Core\Traits\Env`
-- Bootstrap: atualizado para usar `Core\Utils\Path` e `Core\Utils\Trace`
-- Limpeza: removidos comentários redundantes no ErrorHandler
-
-## [2.9.16] - 2026-02-01
-
-### Refatorado
-
-- Clients AWS: extraída lógica comum de inicialização para trait `AwsClientBase`
-- SnsClient: refatorado para usar trait `AwsClientBase`, eliminando código duplicado
-- SqsClient: refatorado para usar trait `AwsClientBase`, eliminando código duplicado
-- DRY: reduzido duplicação de código entre clients AWS (de ~30 linhas duplicadas para trait reutilizável)
-- Manutenibilidade: mudanças futuras em configuração AWS agora centralizadas em um único local
-
-## [2.9.15] - 2026-02-01
-
-### Refatorado
-
-- Refatoração: Melhorias na tipagem e limpeza de código
-- Type hinting aprimorado em diversos métodos
-- Remoção de código não utilizado e comentários redundantes
-- Ajustes em `bootstrap.php` e `helpers.php`
-
-## [2.9.14] - 2026-01-28
-
-### Corrigido
-
-- ExceptionHandler: corrigido erro de tipo "Return value must be of type int, string returned" no método `getHttpStatusCode()`
-- Conversão de tipos: adicionada conversão explícita `(int)` para `getCode()` garantir retorno de inteiro
-- Simplificação: removida verificação de método `getStatusCode()` desnecessária
-
-## [2.9.13] - 2026-01-27
-
-### Corrigido
-
-- CreateClientCommand: corrigido nome da tabela de inserção de `migrations` para `module_client_keys`
-
-## [2.9.12] - 2026-01-27
-
-### Segurança
-
-- Dependências: relaxada restrição de versão do `phpunit/phpunit` para `^10.5` para permitir correção de segurança ("PKSA-z3gr-8qht-p93v")
-
-### Alterado
-
-- Composer: removidos campos `homepage` e `support` do `composer.json`
-
-## [2.9.11] - 2026-01-27
-
-### Alterado
-
-- Atualizado `aws/aws-sdk-php` para versão `3.368.0.0`
-
-## [2.9.10] - 2026-01-27
-
-### Corrigido
-
-- Bootstrap: corrigido carregamento de arquivo de configuração para `cors.php` ao invés de `config.php` em `src/bootstrap.php`.
-
-## [2.9.9] - 2026-01-27
-
-### Melhorado
-
-- Lógica do Redis `getOrSet`: implementação de verificação estrita (`!== false`) para evitar falsos negativos, melhor tratamento de expiração e segurança contra falhas no `json_encode`.
-
-### Refatorado
-
-- Limpeza de código: remoção de comentários redundantes e simplificação de sintaxe em `bootstrap.php`, `exception.php`, `Dynamo.php` e `Utils/Redis.php`.
-
-## [2.9.7] - 2025-01-27
-
-### Alterado
-
-- Implementação de conexão Redis melhorada com método `connectInternal()` separado e correção de autenticação
-- Scrambler aprimorado com `declare(strict_types=1)`, substituído `rand()` por `random_int()` e melhorada legibilidade do código
-- Melhorias no Serializable: substituído `is_null()` por `=== null`, `==` por `===` e melhorada validação de tipos
-- Geração de código Str: substituído `rand()` por `random_int()` e simplificado cálculo do limite no método `code()`
-- Validação de tempo: melhorado método `validate()` com conversão explícita de tipos e variáveis renomeadas
-- Otimização de rotas: removido parâmetro não utilizado e adicionados type hints nos callbacks
-- Refatoração de serviços: substituído `==` por `===` em todas as comparações e removidos parâmetros não utilizados
-
-### Corrigido
-
-- Autenticação Redis: corrigida chamada de autenticação para usar `$this->redis->auth()` na instância correta
-- Uso de `is_null()`: removido uso de `is_null()` em favor de `=== null` para melhor performance e otimização do compilador
-- Comparações de tipos: corrigidas todas as comparações para usar operador estrito `===` ao invés de `==`
-- Parâmetros não utilizados: removidos parâmetros não utilizados em closures e métodos
-
-## [2.9.6] - 2025-09-26
-
-### Adicionado
-
-- Aprimoramento de ValueObjects: adicionado método `getValue()` à interface `IValueObject` e implementação na classe base `ValueObject`
-- Tratamento de exceções melhorado: melhor tratamento de exceções com import explícito da classe `Exception`
-
-### Corrigido
-
-- Método Str::code(): corrigido parâmetro faltante no método `code()` da classe `Str` para geração correta de códigos numéricos
-
-### Alterado
-
-- Interface ValueObject: interface `IValueObject` agora inclui método `getValue()` para acesso direto ao valor
-- Geração de código: método `Str::code()` agora funciona corretamente com tamanhos personalizados
-
-## [2.9.5] - 2025-08-11
-
-### Adicionado
-
-- Melhorias no sistema de testes e comandos de migração
-
-## [2.9.4] - 2025-08-07
-
-### Adicionado
-
-- Melhorias no BaseTestCase com tipagem e organização
-
-## [2.9.3] - 2025-08-07
-
-### Adicionado
-
-- Implementação do DynamoMock seguindo o padrão do RedisMock
-
-## [2.9.2] - 2025-08-06
-
-### Adicionado
-
-- Melhorias no BaseTestCase: melhorias significativas no sistema de testes
-- Segurança aprimorada: comandos shell seguros com `escapeshellarg()` para prevenir injection
-- Tratamento robusto de erros: try-catch abrangente com logs detalhados e validações
-- Permissões configuráveis: suporte para variável de ambiente `TEST_USER` para flexibilidade
-- Helpers de testes: novos métodos `assertJsonResponse()`, `createTestData()`, `cleanTestData()`
-- Documentação completa: guia detalhado em `docs/TESTING_IMPROVEMENTS.md`
-- Exemplo prático: arquivo `examples/BaseTestCaseExample.php` com casos de uso reais
-- Mock do Redis: classe `RedisMock` para testes sem dependência externa
-
-### Alterado
-
-- Método executeCommand(): implementado para execução segura de comandos shell
-- Configuração SQLite: melhorada com validações e permissões adequadas
-- Logs de debug: sistema de logging detalhado para rastreamento de operações
-- Validações: verificação de sucesso para todos os comandos shell
-- Permissões: definição automática de chmod apropriados para arquivos SQLite
-
-### Corrigido
-
-- Comandos exec: corrigidos espaços faltantes em comandos `rm -f` e `mkdir -p`
-- Segurança: prevenção de command injection com `escapeshellarg()`
-- Robustez: tratamento adequado de erros em operações críticas
-- Flexibilidade: suporte a diferentes ambientes via configuração
-
-## [2.9.1] - 2025-08-06
-
-### Corrigido
-
-- Erro de tipo no Crypt: corrigido erro "Return value must be of type string, int returned" no método `encode()` da classe `Crypt`
-- Integração Hashids: forçada conversão para string no retorno do método `encode()` para garantir compatibilidade com a interface `ICrypt`
-- Conflito de funções: corrigido conflito de declaração das funções `dd()` e `d()` com Symfony VarDumper
-- Dependências: instalada extensão `php8.2-bcmath` para suporte completo ao Hashids
-- Compatibilidade: framework agora funciona corretamente com valores numéricos na criptografia
-
-### Alterado
-
-- Método encode(): agora sempre retorna string conforme especificado na interface
-- Funções de debug: adicionada verificação `function_exists()` para evitar conflitos
-- Tipagem: garantida tipagem correta em toda a cadeia de criptografia
-
-## [2.9.0] - 2025-08-05
-
-### Alterado
-
-- Sistema de exceções: melhorada ordem de carregamento do sistema de exceções no bootstrap.php
-
-## [2.8.9] - 2025-08-05
-
-### Adicionado
-
-- Funções de debug: adicionadas funções `dd()` e `d()` para debug similar ao Laravel
-- Compatibilidade: verificação `function_exists()` para evitar conflitos com Symfony VarDumper
-
-## [2.8.8] - 2025-08-05
-
-### Corrigido
-
-- Conflito com Laravel: corrigido conflito de função `env()` com Laravel/Illuminate
-- Compatibilidade: renomeada função `env()` para `getEnvVar()` no exception.php
-- Erro de redeclaração: corrigido erro 'Cannot redeclare env()' em projetos que usam Laravel
-
-## [2.8.7] - 2025-08-05
-
-### Corrigido
-
-- Conflito com Laravel: corrigido conflito de função `env()` com Laravel/Illuminate
-- Compatibilidade: renomeada função `env()` para `getEnvVar()` para evitar conflitos
-- Erro de redeclaração: corrigido erro 'Cannot redeclare env()' em projetos que usam Laravel
-- Integração: framework agora é compatível com projetos Laravel sem conflitos
-
-### Alterado
-
-- Função env(): renomeada para `getEnvVar()` para evitar conflitos
-- Compatibilidade: melhor integração com outros frameworks PHP
-
-## [2.8.6] - 2025-08-05
-
-### Corrigido
-
-- Sistema de tratamento de exceções: corrigido carregamento do sistema de exceções no bootstrap.php
-- Mensagens de erro: corrigido problema onde mensagens de erro não apareciam nas requisições
-- ErrorHandler: corrigida propriedade indefinida `$response` no ErrorHandler
-- Informações de debug: melhorado tratamento de informações de debug no ambiente de desenvolvimento
-- Propriedades indefinidas: removidas referências a propriedades inexistentes no ErrorHandler
-
-### Alterado
-
-- Bootstrap: adicionado carregamento automático do sistema de exceções
-- ErrorHandler: refatorado para usar dados de erro já calculados
-- Tratamento de erros: sistema mais robusto e confiável
-
-## [2.8.5] - 2025-08-05
-
-### Corrigido
-
-- Proteção contra TypeError: melhorada proteção contra TypeError em `str_ends_with` com verificações mais robustas
-
-## [2.8.4] - 2025-08-05
-
-### Corrigido
-
-- TypeError em str_ends_with: corrigido TypeError em `str_ends_with` com chaves numéricas
-
-## [2.8.3] - 2025-08-05
-
-### Alterado
-
-- Bootstrap: removido autoloader do bootstrap.php para melhor organização
-
-## [2.8.2] - 2025-08-05
-
-### Corrigido
-
-- Conflito de tipo: corrigido conflito de tipo na propriedade `response` do ImAliveAction
-
-## [2.8.1] - 2025-08-05
-
-### Corrigido
-
-- Problemas com substr: corrigidos problemas de `substr` com valores null no AbstractAction
-
-## [2.8.0] - 2025-08-05
-
-### Adicionado
-
-- Scripts de automação: sistema de scripts para commits e releases funcionando perfeitamente
-
-### Alterado
-
-- Versão: framework atualizado de 2.7.0 para 2.8.0
-- Automação: processo de release totalmente automatizado
-
-### Corrigido
-
-- Script de release: corrigida lógica para permitir releases sem mudanças pendentes
-
-## [2.7.0] - 2025-08-05
-
-### Alterado
-
-- Atualização de datas: todas as datas dos documentos atualizadas para 2025-08-05
-- Consistência temporal: CHANGELOG com datas padronizadas
-
-## [2.6.0] - 2025-08-05
-
-### Adicionado
-
-- Sistema de validação melhorado: corrigida dependência inexistente `Awurth\Validator\Validator`
-- Validação com Respect\Validation: implementada validação usando `Respect\Validation\Validator`
-- Scripts de automação: sistema completo de scripts para commits e releases
-- Script de release: `scripts/release.sh` para commits e releases automatizados
-- Script de commit rápido: `scripts/quick-commit.sh` com detecção automática de tipo
-- Configuração de aliases: `scripts/setup-aliases.sh` para facilitar uso dos scripts
-
-### Alterado
-
-- Correção de método chaining: corrigida ordem de métodos em validação de CPF
-- Validação inteligente: sistema detecta automaticamente tipo de commit
-- Padronização: mensagens de commit seguem convenções do projeto
-
-### Corrigido
-
-- Dependências: removida dependência inexistente do validator
-- Validação: corrigida lógica de validação em Value Objects
-
-## [2.5.0] - 2025-08-05
-
-### Alterado
-
-- Tipagem forte: adicionado `declare(strict_types=1)` em todos os arquivos PHP do projeto
-- Correção de tipagem: correção de tipagem em Traits, ValueObjects, Entities, Utils, Middleware, Abstract, App, Contracts, etc.
-- Compatibilidade de assinaturas: compatibilidade de assinaturas entre interfaces e implementações
-- Melhoria de docblocks: melhoria de docblocks e tipos de retorno
-- Refatoração de construtores: refatoração de construtores e métodos para maior consistência
-- Remoção de tags PHP: remoção de tags PHP desnecessárias em views
-- Ajuste de métodos: ajuste de métodos de interfaces para garantir compatibilidade
-- Correção de lógica: correção de lógica invertida em construtores de coleções
-
-### Corrigido
-
-- Erros de tipagem: correção de erros de tipagem e inconsistências de assinatura
-- Compatibilidade PHP 8.2+: garantia de compatibilidade total com PHP 8.2+
-- Código limpo: código mais limpo, seguro e padronizado
-
-## [2.4.0] - 2025-08-05
-
-### Adicionado
-
-- Health check avançado: refatoração completa do `ImAliveAction` com funcionalidades avançadas
-- Suporte ao DynamoDB: verificação de conectividade e tabelas do DynamoDB no health check
-- Métricas detalhadas: latência, status e contadores de serviços no health check
-- Cache inteligente: sistema de cache para evitar verificações desnecessárias
-- Logs estruturados: logs de sucesso e falha com contexto completo
-- Verificação seletiva: parâmetro `service` para verificar serviços específicos
-- Forçar verificação: parâmetro `force` para ignorar cache
-- Tipagem forte: implementação completa de `declare(strict_types=1)`
-- Documentação completa: PHPDoc detalhado em todas as classes e métodos
-- Exemplo completo: arquivo `examples/health-check-example.php` com demonstrações
-
-### Alterado
-
-- Correção de erro: `HEALTY_CHECK` → `HEALTHY_CHECK` (correção de digitação)
-- Refatoração da lógica: separação de responsabilidades em métodos privados
-- Estrutura de resposta: JSON estruturado com informações detalhadas por serviço
-- Tratamento de erros: captura específica de exceções com mensagens detalhadas
-- Status HTTP: 503 para falhas de serviços, 200 para sucesso
-- Limitação de logs: máximo de 100 entradas no arquivo de log
-- Documentação atualizada: README.md com seção completa do health check
-
-### Corrigido
-
-- Tipagem: adicionada tipagem forte em todos os métodos
-- Organização: código mais limpo e organizado
-- Performance: cache reduz verificações desnecessárias
-- Observabilidade: métricas detalhadas para monitoramento
-
-## [2.3.0] - 2025-08-05
-
-### Alterado
-
-- Atualização de dependências: atualizado `jonjon1992/s3-php` de v2.1.0 para v2.4.0
-- Melhorias de compatibilidade: suporte a novas funcionalidades do S3 PHP
-- Otimizações de performance: melhorias gerais no framework
-
-## [2.2.9] - 2025-08-05
-
-### Adicionado
-
-- Melhorias na documentação: atualização completa da documentação do projeto
-- Organização de código: reestruturação e limpeza do código base
-- Preparação para testes: estrutura preparada para implementação de testes unitários
-
-### Alterado
-
-- Versão atualizada: framework atualizado para versão 2.2.9
-- Documentação aprimorada: README.md e CHANGELOG.md atualizados
-
-## [2.2.8] - 2025-08-05
-
-### Adicionado
-
-- Versão estável: framework na versão 2.2.8 com todas as funcionalidades principais
-- Integração completa AWS: S3, SQS e DynamoDB totalmente integrados
-- Sistema de helpers: helpers para todos os serviços principais
-- Middleware completo: sistema de middlewares para autenticação, CORS, rate limiting, etc.
-
-### Alterado
-
-- Framework maduro: todas as funcionalidades principais implementadas e testadas
-- Documentação completa: README.md e CHANGELOG.md atualizados
-- Estrutura modular: sistema de módulos funcionando perfeitamente
-
-## [2.2.7] - 2025-08-05
-
-### Adicionado
-
-- Novo helper DynamoDB: implementado helper `dynamo()` em `src/helpers.php` seguindo o padrão dos outros helpers
-- Integração com sistema de serviços: adicionado suporte para configurações do DynamoDB em `src/services.php`
-- Suporte a múltiplas configurações: helper suporta alias para diferentes ambientes (local, produção, etc.)
-- Documentação específica: criado `docs/utils/dynamo-helper.md` com documentação completa do helper
-- Exemplo de uso: atualizado `examples/dynamo-example.php` com exemplos do helper
-- Testes unitários: criado `tests/Utils/DynamoHelperTest.php` para validar o helper
-
-### Alterado
-
-- Padrão consistente: helper `dynamo()` segue o mesmo padrão dos outros helpers (redis, s3, db, etc.)
-- Integração com DI: helper integra automaticamente com o sistema de injeção de dependência
-- Configuração flexível: suporte a variáveis de ambiente e configurações customizadas
-
-### Corrigido
-
-- Consistência de helpers: todos os helpers agora seguem o mesmo padrão de implementação
-
-## [2.2.6] - 2025-08-05
-
-### Corrigido
-
-- Conflito de função s3(): adicionado `if (!function_exists('s3'))` em `src/helpers.php` para evitar redeclaração da função
-- Assinaturas incompatíveis: corrigidas assinaturas incompatíveis na classe `Str` removendo type hints `string` dos métodos `endsWith()`, `camel()`, `ucfirst()` e `studly()`
-- Compatibilidade com pacotes: resolvidos conflitos entre `jonjon1992/php-slim-modular`, `jonjon1992/s3-php` e `illuminate/support` v10.48.28
-
-### Alterado
-
-- Compatibilidade: melhorada compatibilidade com dependências externas
-
-## [2.2.5] - 2025-08-05
-
-### Adicionado
-
-- Novo util DynamoDB: implementado `Core\Utils\Dynamo` para integração com Amazon DynamoDB
-- Suporte completo CRUD: suporte completo para operações CRUD no DynamoDB
-- Configuração automática: configuração automática para ambiente local (LocalStack) e produção (AWS)
-- Operações em lote: operações em lote (batch operations)
-- Queries e scans: suporte a queries e scans
-- Gerenciamento de tabelas: gerenciamento de tabelas (criar, listar, descrever, remover)
-- Conversão flexível: conversão flexível de dados (objetos, arrays, stdClass)
-- Documentação completa: documentação completa em `docs/utils/dynamo.md`
-- Exemplo de uso: exemplo de uso em `examples/dynamo-example.php`
-- Integração: integração com a package `jonjon1992/php-dynamo` v3.0.2
-
-### Alterado
-
-- README atualizado: atualizado README.md com seção de uso do DynamoDB
-- Documentação: melhorada documentação de utils do framework
-
-## [2.2.4] - 2025-08-05
-
-### Corrigido
-
-- HttpException: corrigido uso de `HttpException` para `HttpInternalServerErrorException` no `Action.php`
-- Classes de exceção: criadas classes de exceção personalizadas para melhor tratamento de erros:
-  - `AuthenticationException` para erros de autenticação
-  - `InvalidRequestException` para erros de validação de requisição
-  - `CommandException` para erros de execução de comandos
-  - `AppException` para erros gerais da aplicação
-- Exceções específicas: atualizado uso de `Exception` genérica para exceções específicas em todo o framework
-
-### Alterado
-
-- Segurança de tipos: melhorada segurança de tipos e tratamento de erros
-
-## [2.2.3] - 2025-08-05
-
-### Corrigido
-
-- Conflito de dependências: resolvido conflito adicional de dependências com `slim/psr7` e `slim/slim`
-- Atualização slim/psr7: atualizado `slim/psr7` de `1.6.1` para `^1.7` para suportar `psr/http-message ^2.0`
-- Atualização slim/slim: atualizado `slim/slim` de `4.8.1` para `^4.9` para melhor compatibilidade
-- Conflitos PSR: corrigidos todos os conflitos de dependências PSR HTTP Message
-
-## [2.2.2] - 2025-08-05
-
-### Corrigido
-
-- Conflito AWS SDK: resolvido conflito de dependências entre `aws/aws-sdk-php` e `slim/php-view`
-- Atualização slim/php-view: atualizado `slim/php-view` de `3.1.0` para `^3.2` para suportar `psr/http-message ^2.0`
-- Compatibilidade AWS: corrigido problema de compatibilidade com AWS SDK PHP ^3.350
-
-## [2.2.1] - 2025-08-05
-
-### Alterado
-
-- Atualização S3 PHP: atualizado `jonjon1992/s3-php` de `v2.0.0` para `v2.1.0`
-
-## [2.2.0] - 2025-08-05
-
-### Adicionado
-
-- AWS SDK PHP: AWS SDK PHP atualizado para versão ^3.350
-- Helper S3: função helper `s3()` para acessar buckets S3
-- Helper Queue: função helper `queue()` para acessar clientes SQS
-- Métodos String: métodos `endsWith()`, `camel()`, `ucfirst()` e `studly()` na classe `Str`
-
-### Corrigido
-
-- Exception sem namespace: corrigido uso de `Exception` sem namespace em múltiplos arquivos
-- Propriedade não utilizada: removida propriedade `$client` não utilizada no `SqsClient`
-- Variável não definida: corrigida variável `$service` não definida no `ImAliveAction`
-- Import da classe Str: adicionado import da classe `Str` no `Trace.php`
-- Validação de endpoint: melhorada validação do endpoint no `SqsClient` para evitar erros quando não fornecido
-- Verificação mime_content_type: adicionada verificação se `mime_content_type()` existe antes de usá-la no `S3.php`
-- Exception sem namespace: corrigidos todos os usos de `Exception` sem namespace nos seguintes arquivos:
-  - `src/helpers.php`
-  - `src/Action/ImAliveAction.php`
-  - `src/Commands/MigrateCreateCommand.php`
-  - `src/Commands/MigrateRunCommand.php`
-  - `src/Utils/Crypt.php`
-
-### Alterado
-
-- AWS SDK PHP: AWS SDK PHP atualizado de `3.324.0` para `^3.350`
-- Configuração SqsClient: melhorada configuração do SqsClient para ser mais robusta
-- Verificações de segurança: adicionadas verificações de segurança para endpoints opcionais
-
-### Segurança
-
-- Validação de entrada: melhorada validação de entrada de dados
-- Verificações de segurança: adicionadas verificações de segurança para configurações AWS
-
-## [2.1.0] - 2025-08-05
-
-### Adicionado
-
-- Funcionalidades iniciais: funcionalidades iniciais do framework
-- Sistema de módulos: suporte a módulos
-- Sistema de migrações: sistema de migrações
-- Integração AWS: integração com AWS S3 e SQS
-- Sistema de autenticação: sistema de autenticação e criptografia
-- Middlewares personalizados: middlewares personalizados
-
-## [2.9.8] - 2025-11-19
-
-### Adicionado
-
-- atualiza documentação de contexto
+v2.1.0
+Funcionalidades iniciais: módulos, migrações, AWS S3/SQS, autenticação, middlewares
