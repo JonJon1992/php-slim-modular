@@ -1,5 +1,8 @@
 # CHANGELOG
 
+v2.12.1
+Altera formato do CHANGELOG para padrão simplificado (versão + linhas)
+
 v2.12.0
 Adiciona IAuth, IJwtValidator, ApiGatewayMiddleware e Auth
 Remove JwtAuthMiddleware (substituído por ApiGatewayMiddleware)
