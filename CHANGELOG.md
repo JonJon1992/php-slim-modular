@@ -7,6 +7,26 @@ e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR
 
 ## [Não Lançado]
 
+## [2.12.0] - 2026-03-04
+
+### Adicionado
+
+- **IAuth**: interface para contrato de autenticação com métodos `login`, `logout`, `id`, `tenantId`, `data`, `raw`, `attr`, `on`, `off`, `ip`, `agent`.
+- **IJwtValidator**: interface para validação de tokens JWT e extração de claims.
+- **ApiGatewayMiddleware**: middleware para autenticação via API Gateway com suporte a JWT, validação de módulo via `x-client`/`xclient` e propagação de dados via `x-auth`.
+- **Auth**: implementação da interface `IAuth` com suporte a usuário, tenant, login/logout e helpers de sessão.
+
+### Removido
+
+- **JwtAuthMiddleware**: substituído por `ApiGatewayMiddleware` com suporte ampliado a API Gateway.
+
+### Alterado
+
+- **cli.php**: ajustes nos comandos CLI.
+- **QueueWorkCommand**: alterações de manutenção.
+- **BaseCollection**: alterações de manutenção.
+- **SnsClient**: alterações de manutenção.
+
 ## [2.11.35] - 2026-02-02
 
 ### Removido

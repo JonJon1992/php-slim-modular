@@ -15,11 +15,20 @@ class Auth implements IAuth
 
 
     /**
-     * @return int|null
+     * @return int|string|null ID do usuário logado (sub do JWT)
      */
-    public function id(): ?int
+    public function id(): int|string|null
     {
         return $this->attr('id');
+    }
+
+    /**
+     * @return string|null ID do tenant ao qual o usuário pertence (tid do JWT)
+     */
+    public function tenantId(): ?string
+    {
+        $tid = $this->attr('tid');
+        return $tid !== null && $tid !== '' ? (string)$tid : null;
     }
 
     /**
@@ -45,7 +54,7 @@ class Auth implements IAuth
      */
     public function attr(string $key): mixed
     {
-        return $this->data[$key] ?? null;
+        return ($this->data ?? [])[$key] ?? null;
     }
 
 

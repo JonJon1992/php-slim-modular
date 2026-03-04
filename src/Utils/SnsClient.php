@@ -24,7 +24,7 @@ class SnsClient extends \Aws\Sns\SnsClient
      * @return Topic
      * @throws Exception
      */
-    public function topic(string $alias)
+    public function topic(string $alias): Topic
     {
         if (isset($this->topics[$alias])) {
             return $this->topics[$alias];

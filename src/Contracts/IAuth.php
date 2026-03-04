@@ -10,7 +10,9 @@ interface IAuth
 
     public function data(): ?array;
 
-    public function id(): ?int;
+    public function id(): int|string|null;
+
+    public function tenantId(): ?string;
 
     public function login(string $data): static;
 

@@ -83,7 +83,6 @@ class QueueWorkCommand extends AbstractCommand
         }
 
         app()->setModule($module);
-
         $verbose = (bool) $this->input->getOption('verbose');
         $io->text("Módulo: {$module}");
         $io->text("Conexão: {$connectionName}");
@@ -114,14 +113,14 @@ class QueueWorkCommand extends AbstractCommand
                 error_log("[Queue Error] " . $e->getMessage() . "\n" . $e->getTraceAsString());
             }
 
-            public function shouldReport(Throwable $e)
+            public function shouldReport(Throwable $e): true
             {
                 return true;
             }
 
             public function render($request, Throwable $e) {}
 
-            public function renderForConsole($output, Throwable $e)
+            public function renderForConsole($output, Throwable $e): void
             {
                 $output->writeln("<error>{$e->getMessage()}</error>");
                 $output->writeln("<comment>{$e->getTraceAsString()}</comment>");
@@ -129,7 +128,6 @@ class QueueWorkCommand extends AbstractCommand
         };
 
         $eventDispatcher = new Dispatcher();
-
         $isDownForMaintenance = function () {
             return false;
         };
@@ -153,8 +151,8 @@ class QueueWorkCommand extends AbstractCommand
                 (int) $this->input->getOption('tries'),
                 false,
                 false,
-                $maxJobs > 0 ? $maxJobs : 0,
-                $maxTime > 0 ? $maxTime : 0,
+                max($maxJobs, 0),
+                max($maxTime, 0),
                 0
             );
 
