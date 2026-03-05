@@ -1,5 +1,8 @@
 # CHANGELOG
 
+### v2.12.5
+ - Ajusta na abstract action no encode
+
 v2.12.4
 Adiciona debug no sql em dev
 

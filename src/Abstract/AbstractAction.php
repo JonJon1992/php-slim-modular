@@ -224,11 +224,7 @@ abstract class AbstractAction extends Action
         );
     }
 
-    /**
-     * @param $value
-     * @return string
-     */
-    private function encode($value): string
+    private function encode($value)
     {
         return CryptMiddleware::$status ? $this->getCrypt()->encode($value) : $value;
     }
