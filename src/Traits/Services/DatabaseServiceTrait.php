@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace Core\Traits\Services;
 
+use Core\Utils\Env;
 use Illuminate\Container\Container;
 use Illuminate\Database\Capsule\Manager;
+use Illuminate\Database\Events\QueryExecuted;
 use Illuminate\Events\Dispatcher;
 
 trait DatabaseServiceTrait
@@ -23,6 +25,18 @@ trait DatabaseServiceTrait
 
                 if ($alias === $configs->get('db.default')) {
                     $manager->setAsGlobal();
+                }
+                if (!Env::prod() && \env('APP_DEBUG_SQL')) {
+                    $manager->getConnection()->listen(
+                        function (QueryExecuted $query) {
+                            logger('sql-debug')
+                                ->debug('Query executada', [
+                                    'sql' => $query->sql,
+                                    'bindings' => $query->bindings,
+                                    'time' => $query->time
+                                ]);
+                        }
+                    );
                 }
                 $manager->bootEloquent();
                 return $manager->getConnection();

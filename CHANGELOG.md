@@ -1,5 +1,8 @@
 # CHANGELOG
 
+v2.12.4
+Adiciona debug no sql em dev
+
 v2.12.3
 Adiciona dependência lcobucci/clock para JwtValidator (fix SystemClock not found)
 
