@@ -26,15 +26,13 @@ class Str extends \Illuminate\Support\Str
     }
 
     /**
-     * @param int $length
+     * Gera ID sequencial baseado em microtime (ordenável por tempo de criação).
+     *
      * @return string
      */
-    public static function uuid(int $length = 16): string
+    public static function sequentialId(): string
     {
-        $data = random_bytes($length);
-        $data[6] = chr(ord($data[6]) & 0x0f | 0x40);
-        $data[8] = chr(ord($data[8]) & 0x3f | 0x80);
-        return vsprintf('%s%s-%s-%s-%s-%s%s%s', str_split(bin2hex($data), 4));
+        return sprintf('%d%04d', (int) (microtime(true) * 10000), random_int(0, 9999));
     }
 
     /**

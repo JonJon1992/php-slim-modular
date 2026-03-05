@@ -1,5 +1,10 @@
 # CHANGELOG
 
+v2.12.2
+Implementa IJwtValidator com lcobucci/jwt (HS256, LooseValidAt)
+Substitui UUID por ID sequencial em trace-id (Str::sequentialId)
+Remove dependência ramsey/uuid
+
 v2.12.1
 Altera formato do CHANGELOG para padrão simplificado (versão + linhas)
 

@@ -1,7 +1,7 @@
 {
   "name": "jonjon1992/php-slim-modular",
   "type": "library",
-  "version": "2.12.1",
+  "version": "2.12.2",
   "description": "Um framework PHP modular baseado no Slim Framework com suporte completo para AWS, autenticação, criptografia e sistema de módulos",
   "keywords": [
     "slim",
@@ -54,7 +54,6 @@
     "monolog/monolog": "2.3.2",
     "php-di/php-di": "^7.0",
     "predis/predis": "v1.1.6",
-    "ramsey/uuid": "4.7.5",
     "slim/php-view": "^3.2",
     "slim/psr7": "^1.7",
     "slim/slim": "^4.9",

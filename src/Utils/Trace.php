@@ -35,7 +35,7 @@ class Trace
     public static function bootstrap(): void
     {
         if (empty($_SERVER['HTTP_TRACE_ID'])) {
-            $_SERVER['HTTP_TRACE_ID'] = empty($_SERVER['HTTP_X_GRACE']) ? Str::uuid() : $_SERVER['HTTP_X_GRACE'];
+            $_SERVER['HTTP_TRACE_ID'] = empty($_SERVER['HTTP_X_GRACE']) ? Str::sequentialId() : $_SERVER['HTTP_X_GRACE'];
         }
     }
 
