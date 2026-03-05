@@ -1,5 +1,8 @@
 # CHANGELOG
 
+v2.12.3
+Adiciona dependência lcobucci/clock para JwtValidator (fix SystemClock not found)
+
 v2.12.2
 Implementa IJwtValidator com lcobucci/jwt (HS256, LooseValidAt)
 Substitui UUID por ID sequencial em trace-id (Str::sequentialId)
