@@ -55,7 +55,6 @@ class ExceptionHandler implements IExceptionHandler
 
             $this->logger->log($logLevel, $exception->getMessage(), $context);
         } catch (Throwable $logException) {
-            // Fallback logging to prevent infinite loops
             error_log(sprintf(
                 'Error logging failed: %s. Original error: %s',
                 $logException->getMessage(),
@@ -67,10 +66,9 @@ class ExceptionHandler implements IExceptionHandler
     public function sendResponse(array $errorData): void
     {
         if (headers_sent()) {
-            return; // Headers already sent, can't modify response
+            return;
         }
 
-        // Clear any existing output
         if (ob_get_level()) {
             ob_end_clean();
         }
@@ -144,7 +142,7 @@ class ExceptionHandler implements IExceptionHandler
     {
         $exceptionClass = get_class($exception);
 
-        $code = (int) $exception->getCode();
+        $code = (int)$exception->getCode();
         if ($code >= 100 && $code < 600) {
             return $code;
         }

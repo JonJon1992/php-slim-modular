@@ -40,15 +40,11 @@ class CorsMiddleware implements MiddlewareInterface
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         $origin = $request->getHeaderLine('Origin');
-        
-        // Se é uma requisição OPTIONS (preflight), retornar resposta imediatamente
         if ($request->getMethod() === 'OPTIONS') {
             return $this->handlePreflightRequest($origin);
         }
 
         $response = $handler->handle($request);
-
-        // Adicionar headers CORS à resposta
         return $this->addCorsHeaders($response, $origin);
     }
 

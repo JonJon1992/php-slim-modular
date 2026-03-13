@@ -4,8 +4,8 @@ declare(strict_types=1);
 namespace Core\Middleware;
 
 use Core\Traits\Create;
-use Core\Traits\Redis;
-use Core\Traits\Time;
+use Core\Utils\Redis;
+use Core\Utils\Time;
 use ReflectionMethod;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Server\RequestHandlerInterface as Handler;
