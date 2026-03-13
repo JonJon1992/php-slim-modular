@@ -1,6 +1,6 @@
 # PHP Slim Modular Framework
 
-[![Version](https://img.shields.io/badge/version-2.9.2-blue.svg)](https://github.com/JonJon1992/php-slim-modular)
+[![Version](https://img.shields.io/badge/version-2.12.6-blue.svg)](https://github.com/JonJon1992/php-slim-modular)
 [![PHP](https://img.shields.io/badge/php-%3E%3D8.2-blue.svg)](https://php.net)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 
@@ -32,7 +32,7 @@ Um framework PHP modular baseado no Slim Framework com suporte completo para AWS
 ## 🛠️ Instalação
 
 ```bash
-composer require jonjon1992/php-slim-modular:^2.9.2
+composer require jonjon1992/php-slim-modular:^2.12.6
 ```
 
 ## 🔧 Configuração
@@ -81,6 +81,30 @@ return [
         'collation' => 'utf8mb4_unicode_ci',
         'prefix' => '',
     ]
+];
+```
+
+### Redis Cache (TCP/TLS)
+
+```php
+// config/cache.php
+return [
+    'default' => 'main',
+    'main' => [
+        'host' => env('CACHE_MAIN_HOST', '127.0.0.1'),
+        'port' => env('CACHE_MAIN_PORT', 6379),
+        'password' => env('CACHE_MAIN_PASSWORD'),
+        'timeout' => env('CACHE_MAIN_TIMEOUT', 10),
+        'scheme' => env('CACHE_MAIN_SCHEME', 'tcp'), // tcp | tls
+
+        // TLS options (optional)
+        'ssl_ca' => env('CACHE_MAIN_SSL_CA'),
+        'ssl_cert' => env('CACHE_MAIN_SSL_CERT'),
+        'ssl_key' => env('CACHE_MAIN_SSL_KEY'),
+        'ssl_passphrase' => env('CACHE_MAIN_SSL_PASSPHRASE'),
+        'ssl_verify_peer' => env('CACHE_MAIN_SSL_VERIFY_PEER', true),
+        'ssl_verify_peer_name' => env('CACHE_MAIN_SSL_VERIFY_PEER_NAME', true),
+    ],
 ];
 ```
 
@@ -319,4 +343,4 @@ Para suporte, entre em contato através das issues do GitHub ou envie um email p
 
 ---
 
-**Versão 2.4.0** - Atualizado em 05 de Agosto de 2025 
+**Versão 2.12.6** - Atualizado em 13 de Março de 2026

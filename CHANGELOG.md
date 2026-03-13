@@ -1,5 +1,9 @@
 # CHANGELOG
 
+### v2.12.6
+ - Redis: adiciona suporte a TLS/SSL via `scheme` e contexto `stream` (incluindo `ssl_ca`)
+ - Docs: adiciona exemplo de configuração Redis TCP/TLS no README
+
 ### v2.12.5
  - Ajusta na abstract action no encode
 

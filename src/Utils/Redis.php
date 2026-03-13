@@ -369,17 +369,87 @@ class Redis
         try {
             $config = $this->config;
             $host = $config['host'];
-            $port = $config['port'];
-            $timeout = $config['timeout'];
+            $port = (int) ($config['port'] ?? 6379);
+            $timeout = (float) ($config['timeout'] ?? 0);
+            $scheme = strtolower((string) ($config['scheme'] ?? 'tcp'));
 
-            $this->redis->connect($host, $port, $timeout);
+            if ($this->isTlsScheme($scheme)) {
+                $this->connectTls($host, $port, $timeout, $config);
+            } else {
+                $this->redis->connect($host, $port, $timeout);
+            }
 
-            $password = $config['password'];
+            $password = $config['password'] ?? null;
             if (!empty($password)) {
                 $this->redis->auth($password);
             }
         } catch (\RedisException $exception) {
             throw new RedisException("Falha ao conectar ao Redis: {$exception->getMessage()}");
         }
+    }
+
+    protected function isTlsScheme(string $scheme): bool
+    {
+        return in_array($scheme, ['tls', 'rediss'], true);
+    }
+
+    protected function connectTls(string $host, int $port, float $timeout, array $config): void
+    {
+        $tlsHost = str_contains($host, '://') ? $host : "tls://{$host}";
+        $this->redis->connect($tlsHost, $port, $timeout, null, 0, 0, $this->buildTlsContext($config));
+    }
+
+    protected function buildTlsContext(array $config): array
+    {
+        $sslOptions = [];
+
+        if (isset($config['ssl']) && is_array($config['ssl'])) {
+            $sslOptions = $config['ssl'];
+        }
+
+        $map = [
+            'ssl_ca' => 'cafile',
+            'ssl_capath' => 'capath',
+            'ssl_cert' => 'local_cert',
+            'ssl_key' => 'local_pk',
+            'ssl_passphrase' => 'passphrase',
+            'ssl_verify_peer' => 'verify_peer',
+            'ssl_verify_peer_name' => 'verify_peer_name',
+            'ssl_allow_self_signed' => 'allow_self_signed',
+            'ssl_peer_name' => 'peer_name',
+            'ssl_ciphers' => 'ciphers',
+        ];
+
+        foreach ($map as $configKey => $streamKey) {
+            if (!array_key_exists($configKey, $config)) {
+                continue;
+            }
+
+            $value = $this->normalizeTlsOption($configKey, $config[$configKey]);
+            if ($value === null || $value === '') {
+                continue;
+            }
+
+            $sslOptions[$streamKey] = $value;
+        }
+
+        return ['stream' => $sslOptions];
+    }
+
+    protected function normalizeTlsOption(string $configKey, mixed $value): mixed
+    {
+        $booleanKeys = ['ssl_verify_peer', 'ssl_verify_peer_name', 'ssl_allow_self_signed'];
+        if (in_array($configKey, $booleanKeys, true) && is_string($value)) {
+            $normalized = strtolower(trim($value));
+            if (in_array($normalized, ['1', 'true', 'yes', 'on'], true)) {
+                return true;
+            }
+
+            if (in_array($normalized, ['0', 'false', 'no', 'off'], true)) {
+                return false;
+            }
+        }
+
+        return $value;
     }
 }
