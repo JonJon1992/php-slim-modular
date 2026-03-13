@@ -1,5 +1,10 @@
 # CHANGELOG
 
+### v3.0.1
+ - ApiGatewayMiddleware: simplifica fluxo removendo validação por `x-client`/`xclient` e lookup de módulo em cache/banco
+ - CacheMiddleware: corrige imports para `Core\Utils\Redis` e `Core\Utils\Time`
+ - Limpeza de código em ExceptionHandler e CorsMiddleware
+
 ### v3.0.0
  - PHP: eleva o requisito mínimo para PHP 8.4
  - Dependências: atualiza `laminas/laminas-hydrator` para `4.18.0`
