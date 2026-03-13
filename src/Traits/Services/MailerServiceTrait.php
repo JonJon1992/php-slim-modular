@@ -16,8 +16,42 @@ trait MailerServiceTrait
             }
 
             $bindings["mailer.$alias"] = function () use ($settings) {
-                return new SmtpMailer($settings);
+                return new SmtpMailer(...$this->normalizeMailerSettings($settings));
             };
         }
+    }
+
+    protected function normalizeMailerSettings(array $settings): array
+    {
+        $normalized = [];
+        $keyMap = [
+            'host' => 'host',
+            'username' => 'username',
+            'password' => 'password',
+            'port' => 'port',
+            'encryption' => 'encryption',
+            'secure' => 'encryption',
+            'timeout' => 'timeout',
+            'persistent' => 'persistent',
+            'clientHost' => 'clientHost',
+            'client_host' => 'clientHost',
+            'streamOptions' => 'streamOptions',
+            'stream_options' => 'streamOptions',
+        ];
+
+        foreach ($keyMap as $inputKey => $targetKey) {
+            if (!array_key_exists($inputKey, $settings)) {
+                continue;
+            }
+
+            $value = $settings[$inputKey];
+            if ($value === null || $value === '') {
+                continue;
+            }
+
+            $normalized[$targetKey] = $value;
+        }
+
+        return $normalized;
     }
 }

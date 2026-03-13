@@ -1,5 +1,11 @@
 # CHANGELOG
 
+### v3.0.0
+ - PHP: eleva o requisito mínimo para PHP 8.4
+ - Dependências: atualiza `laminas/laminas-hydrator` para `4.18.0`
+ - Dependências: atualiza `nette/mail` para `v4.0.4`
+ - Mailer: adapta `MailerServiceTrait` para a API do `SmtpMailer` do `nette/mail` 4
+
 ### v2.12.6
  - Redis: adiciona suporte a TLS/SSL via `scheme` e contexto `stream` (incluindo `ssl_ca`)
  - Docs: adiciona exemplo de configuração Redis TCP/TLS no README
