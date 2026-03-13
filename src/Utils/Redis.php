@@ -90,7 +90,7 @@ use Throwable;
  * @method bool pExpireAt($key, $timestamp)
  * @method array keystore($pattern)
  * @method int dbSize()
- * @method bool auth($password)
+ * @method bool auth($credentials)
  * @method bool bgrewriteaof()
  * @method bool slaveof($host = '127.0.0.1', $port = 6379)
  * @method mixed slowLog(string $operation, int $length = null)
@@ -379,9 +379,14 @@ class Redis
                 $this->redis->connect($host, $port, $timeout);
             }
 
+            $username = $config['username'] ?? null;
             $password = $config['password'] ?? null;
             if (!empty($password)) {
-                $this->redis->auth($password);
+                if (!empty($username)) {
+                    $this->redis->auth([(string)$username, (string)$password]);
+                } else {
+                    $this->redis->auth($password);
+                }
             }
         } catch (\RedisException $exception) {
             throw new RedisException("Falha ao conectar ao Redis: {$exception->getMessage()}");
