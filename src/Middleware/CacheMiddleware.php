@@ -4,9 +4,7 @@ declare(strict_types=1);
 namespace Core\Middleware;
 
 use Core\Traits\Create;
-use Core\Utils\Redis;
 use Core\Utils\Time;
-use ReflectionMethod;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Server\RequestHandlerInterface as Handler;
 use Psr\Http\Message\ResponseInterface as Response;
@@ -321,8 +319,7 @@ class CacheMiddleware
 
                 if (count($args) > 1) {
                     try {
-                        $obj = new ReflectionMethod(Redis::class, 'hDel');
-                        $obj->invokeArgs(redis(), $args);
+                        redis()->hDel(...$args);
                     } catch (\Exception $e) {
                         logger()->error($e->getMessage());
                     }

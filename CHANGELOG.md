@@ -1,5 +1,8 @@
 # CHANGELOG
 
+### v3.0.3
+ - CacheMiddleware: corrige invalidação por padrão no Redis removendo uso de reflexão para `hDel` e executando remoção variádica diretamente no wrapper
+
 ### v3.0.2
  - Redis: adiciona suporte a autenticação ACL com `username` + `password` (`auth([$username, $password])`)
  - Redis: mantém fallback para autenticação legada apenas com senha
