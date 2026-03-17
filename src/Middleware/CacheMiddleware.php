@@ -295,7 +295,7 @@ class CacheMiddleware
      */
     public static function destroy($patterns): void
     {
-        if (env('CACHE_MIDDLEWARE') !== true) {
+        if (env('CACHE_MIDDLEWARE') !== 'true') {
             return;
         }
 
