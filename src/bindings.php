@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use Core\Utils\{Auth, Client, Crypt, JwtValidator, Validate};
 use Core\Contracts\{IAuth, IClient, ICrypt, IJwtValidator, IValidate};
 

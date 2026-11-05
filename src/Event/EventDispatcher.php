@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Core\Event;
 
 use Core\Contracts\Event\IEventDispatcher;
