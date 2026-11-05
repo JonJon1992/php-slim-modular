@@ -55,13 +55,10 @@ class BaseTestCase extends TestCase
         array  $cookies = [],
     ): ServerRequestInterface
     {
-        $params = [];
+        $req = $this->createRequest($method, $path, $headers, $cookies);
         if ($method === "GET") {
-            $params = $data;
-        }
-        $req = $this->createRequest($method, $path, $params, $headers, $cookies);
-        if ($method === "GET") {
-            $req = $req->withQueryParams($data);
+            $req = $req->withQueryParams($data)
+                ->withUri($req->getUri()->withQuery(http_build_query($data)));
         }
         if (in_array($method, ["POST", "PUT", "PATCH"])) {
             $req = $req->withParsedBody($data);
@@ -89,7 +86,7 @@ class BaseTestCase extends TestCase
         $handler = fopen('php://temp', 'w+');
         $stream = (new StreamFactory())->createStreamFromResource($handler);
 
-        $headers = array_merge($headers, $this->default_headers);
+        $headers = array_merge($this->default_headers, $headers);
         $h = new Headers();
         foreach ($headers as $name => $value) {
             $h->addHeader($name, $value);
@@ -120,7 +117,7 @@ class BaseTestCase extends TestCase
      */
     protected function get(string $path, array $params = [], array $cookies = [], array $headers = []): ResponseInterface
     {
-        $req = $this->getRequest("GET", $path, $params, $headers, $cookies);
+        $req = $this->getRequest("GET", $path, $headers, $params, $cookies);
         return $this->sendHttpRequest($req);
 
     }
@@ -134,7 +131,7 @@ class BaseTestCase extends TestCase
      */
     protected function post(string $path, array $data = [], array $cookies = [], array $headers = []): ResponseInterface
     {
-        $req = $this->getRequest("POST", $path, $data, $headers, $cookies);
+        $req = $this->getRequest("POST", $path, $headers, $data, $cookies);
         return $this->sendHttpRequest($req);
 
     }
@@ -148,7 +145,7 @@ class BaseTestCase extends TestCase
      */
     protected function put(string $path, array $data = [], array $cookies = [], array $headers = []): ResponseInterface
     {
-        $req = $this->getRequest("PUT", $path, $data, $headers, $cookies);
+        $req = $this->getRequest("PUT", $path, $headers, $data, $cookies);
         return $this->sendHttpRequest($req);
 
     }
@@ -162,7 +159,7 @@ class BaseTestCase extends TestCase
      */
     protected function delete(string $path, array $data = [], array $cookies = [], array $headers = []): ResponseInterface
     {
-        $req = $this->getRequest("DELETE", $path, $data, $headers, $cookies);
+        $req = $this->getRequest("DELETE", $path, $headers, $data, $cookies);
         return $this->sendHttpRequest($req);
 
     }
@@ -208,16 +205,18 @@ class BaseTestCase extends TestCase
                 if ($alias == 'default') {
                     continue;
                 }
-                if ($settings['driver'] == 'sqlite') {
+                // Só bancos SQLite em arquivo; outros drivers e ':memory:' ficam de fora.
+                if (($settings['driver'] ?? null) !== 'sqlite') {
                     continue;
                 }
 
-                $dir = dirname($settings['database']);
-                $arquivo = $settings['database'];
-
-                if (empty($dir)) {
+                $arquivo = (string) ($settings['database'] ?? '');
+                if ($arquivo === '' || $arquivo === ':memory:') {
                     continue;
                 }
+
+                $dir = dirname($arquivo);
+                $owner = escapeshellarg("{$testUser}:{$testUser}");
 
                 error_log("Configurando SQLite para testes: {$arquivo}");
 
@@ -229,12 +228,15 @@ class BaseTestCase extends TestCase
                     );
                 }
 
-                // Cria diretório se não existir
+                // Dono/permissão do diretório só mudam se ele for criado aqui, para nunca
+                // alterar um diretório existente (ex.: '.' quando o caminho é relativo).
+                $dirCreated = false;
                 if (!is_dir($dir)) {
                     static::executeCommand(
                         "mkdir -p " . escapeshellarg($dir),
                         "Falha ao criar diretório para SQLite"
                     );
+                    $dirCreated = true;
                 }
 
                 // Cria arquivo SQLite
@@ -243,21 +245,21 @@ class BaseTestCase extends TestCase
                     "Falha ao criar arquivo SQLite"
                 );
 
-                // Define permissões
-                static::executeCommand(
-                    "chown -R {$testUser}:{$testUser} " . escapeshellarg($dir),
-                    "Falha ao definir permissões do diretório"
-                );
+                if ($dirCreated) {
+                    static::executeCommand(
+                        "chown {$owner} " . escapeshellarg($dir),
+                        "Falha ao definir permissões do diretório"
+                    );
+
+                    static::executeCommand(
+                        "chmod 755 " . escapeshellarg($dir),
+                        "Falha ao definir permissões de acesso do diretório"
+                    );
+                }
 
                 static::executeCommand(
-                    "chown {$testUser}:{$testUser} " . escapeshellarg($arquivo),
+                    "chown {$owner} " . escapeshellarg($arquivo),
                     "Falha ao definir permissões do arquivo"
-                );
-
-                // Define permissões de escrita
-                static::executeCommand(
-                    "chmod 755 " . escapeshellarg($dir),
-                    "Falha ao definir permissões de acesso do diretório"
                 );
 
                 static::executeCommand(
@@ -284,9 +286,8 @@ class BaseTestCase extends TestCase
     protected static function mockContainerRedis(RedisMock $mock): void
     {
         $container = self::getInstance()->getContainer();
-        $configs = Config::singleton();
 
-        foreach ($configs as $alias => $settings) {
+        foreach (array_keys(Config::singleton()->get('cache', [])) as $alias) {
             if ($alias == 'default') {
                 continue;
             }
@@ -303,9 +304,8 @@ class BaseTestCase extends TestCase
     protected static function mockContainerDynamo(DynamoMock $mock): void
     {
         $container = self::getInstance()->getContainer();
-        $configs = Config::singleton();
 
-        foreach ($configs as $alias => $settings) {
+        foreach (array_keys(Config::singleton()->get('dynamo', [])) as $alias) {
             if ($alias == 'default') {
                 continue;
             }
@@ -358,9 +358,9 @@ class BaseTestCase extends TestCase
     protected function cleanTestData(string $table): void
     {
         try {
-            $container = self::getInstance()->getContainer();
-            $db = $container->get('db.default');
-            $db->exec("DELETE FROM {$table}");
+            // 'default' em configs/db.php é o nome do alias padrão, não uma conexão registrada.
+            $alias = Config::singleton()->get('db.default');
+            self::getInstance()->getContainer()->get("db.$alias")->table($table)->delete();
         } catch (\Exception $e) {
             error_log("Erro ao limpar dados de teste: " . $e->getMessage());
         }

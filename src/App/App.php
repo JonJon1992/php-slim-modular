@@ -71,7 +71,7 @@ class App extends \Slim\App
             $name = $this->command->getName();
             return $this->currentModule = $name ? explode(':', $name)[0] : null;
         }
-        $uri = explode('/', $_SERVER['REQUEST_URI'] ?? null);
+        $uri = explode('/', (string) ($_SERVER['REQUEST_URI'] ?? ''));
 
         if (count($uri) < 2 || !is_string($uri[1])) {
             return $this->currentModule = null;
