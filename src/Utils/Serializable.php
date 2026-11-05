@@ -5,9 +5,17 @@ namespace Core\Utils;
 
 use JsonSerializable;
 use ReflectionClass;
+use ReflectionMethod;
+use ReflectionNamedType;
 
 abstract class Serializable implements JsonSerializable
 {
+    /**
+     * Getters de cada classe, descobertos por reflexão uma única vez.
+     *
+     * @var array<class-string, list<array{0: string, 1: string|ReflectionMethod, 2: bool}>>
+     */
+    private static array $gettersCache = [];
 
     private ?array $propertitiesNotSerializable = null;
 
@@ -144,37 +152,65 @@ abstract class Serializable implements JsonSerializable
     {
         $data = [];
 
-        $reflectionClass = new ReflectionClass(get_class($this));
-        foreach ($reflectionClass->getProperties() as $property) {
-            $nameMethodGetter = $this->resolveNameGetterByProperty($property->getName());
+        foreach ($this->getters() as [$name, $getter, $isArray]) {
+            $value = is_string($getter) ? $this->{$getter}() : $getter->invoke($this);
 
-            if ($reflectionClass->hasMethod($nameMethodGetter)) {
-                $methodGetter = $reflectionClass->getMethod($nameMethodGetter);
-                $value = $methodGetter->invoke($this);
+            $isArrayEmpty = $isArray && ($value === null || (is_array($value) && count($value) === 0));
 
-                $propertyType = $property->getType();
-                $isArray = $propertyType !== null && $propertyType->getName() === 'array';
-                $isArrayEmpty = $isArray && ($value === null || (is_array($value) && count($value) === 0));
+            if (!isset($value) || $isArrayEmpty) {
+                continue;
+            }
 
-                if (!isset($value) || $isArrayEmpty) {
-                    continue;
+            if ($isArray) {
+                $dataArray = [];
+
+                foreach ($value as $key => $item) {
+                    $dataArray[$key] = $item instanceof Serializable ? $item->toArray($resolveSerializable) : $item;
                 }
+                $data[$name] = $dataArray;
 
-                if ($isArray) {
-                    $dataArray = [];
-
-                    foreach ($value as $key => $item) {
-                        $dataArray[$key] = $item instanceof Serializable ? $item->toArray($resolveSerializable) : $item;
-                    }
-                    $data[$property->getName()] = $dataArray;
-
-                } else {
-                    $value = $value instanceof Serializable ? $value->toArray($resolveSerializable) : $value;
-                    $data[$property->getName()] = $value;
-                }
+            } else {
+                $data[$name] = $value instanceof Serializable ? $value->toArray($resolveSerializable) : $value;
             }
         }
         return $resolveSerializable ? $this->resolveSerializable($data) : $data;
+    }
+
+    /**
+     * Lista [propriedade, getter, é array] da classe concreta, com cache por classe.
+     * Getters públicos são chamados diretamente; os demais continuam via reflexão.
+     *
+     * @return list<array{0: string, 1: string|ReflectionMethod, 2: bool}>
+     */
+    private function getters(): array
+    {
+        $class = static::class;
+
+        if (isset(self::$gettersCache[$class])) {
+            return self::$gettersCache[$class];
+        }
+
+        $getters = [];
+        $reflectionClass = new ReflectionClass($class);
+
+        foreach ($reflectionClass->getProperties() as $property) {
+            $nameMethodGetter = $this->resolveNameGetterByProperty($property->getName());
+
+            if (!$reflectionClass->hasMethod($nameMethodGetter)) {
+                continue;
+            }
+
+            $method = $reflectionClass->getMethod($nameMethodGetter);
+            $propertyType = $property->getType();
+
+            $getters[] = [
+                $property->getName(),
+                $method->isPublic() ? $nameMethodGetter : $method,
+                $propertyType instanceof ReflectionNamedType && $propertyType->getName() === 'array',
+            ];
+        }
+
+        return self::$gettersCache[$class] = $getters;
     }
 
 }

@@ -10,11 +10,25 @@ use Core\Utils\EncodedBase64;
 use Core\Utils\Str;
 use Fig\Http\Message\StatusCodeInterface;
 use Illuminate\Support\Arr;
+use JsonException;
 use Psr\Http\Message\ResponseInterface as Response;
+use Psr\Http\Message\ServerRequestInterface;
+use Slim\Exception\HttpInternalServerErrorException;
 
 abstract class AbstractAction extends Action
 {
     protected ICrypt $crypt;
+
+    /**
+     * Requisição para a qual $listParams foi calculado. A mesma instância da Action pode
+     * atender várias requisições (container/testes), então o cache é refeito a cada uma.
+     */
+    private ?ServerRequestInterface $listParamsRequest = null;
+
+    /**
+     * @var array<string, string[]> listas da query string (columns, not-columns, columns-decoded)
+     */
+    private array $listParams = [];
 
     /**
      * @param $payload
@@ -23,17 +37,26 @@ abstract class AbstractAction extends Action
      */
     protected function respondWithJSON($payload, int $status = StatusCodeInterface::STATUS_OK): Response
     {
-        return parent::respondWithJSON($this->preparePayload($payload), $status);
+        try {
+            $payload = $this->preparePayload($payload);
+        } catch (JsonException $e) {
+            throw new HttpInternalServerErrorException($this->request, 'Malformed JSON', $e);
+        }
+
+        return parent::respondWithJSON($payload, $status);
     }
 
     /**
+     * Converte objetos (JsonSerializable, models) em arrays antes de aplicar columns/crypt.
+     *
      * @param $payload
      * @return array|mixed
+     * @throws JsonException
      */
     private function preparePayload($payload): mixed
     {
-        $data = json_decode(json_encode($payload, JSON_PRETTY_PRINT), true);
-        return $data ? $this->resolvePayload($data) : $data;
+        $data = json_decode(json_encode($payload, JSON_THROW_ON_ERROR), true, 512, JSON_THROW_ON_ERROR);
+        return is_array($data) && $data !== [] ? $this->resolvePayload($data) : $data;
     }
 
     /**
@@ -70,15 +93,16 @@ abstract class AbstractAction extends Action
                 $dataReturn[$keyReturn] = $this->resolvePayload($value, $encode, $keyDot);
             }
             $isEncodedBase64 = !is_array($value) && is_string($key) && Str::endsWith($key, '_encoded_base64');
+            $supportsHash = !is_array($value) && $this->attributeSupportHash($keyCheck);
 
-            if ((!is_array($value) && !$this->attributeSupportHash($keyCheck)) && !$isEncodedBase64) {
+            if (!is_array($value) && !$supportsHash && !$isEncodedBase64) {
                 $dataReturn[$key] = $value;
             }
-            if (!is_array($value) && $encode && $this->attributeSupportHash($keyCheck)) {
+            if ($encode && $supportsHash) {
                 $dataReturn[$key] = $this->encode($value);
                 in_array($keyDot, $this->getCryptKeysDecoded()) && $dataReturn[$key . $suffixDecoded] = $value;
             }
-            if (!is_array($value) && !$encode && $this->attributeSupportHash($keyCheck)) {
+            if (!$encode && $supportsHash) {
                 $dataReturn[$key] = $this->decode($value);
             }
             if (!$encode && $isEncodedBase64) {
@@ -145,14 +169,7 @@ abstract class AbstractAction extends Action
      */
     public function getParamsNotColumns(): array
     {
-        $propertitiesNotSerializable = [];
-        $keysNotSerializable = Arr::get($this->request->getQueryParams(), 'not-columns');
-
-        if (!empty($keysNotSerializable) && is_string($keysNotSerializable)) {
-            $propertitiesNotSerializable = explode(',', rtrim($keysNotSerializable, ','));
-        }
-        return $propertitiesNotSerializable;
-
+        return $this->listQueryParam('not-columns');
     }
 
     /**
@@ -160,14 +177,7 @@ abstract class AbstractAction extends Action
      */
     public function getParamsColumns(): array
     {
-        $propertitiesSerializable = [];
-        $keysSerializable = Arr::get($this->request->getQueryParams(), 'columns');
-
-        if (!empty($keysSerializable) && is_string($keysSerializable)) {
-            $propertitiesSerializable = explode(',', rtrim($keysSerializable, ','));
-        }
-        return $propertitiesSerializable;
-
+        return $this->listQueryParam('columns');
     }
 
     /**
@@ -175,14 +185,32 @@ abstract class AbstractAction extends Action
      */
     public function getCryptKeysDecoded(): array
     {
-        $propertitiesCryptExcept = [];
-        $keysDecodedParams = Arr::get($this->request->getQueryParams(), 'columns-decoded');
+        return $this->listQueryParam('columns-decoded', false);
+    }
 
-        if (!empty($keysDecodedParams) && is_string($keysDecodedParams)) {
-            $propertitiesCryptExcept = explode(',', $keysDecodedParams);
+    /**
+     * Lê uma lista separada por vírgula da query string uma única vez por requisição
+     * (o resolvePayload consulta essas listas para cada chave do payload).
+     *
+     * @param string $name
+     * @param bool $trimTrailingComma
+     * @return string[]
+     */
+    private function listQueryParam(string $name, bool $trimTrailingComma = true): array
+    {
+        if ($this->listParamsRequest !== $this->request) {
+            $this->listParamsRequest = $this->request;
+            $this->listParams = [];
         }
-        return $propertitiesCryptExcept;
 
+        if (!array_key_exists($name, $this->listParams)) {
+            $value = Arr::get($this->request->getQueryParams(), $name);
+            $this->listParams[$name] = !empty($value) && is_string($value)
+                ? explode(',', $trimTrailingComma ? rtrim($value, ',') : $value)
+                : [];
+        }
+
+        return $this->listParams[$name];
     }
 
     /**

@@ -4,10 +4,13 @@ declare(strict_types=1);
 
 namespace Core\App;
 
+use Core\Utils\Env;
 use Fig\Http\Message\StatusCodeInterface;
 use Illuminate\Support\Arr;
+use JsonException;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
+use Slim\Exception\HttpInternalServerErrorException;
 
 abstract class Action
 {
@@ -50,14 +53,27 @@ abstract class Action
      */
     protected function respondWithJSON($payload, int $status = StatusCodeInterface::STATUS_OK): Response
     {
-        $json = json_encode($payload, JSON_PRETTY_PRINT);
-
-        if (json_last_error() !== JSON_ERROR_NONE) {
-            throw new \Slim\Exception\HttpInternalServerErrorException($this->request, 'Malformed JSON');
+        try {
+            $json = json_encode($payload, $this->jsonFlags());
+        } catch (JsonException $e) {
+            throw new HttpInternalServerErrorException($this->request, 'Malformed JSON', $e);
         }
         $this->response->getBody()->write($json);
 
         return $this->response->withHeader('Content-Type', 'application/json')->withStatus($status);
+    }
+
+    /**
+     * JSON compacto em production/staging e formatado nos demais ambientes.
+     * Acentos e barras saem sem escape (JSON_UNESCAPED_UNICODE/SLASHES), o que reduz o payload.
+     *
+     * @return int
+     */
+    protected function jsonFlags(): int
+    {
+        $flags = JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_THROW_ON_ERROR;
+
+        return Env::real() ? $flags : $flags | JSON_PRETTY_PRINT;
     }
 
     /**
