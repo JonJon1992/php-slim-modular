@@ -8,7 +8,7 @@ use Core\Contracts\Exception\IExceptionHandler;
 use Core\Utils\Env;
 use Core\Utils\Path;
 use Core\Utils\Trace;
-use Monolog\Formatter\JsonFormatter;
+use Core\Utils\TraceJsonFormatter;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
 use Psr\Log\LoggerInterface;
@@ -97,10 +97,9 @@ class ExceptionHandler implements IExceptionHandler
             $logLevel = config('app.log_level', 'error');
 
             $handler = new StreamHandler($logPath, $logLevel);
-            $handler->setFormatter(new JsonFormatter());
+            $handler->setFormatter(new TraceJsonFormatter());
 
             $logger->pushHandler($handler);
-            $logger->pushProcessor(fn(array $record) => Trace::processor($record));
         } catch (Throwable $e) {
             // Fallback to basic error logging
             error_log('Failed to configure logger: ' . $e->getMessage());

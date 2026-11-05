@@ -4,8 +4,7 @@ declare(strict_types=1);
 
 namespace Core\Traits\Services;
 
-use Core\Utils\{Arr, Trace};
-use Monolog\Formatter\JsonFormatter;
+use Core\Utils\{Arr, TraceJsonFormatter};
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
 
@@ -22,10 +21,9 @@ trait LogServiceTrait
                 $path = Arr::get($settings, 'path');
 
                 $handler = new StreamHandler($path, config('app.log_level'));
-                $handler->setFormatter(new JsonFormatter());
+                $handler->setFormatter(new TraceJsonFormatter());
 
                 $logger = new Logger($alias);
-                $logger->pushProcessor(fn($record) => Trace::processor($record));
                 $logger->pushHandler($handler);
                 return $logger;
             };

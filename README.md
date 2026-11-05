@@ -313,7 +313,7 @@ GET /im-alive?force=1
 
 ## 📝 Logs
 
-O framework utiliza Monolog para logging estruturado:
+O framework utiliza Monolog (2 ou 3) para logging estruturado. Cada linha é um JSON com `timestamp`, `severity`, `env`, `appname`, `message`, `extras` (contexto + `user-id`), `trace-id` e `level`, gerado pelo `Core\Utils\TraceJsonFormatter`:
 
 ```php
 // Log de erro
