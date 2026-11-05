@@ -1,5 +1,18 @@
 # CHANGELOG
 
+### v3.2.0
+ - CacheMiddleware: tudo fica no DB 0 do Redis (a chave já separa por usuário); acabou o `SELECT` por requisição, que custava idas extras ao Redis e não funciona em Redis Cluster. O cache antigo nos DBs 1–15 expira sozinho (até 24h)
+ - Redis: opção `persistent` na config do cache para reaproveitar a conexão (TCP/TLS) entre requisições, com pool separado por credencial
+ - Banco: um único gerenciador do Eloquent com todas as conexões; models sem `$connection` usam o banco do módulo da requisição (ou `db.default`) e podem declarar `$connection = '<alias>'`
+ - Migrations: só usam transação em bancos que revertem DDL (PostgreSQL, SQLite, SQL Server); no MySQL/MariaDB a transação não protegia nada e podia falhar com "There is no active transaction"
+ - JWT: tokens sem `exp` são rejeitados (`JWT_REQUIRE_EXP=false` desativa); `JWT_SECRET` ausente não gera mais TypeError
+ - CORS: um único `Cache-Control` (o segundo sobrescrevia o `no-store`); removido `Access-Control-Allow-Credentials: *` (valor inválido); `Access-Control-Expose-Headers` passa a listar os headers do framework (rate limit, cache)
+ - ExceptionHandler: o mapa apontava para uma classe inexistente (`Core\Exceptions\AppException`); `AppException` sem código passa a responder 400. Os erros de inicialização usam 500 explicitamente
+ - Bootstrap: `.env` opcional (`safeLoad`), útil quando as variáveis vêm do ambiente
+ - PHP 8.4: parâmetros nullable explícitos em `ErrorHandler`, `DomainException`, `InfraException` e `ValidatorException`; `declare(strict_types=1)` em 16 arquivos revisados
+ - Dependências: `guzzlehttp/guzzle` e `respect/validation` declaradas (eram usadas sem estar no `composer.json`); bibliotecas de terceiros com `^` dentro da mesma versão principal; `phpstan/phpstan` ^1.12, `phpstan.neon.dist` (nível 5) e script `composer analyse`
+ - **Atenção ao atualizar:** tokens JWT sem `exp` deixam de ser aceitos; models que dependiam do último banco resolvido devem declarar `$connection`
+
 ### v3.1.0
  - Respostas JSON: compactas em production/staging (formatadas nos demais ambientes), sem escapar acentos e barras (`JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES`); o conteúdo é o mesmo, só muda a formatação
  - AbstractAction: as listas `columns`, `not-columns` e `columns-decoded` são lidas uma vez por requisição (antes eram relidas para cada chave do payload); a conversão intermediária não usa mais pretty print

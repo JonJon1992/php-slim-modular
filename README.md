@@ -1,6 +1,6 @@
 # PHP Slim Modular Framework
 
-[![Version](https://img.shields.io/badge/version-3.1.0-blue.svg)](https://github.com/JonJon1992/php-slim-modular)
+[![Version](https://img.shields.io/badge/version-3.2.0-blue.svg)](https://github.com/JonJon1992/php-slim-modular)
 [![PHP](https://img.shields.io/badge/php-%3E%3D8.4-blue.svg)](https://php.net)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 
@@ -32,7 +32,7 @@ Um framework PHP modular baseado no Slim Framework com suporte completo para AWS
 ## 🛠️ Instalação
 
 ```bash
-composer require jonjon1992/php-slim-modular:^3.1.0
+composer require jonjon1992/php-slim-modular:^3.2.0
 ```
 
 ## 🔧 Configuração
@@ -84,6 +84,8 @@ return [
 ];
 ```
 
+Todas as conexões ficam num único gerenciador do Eloquent. Models sem `$connection` usam o banco do módulo da requisição (ou o `db.default`, fora de um módulo com banco próprio). Para usar o banco de outro módulo, declare `protected $connection = '<alias>';` no model.
+
 ### Redis Cache (TCP/TLS)
 
 ```php
@@ -96,6 +98,7 @@ return [
         'password' => env('CACHE_MAIN_PASSWORD'),
         'timeout' => env('CACHE_MAIN_TIMEOUT', 10),
         'scheme' => env('CACHE_MAIN_SCHEME', 'tcp'), // tcp | tls
+        'persistent' => env('CACHE_MAIN_PERSISTENT', false), // reaproveita a conexão (TCP/TLS) entre requisições
 
         // TLS options (optional)
         'ssl_ca' => env('CACHE_MAIN_SSL_CA'),
@@ -304,6 +307,7 @@ GET /im-alive?force=1
 
 - Criptografia automática de dados sensíveis
 - Middleware de autenticação
+- JWT (HS256): tokens sem `exp` são rejeitados; `JWT_REQUIRE_EXP=false` desativa essa exigência (não recomendado)
 - Validação de entrada de dados
 - Sanitização de parâmetros
 
@@ -350,4 +354,4 @@ Para suporte, entre em contato através das issues do GitHub ou envie um email p
 
 ---
 
-**Versão 3.1.0** - Atualizado em 5 de Novembro de 2026
+**Versão 3.2.0** - Atualizado em 5 de Novembro de 2026
