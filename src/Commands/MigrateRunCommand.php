@@ -101,6 +101,10 @@ class MigrateRunCommand extends AbstractCommand
         $progressBar->setMessage('Executando migrations...');
         $progressBar->start();
 
+        // MySQL/MariaDB fazem commit implícito a cada DDL: lá a transação não reverte nada e o
+        // commit()/rollBack() pode falhar com "There is no active transaction".
+        $useTransaction = $this->supportsSchemaTransactions($db);
+
         foreach ($migrations as $migration) {
             $progressBar->setMessage(sprintf('Executando: %s', $migration));
 
@@ -110,22 +114,33 @@ class MigrateRunCommand extends AbstractCommand
             }
 
             try {
-                $db->beginTransaction();
+                if ($useTransaction) {
+                    $db->beginTransaction();
+                }
 
                 $m = new $migration($db);
                 $m->up();
 
                 $this->registerMigration($db, $migration, $batch);
-                $db->commit();
+
+                if ($useTransaction) {
+                    $db->commit();
+                }
 
                 $this->executedMigrations++;
                 $this->io->text(sprintf('✓ %s executada com sucesso', $migration));
 
             } catch (Throwable $e) {
-                $db->rollBack();
+                if ($useTransaction && $db->transactionLevel() > 0) {
+                    $db->rollBack();
+                }
                 $this->failedMigrations++;
 
                 $this->io->error(sprintf('✗ Erro ao executar %s: %s', $migration, $e->getMessage()));
+
+                if (!$useTransaction) {
+                    $this->io->warning('Este banco não reverte DDL: o que a migration alterou antes do erro continua aplicado.');
+                }
 
                 if ($this->io->confirm('Deseja continuar com as próximas migrations?', false)) {
                     continue;
@@ -139,6 +154,18 @@ class MigrateRunCommand extends AbstractCommand
 
         $progressBar->finish();
         $this->io->newLine(2);
+    }
+
+    /**
+     * PostgreSQL, SQLite e SQL Server revertem DDL dentro de transação; MySQL/MariaDB não.
+     */
+    private function supportsSchemaTransactions(Connection $db): bool
+    {
+        if ($db->getSchemaGrammar() === null) {
+            $db->useDefaultSchemaGrammar();
+        }
+
+        return $db->getSchemaGrammar()->supportsSchemaTransactions();
     }
 
     /**
