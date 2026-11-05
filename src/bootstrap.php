@@ -16,10 +16,12 @@ require_once __DIR__ . '/helpers.php';
 Trace::bootstrap();
 
 try {
+    // safeLoad: o .env é opcional (em containers as variáveis já vêm do ambiente);
+    // um .env presente mas inválido continua gerando erro.
     $dotenv = Dotenv::createImmutable(Path::root());
-    $dotenv->load();
+    $dotenv->safeLoad();
 } catch (\Exception $e) {
-    throw new AppException('Erro ao carregar variáveis de ambiente: ' . $e->getMessage(), 0, $e);
+    throw new AppException('Erro ao carregar variáveis de ambiente: ' . $e->getMessage(), 500, $e);
 }
 
 require 'exception.php';
@@ -41,7 +43,7 @@ $processedBindings = [];
 
 foreach ($bindings as $key => $class) {
     if (!class_exists($class)) {
-        throw new AppException("Classe não encontrada para binding '{$key}': {$class}");
+        throw new AppException("Classe não encontrada para binding '{$key}': {$class}", 500);
     }
     $processedBindings[$key] = autowire($class);
 }
@@ -74,7 +76,7 @@ try {
     $routes = require 'routes.php';
     $routes($app);
 } catch (\Exception $e) {
-    throw new AppException('Erro ao inicializar aplicação: ' . $e->getMessage(), 0, $e);
+    throw new AppException('Erro ao inicializar aplicação: ' . $e->getMessage(), 500, $e);
 }
 
 

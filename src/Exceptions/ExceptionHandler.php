@@ -204,7 +204,7 @@ class ExceptionHandler implements IExceptionHandler
             'DivisionByZeroError' => 500,
             'ArithmeticError' => 500,
             'AssertionError' => 500,
-            'Core\Exceptions\AppException' => 400,
+            'Core\Exceptions\Exception\AppException' => 400,
             'Core\Exceptions\Exception\DomainException' => 400,
             'Core\Exceptions\Exception\InfraException' => 500,
             'Core\Exceptions\Exception\ValidatorException' => 422,

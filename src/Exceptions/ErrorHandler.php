@@ -16,7 +16,7 @@ class ErrorHandler extends SlimErrorHandler
 {
     private IExceptionHandler $exceptionHandler;
 
-    public function __construct($callableResolver, $responseFactory, IExceptionHandler $exceptionHandler = null)
+    public function __construct($callableResolver, $responseFactory, ?IExceptionHandler $exceptionHandler = null)
     {
         parent::__construct($callableResolver, $responseFactory);
         $this->exceptionHandler = $exceptionHandler ?? new ExceptionHandler();
