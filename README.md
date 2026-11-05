@@ -1,6 +1,6 @@
 # PHP Slim Modular Framework
 
-[![Version](https://img.shields.io/badge/version-3.0.5-blue.svg)](https://github.com/JonJon1992/php-slim-modular)
+[![Version](https://img.shields.io/badge/version-3.1.0-blue.svg)](https://github.com/JonJon1992/php-slim-modular)
 [![PHP](https://img.shields.io/badge/php-%3E%3D8.4-blue.svg)](https://php.net)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 
@@ -32,7 +32,7 @@ Um framework PHP modular baseado no Slim Framework com suporte completo para AWS
 ## 🛠️ Instalação
 
 ```bash
-composer require jonjon1992/php-slim-modular:^3.0.5
+composer require jonjon1992/php-slim-modular:^3.1.0
 ```
 
 ## 🔧 Configuração
@@ -107,6 +107,12 @@ return [
     ],
 ];
 ```
+
+### Desempenho em produção
+
+- **Cache do container**: em `production`/`staging`, com APCu habilitado, as definições de autowiring do PHP-DI ficam em cache. Desative com `APP_CONTAINER_CACHE=false`, por exemplo se o projeto registrar definições com `$container->set()` em tempo de execução.
+- **JSON**: respostas compactas em `production`/`staging` e formatadas nos demais ambientes; acentos e barras não são escapados.
+- **No servidor**: OPcache com `opcache.validate_timestamps=0`, APCu habilitado e `composer install --no-dev --classmap-authoritative`.
 
 ## 🚀 Uso Básico
 
@@ -344,4 +350,4 @@ Para suporte, entre em contato através das issues do GitHub ou envie um email p
 
 ---
 
-**Versão 3.0.5** - Atualizado em 5 de Novembro de 2026
+**Versão 3.1.0** - Atualizado em 5 de Novembro de 2026

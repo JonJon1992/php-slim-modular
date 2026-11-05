@@ -1,5 +1,15 @@
 # CHANGELOG
 
+### v3.1.0
+ - Respostas JSON: compactas em production/staging (formatadas nos demais ambientes), sem escapar acentos e barras (`JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES`); o conteúdo é o mesmo, só muda a formatação
+ - AbstractAction: as listas `columns`, `not-columns` e `columns-decoded` são lidas uma vez por requisição (antes eram relidas para cada chave do payload); a conversão intermediária não usa mais pretty print
+ - Serializable: a reflexão dos getters é feita uma vez por classe; getters públicos são chamados diretamente
+ - Container: em production/staging, com APCu, as definições de autowiring do PHP-DI ficam em cache (`APP_CONTAINER_CACHE=false` desativa)
+ - Bootstrap: cada módulo é instanciado uma única vez (antes também era criado de novo para registrar as views)
+ - CacheMiddleware: o corpo da resposta é lido direto do stream; `respond()` fica obsoleto (enviava headers com `header()`)
+ - Correções: `SnsClient::topic()` com condição invertida; `AbstractFilters::hydrate()` sem `page`/`per_page` gerava TypeError e os getters falhavam com propriedades não inicializadas; `Crypt::response()` com `Paginator` gerava TypeError e `Crypt::transform()` quebrava com valores escalares; `/version` respondia 500 quando o `composer.json` não tinha `version` (agora responde 204)
+ - Dynamo: as exceções do SDK são propagadas com o tipo original (antes viravam `Exception` genérica com a mensagem prefixada)
+
 ### v3.0.5
  - Segurança: remove `auth.json` (token do GitHub) do versionamento e adiciona `.gitattributes` com `export-ignore`
  - ImAliveAction: o cache do health check expira em 30s (antes nunca expirava); uma falha invalida o cache; `?service=` não usa nem alimenta o cache; o campo `error` é omitido em production/staging; qualquer `Throwable` marca o serviço como `dead`
