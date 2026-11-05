@@ -64,9 +64,6 @@ abstract class Action
     }
 
     /**
-     * JSON compacto em production/staging e formatado nos demais ambientes.
-     * Acentos e barras saem sem escape (JSON_UNESCAPED_UNICODE/SLASHES), o que reduz o payload.
-     *
      * @return int
      */
     protected function jsonFlags(): int
