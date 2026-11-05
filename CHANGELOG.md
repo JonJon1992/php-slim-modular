@@ -1,5 +1,19 @@
 # CHANGELOG
 
+### v3.0.5
+ - Segurança: remove `auth.json` (token do GitHub) do versionamento e adiciona `.gitattributes` com `export-ignore`
+ - ImAliveAction: o cache do health check expira em 30s (antes nunca expirava); uma falha invalida o cache; `?service=` não usa nem alimenta o cache; o campo `error` é omitido em production/staging; qualquer `Throwable` marca o serviço como `dead`
+ - RateLimitMiddleware: corrige a chamada a `withHeaders()`, que não existe no PSR-7; contador atômico com `INCR`; `X-Forwarded-For` só é usado com `trustProxyHeaders: true` (necessário atrás de ALB/API Gateway/Nginx); modo `user` usa `auth.user_id`; modo `token` grava um hash do token
+ - CacheMiddleware: `destroy()` volta a invalidar o cache (a verificação de `CACHE_MIDDLEWARE` aceita bool ou string); expirações vindas do `.env` são convertidas para `int`
+ - Redis: `inDatabase()` sempre volta ao DB 0, mesmo com erro; `calcDbIndex()` aceita IDs não numéricos (UUID)
+ - QueueWorkCommand: remove a opção `--verbose` duplicada, que conflitava com a opção global do Symfony Console (use `-v`)
+ - App: `module()` não quebra mais quando `REQUEST_URI` não existe (CLI/testes)
+ - BaseTestCase: corrige a ordem dos argumentos em get/post/put/delete; `configDbSqlite` processava os bancos que NÃO eram SQLite (podendo rodar `chown -R` no diretório atual); os mocks de Redis/Dynamo passam a ser registrados; `cleanTestData` passa a funcionar
+ - Obsoletos, com remoção prevista na 4.0: `ClientMiddleware`, `Client`, `IClient`, `client()` e `CreateClientCommand` (o `x-client` não é repassado pelo ApiGatewayMiddleware desde a v2.12.5)
+
+### v3.0.4
+ - CacheMiddleware: ajuste na verificação de `CACHE_MIDDLEWARE` em `destroy()`
+
 ### v3.0.3
  - CacheMiddleware: corrige invalidação por padrão no Redis removendo uso de reflexão para `hDel` e executando remoção variádica diretamente no wrapper
 

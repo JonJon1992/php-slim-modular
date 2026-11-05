@@ -1,6 +1,6 @@
 # PHP Slim Modular Framework
 
-[![Version](https://img.shields.io/badge/version-3.0.3-blue.svg)](https://github.com/JonJon1992/php-slim-modular)
+[![Version](https://img.shields.io/badge/version-3.0.5-blue.svg)](https://github.com/JonJon1992/php-slim-modular)
 [![PHP](https://img.shields.io/badge/php-%3E%3D8.4-blue.svg)](https://php.net)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 
@@ -32,7 +32,7 @@ Um framework PHP modular baseado no Slim Framework com suporte completo para AWS
 ## 🛠️ Instalação
 
 ```bash
-composer require jonjon1992/php-slim-modular:^3.0.3
+composer require jonjon1992/php-slim-modular:^3.0.5
 ```
 
 ## 🔧 Configuração
@@ -287,7 +287,8 @@ GET /im-alive?force=1
 
 ### Funcionalidades
 
-- **Cache Inteligente**: Evita verificações desnecessárias
+- **Cache de 30 segundos**: após uma verificação completa bem-sucedida, as chamadas seguintes respondem do cache por até 30s (`?force=1` ignora o cache; verificações com `?service=` nunca usam nem alimentam o cache; uma falha invalida o cache)
+- **Erros protegidos**: em `production`/`staging`, o campo `error` de cada serviço é omitido da resposta e registrado apenas no log
 - **Métricas Detalhadas**: Latência e status de cada serviço
 - **Logs Estruturados**: Logs de sucesso e falha
 - **Verificação Seletiva**: Verifica apenas serviços específicos
@@ -343,4 +344,4 @@ Para suporte, entre em contato através das issues do GitHub ou envie um email p
 
 ---
 
-**Versão 3.0.3** - Atualizado em 13 de Março de 2026
+**Versão 3.0.5** - Atualizado em 5 de Novembro de 2026
