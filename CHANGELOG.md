@@ -1,5 +1,11 @@
 # CHANGELOG
 
+### v3.4.0
+ - Dependências: os sete pacotes `illuminate/*` aceitam 10, 11 e 12 (`^10.37.3 || ^11.0 || ^12.0`); `symfony/console` aceita 7 (exigido pelo `illuminate/console` 11/12); `nesbot/carbon` declarado (aceita Carbon 3, exigido pelo illuminate 12)
+ - Nenhuma mudança de código foi necessária: `Worker`, `WorkerOptions`, `ExceptionHandler`, os `Capsule\Manager` de banco e fila, os conectores, a grammar de schema, `Str`/`Arr`/`Env` e o `Command` do Symfony 7 mantêm as assinaturas usadas
+ - Testes (`composer test`): gerenciador único do Eloquent (banco do módulo, `db.default`, `$connection` explícita, transação), fila `sync`, fila `database` processada pelo `Worker` e formato do log
+ - **Atenção:** projetos com comandos próprios que não estendem `AbstractCommand` precisam declarar `execute(...): int` para funcionar com o `symfony/console` 7
+
 ### v3.3.0
  - Log: compatível com Monolog 2 e 3 (`monolog/monolog ^2.3.2 || ^3.0`). A linha de log passa a ser montada pelo `Core\Utils\TraceJsonFormatter` em vez do `Trace::processor`, que substituía o registro inteiro (o `LogRecord` do Monolog 3 é imutável). O JSON gerado tem os mesmos campos; `timestamp` passa a ser o horário do registro
  - `Trace::processor()` fica obsoleto (remoção na 4.0); `Trace::logData()` monta os campos a partir de um registro do Monolog 2 ou 3
