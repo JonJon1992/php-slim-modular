@@ -8,19 +8,21 @@ use Core\Utils\Serializable;
 
 abstract class AbstractFilters extends Serializable
 {
-    protected int $page;
+    // Valores padrão evitam o Error de propriedade tipada não inicializada nos getters
+    // (inclusive no jsonSerialize, que chama todos eles). page/per_page seguem o Paginator.
+    protected int $page = 1;
 
-    protected int $per_page;
+    protected int $per_page = 24;
 
-    protected ?array $columns;
+    protected ?array $columns = null;
 
-    protected ?array $not_columns;
+    protected ?array $not_columns = null;
 
     protected ?array $with_associations = [];
 
-    protected ?string $order;
+    protected ?string $order = null;
 
-    protected ?string $order_direction;
+    protected ?string $order_direction = null;
 
     /**
      * @return int
@@ -157,9 +159,15 @@ abstract class AbstractFilters extends Serializable
     {
         $data = is_array($data) ? (object)$data : $data;
 
-        return $this->setPage(!empty($data->page) ? (int)$data->page : null)
-            ->setPerPage(!empty($data->per_page) ? (int)$data->per_page : null)
-            ->setOrder($data->order ?? null)
+        // setPage/setPerPage recebem int; sem valor na entrada, mantém o padrão.
+        if (!empty($data->page)) {
+            $this->setPage((int)$data->page);
+        }
+        if (!empty($data->per_page)) {
+            $this->setPerPage((int)$data->per_page);
+        }
+
+        return $this->setOrder($data->order ?? null)
             ->setOrderDirection($data->direction ?? null)
             ->setColumns($data->propertities ?? null)
             ->setNotColumns($data->not_propertities ?? null)

@@ -8,6 +8,11 @@ use Jonjon\PhpDynamo\Item\DynamoItem;
 use Jonjon\PhpDynamo\Util\DynamoConfig;
 use Aws\Result;
 
+/**
+ * Fachada sobre o DynamoManager. As exceções do SDK/manager são propagadas sem
+ * encapsulamento, para que o chamador possa tratar o tipo original (ex.: DynamoDbException
+ * com getAwsErrorCode() === 'ConditionalCheckFailedException').
+ */
 class Dynamo
 {
     private DynamoManager $manager;
@@ -65,11 +70,7 @@ class Dynamo
      */
     public function save(DynamoItem $item): Result
     {
-        try {
-            return $this->manager->save($item);
-        } catch (Exception $e) {
-            throw new Exception("Erro ao salvar item no DynamoDB: " . $e->getMessage(), 0, $e);
-        }
+        return $this->manager->save($item);
     }
 
     /**
@@ -81,11 +82,7 @@ class Dynamo
      */
     public function delete(DynamoItem $item): Result
     {
-        try {
-            return $this->manager->delete($item);
-        } catch (Exception $e) {
-            throw new Exception("Erro ao remover item do DynamoDB: " . $e->getMessage(), 0, $e);
-        }
+        return $this->manager->delete($item);
     }
 
     /**
@@ -97,11 +94,7 @@ class Dynamo
      */
     public function find(string $tableName, array $key, ?string $class = null)
     {
-        try {
-            return $this->manager->find($tableName, $key, $class);
-        } catch (Exception $e) {
-            throw new Exception("Erro ao buscar item no DynamoDB: " . $e->getMessage(), 0, $e);
-        }
+        return $this->manager->find($tableName, $key, $class);
     }
 
     /**
@@ -126,20 +119,16 @@ class Dynamo
         array $params = [],
         ?string $class = null
     ): array {
-        try {
-            return $this->manager->query(
-                $tableName,
-                $keyConditionExpression,
-                $values,
-                $filterExpression,
-                $projectionExpression,
-                $expressionAttributeNames,
-                $params,
-                $class
-            );
-        } catch (Exception $e) {
-            throw new Exception("Erro ao executar query no DynamoDB: " . $e->getMessage(), 0, $e);
-        }
+        return $this->manager->query(
+            $tableName,
+            $keyConditionExpression,
+            $values,
+            $filterExpression,
+            $projectionExpression,
+            $expressionAttributeNames,
+            $params,
+            $class
+        );
     }
 
     /**
@@ -158,11 +147,7 @@ class Dynamo
         array $params = [],
         ?string $class = null
     ): array {
-        try {
-            return $this->manager->scan($tableName, $filterExpression, $values, $params, $class);
-        } catch (Exception $e) {
-            throw new Exception("Erro ao executar scan no DynamoDB: " . $e->getMessage(), 0, $e);
-        }
+        return $this->manager->scan($tableName, $filterExpression, $values, $params, $class);
     }
 
     /** 
@@ -181,11 +166,7 @@ class Dynamo
         array $values,
         ?string $condition = null
     ): Result {
-        try {
-            return $this->manager->update($tableName, $key, $updateExpression, $values, $condition);
-        } catch (Exception $e) {
-            throw new Exception("Erro ao atualizar item no DynamoDB: " . $e->getMessage(), 0, $e);
-        }
+        return $this->manager->update($tableName, $key, $updateExpression, $values, $condition);
     }
 
     /**
@@ -196,11 +177,7 @@ class Dynamo
      */
     public function insertItems(array $items, array $config = [])
     {
-        try {
-            return $this->manager->insertItems($items, $config);
-        } catch (Exception $e) {
-            throw new Exception("Erro ao inserir items em lote no DynamoDB: " . $e->getMessage(), 0, $e);
-        }
+        return $this->manager->insertItems($items, $config);
     }
 
     /**
@@ -211,11 +188,7 @@ class Dynamo
      */
     public function deleteItems(array $items, array $config = [])
     {
-        try {
-            return $this->manager->deleteItems($items, $config);
-        } catch (Exception $e) {
-            throw new Exception("Erro ao remover items em lote do DynamoDB: " . $e->getMessage(), 0, $e);
-        }
+        return $this->manager->deleteItems($items, $config);
     }
 
     /**
@@ -224,11 +197,7 @@ class Dynamo
      */
     public function listTables(): array
     {
-        try {
-            return $this->manager->listTables();
-        } catch (Exception $e) {
-            throw new Exception("Erro ao listar tabelas do DynamoDB: " . $e->getMessage(), 0, $e);
-        }
+        return $this->manager->listTables();
     }
 
     /**
@@ -238,11 +207,7 @@ class Dynamo
      */
     public function describeTable(string $tableName): Result|array
     {
-        try {
-            return $this->manager->describeTable($tableName);
-        } catch (Exception $e) {
-            throw new Exception("Erro ao descrever tabela do DynamoDB: " . $e->getMessage(), 0, $e);
-        }
+        return $this->manager->describeTable($tableName);
     }
 
     /**
@@ -252,11 +217,7 @@ class Dynamo
      */
     public function createTable(array $tableSettings): Result|array
     {
-        try {
-            return $this->manager->createTable($tableSettings);
-        } catch (Exception $e) {
-            throw new Exception("Erro ao criar tabela no DynamoDB: " . $e->getMessage(), 0, $e);
-        }
+        return $this->manager->createTable($tableSettings);
     }
 
     /**
@@ -266,11 +227,7 @@ class Dynamo
      */
     public function deleteTable(string $tableName): Result|array
     {
-        try {
-            return $this->manager->deleteTable($tableName);
-        } catch (Exception $e) {
-            throw new Exception("Erro ao remover tabela do DynamoDB: " . $e->getMessage(), 0, $e);
-        }
+        return $this->manager->deleteTable($tableName);
     }
 
     /**
@@ -281,11 +238,7 @@ class Dynamo
      */
     public function itemToDynamoItem($item, string $class): DynamoItem
     {
-        try {
-            return $this->manager->itemToDynamoItem($item, $class);
-        } catch (Exception $e) {
-            throw new Exception("Erro ao converter item para DynamoItem: " . $e->getMessage(), 0, $e);
-        }
+        return $this->manager->itemToDynamoItem($item, $class);
     }
 
     /**
@@ -297,11 +250,7 @@ class Dynamo
      */
     public function convert($item, string $hydrate = 'object', ?string $class = null)
     {
-        try {
-            return $this->manager->convert($item, $hydrate, $class);
-        } catch (Exception $e) {
-            throw new Exception("Erro ao converter item: " . $e->getMessage(), 0, $e);
-        }
+        return $this->manager->convert($item, $hydrate, $class);
     }
 
     /**
@@ -313,11 +262,7 @@ class Dynamo
      */
     public function convertItems(array $items, string $hydrate = 'object', ?string $class = null): array
     {
-        try {
-            return $this->manager->convertItems($items, $hydrate, $class);
-        } catch (Exception $e) {
-            throw new Exception("Erro ao converter items: " . $e->getMessage(), 0, $e);
-        }
+        return $this->manager->convertItems($items, $hydrate, $class);
     }
 
     /**

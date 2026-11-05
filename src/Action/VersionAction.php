@@ -7,9 +7,15 @@ use Core\Utils\Path;
 
 class VersionAction extends Action
 {
+    /**
+     * Versão declarada no composer.json do projeto; sem o campo "version" responde 204.
+     */
     protected function action()
     {
-        return json_decode(file_get_contents(Path::root('/composer.json')))->version;
+        $file = Path::root('/composer.json');
+        $composer = is_file($file) ? json_decode((string) file_get_contents($file), true) : null;
+
+        return is_array($composer) ? ($composer['version'] ?? null) : null;
     }
 
 }

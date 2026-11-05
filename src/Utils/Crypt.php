@@ -82,23 +82,36 @@ class Crypt implements ICrypt
     {
         $key = array_shift($keys);
 
-        if (!isset($data[$key])) {
+        if ($key === null || !isset($data[$key])) {
             return $data;
         }
 
-        if (is_array($data[$key])) {
-            if (count($keys) == 0) {
-                return $data;
+        $value = $data[$key];
+
+        // Fim do caminho ("a.b.id"): codifica/decodifica o valor escalar.
+        if (!is_array($value)) {
+            if (empty($keys)) {
+                $data[$key] = $encode ? $this->encode($value) : $this->decode($value);
             }
+            return $data;
         }
-        foreach ($data[$key] as $k => $value) {
-            if (is_array($value)) {
-                $data[$key][$k] = $this->transform($data[$key][$k], $keys, $encode);
-            } else {
-                $data[$key] = $this->transform($data[$key], $keys, $encode);
+
+        // O caminho termina num array: mantém como está.
+        if (empty($keys)) {
+            return $data;
+        }
+
+        // Lista de registros: aplica o restante do caminho em cada um; objeto: aplica nele.
+        if (array_is_list($value)) {
+            foreach ($value as $k => $item) {
+                if (is_array($item)) {
+                    $data[$key][$k] = $this->transform($item, $keys, $encode);
+                }
             }
+        } else {
+            $data[$key] = $this->transform($value, $keys, $encode);
         }
-        $data[$key] = $encode ? $this->encode($data[$key]) : $this->decode($data[$key]);
+
         return $data;
     }
 
@@ -147,15 +160,29 @@ class Crypt implements ICrypt
         }
 
         if ($data instanceof Paginator) {
-            $data->setItems(
-                array_map(fn(Paginator $paginator) => $this->doTransform($paginator->jsonSerialize(), $keys), $data->getItems())
-            );
+            $data->setItems(array_map(fn($item) => $this->transformItem($item, $keys), $data->getItems()));
         } else if ($data instanceof JsonSerializable) {
-            $data = $this->doTransform($data->jsonSerialize(), $keys);
+            $data = $this->transformItem($data, $keys);
         } else if (is_array($data)) {
-            $data = array_map(fn($item) => $item instanceof JsonSerializable ? $this->doTransform($item->jsonSerialize(), $keys) : $this->doTransform($item, $keys), $data);
+            $data = array_is_list($data)
+                ? array_map(fn($item) => $this->transformItem($item, $keys), $data)
+                : $this->doTransform($data, $keys);
         }
         return $data;
+    }
+
+    /**
+     * @param mixed $item registro (array ou JsonSerializable); outros valores voltam sem alteração
+     * @param array $keys
+     * @return mixed
+     */
+    private function transformItem(mixed $item, array $keys): mixed
+    {
+        if ($item instanceof JsonSerializable) {
+            $item = $item->jsonSerialize();
+        }
+
+        return is_array($item) ? $this->doTransform($item, $keys) : $item;
     }
 
     private function doTransform(array $data, array $keys, bool $encode = true): array
