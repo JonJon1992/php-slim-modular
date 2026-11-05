@@ -248,22 +248,23 @@ class CacheMiddleware
             $user_id = $key[0];
             $path = $key[1] . ':' . $key[2];
 
-            return redis()->inDatabase(redis()->calcDbIndex($user_id), function () use ($user_id, $path) {
+            // Tudo fica no DB 0: a chave já é separada por usuário, sem SELECT por requisição
+            // (que custava idas extras ao Redis e não existe em Redis Cluster).
+            $data = redis()->hGet(self::NAMESPACE . ':' . $user_id, $path);
 
-                $data = redis()->hGet(self::NAMESPACE . ':' . $user_id, $path);
+            if (!$data) {
+                return false;
+            }
 
-                if ($data) {
-                    $delimiter = strpos($data, '|');
-                    $expiration = substr($data, 0, $delimiter);
-                    $data = substr($data, $delimiter + 1);
+            $delimiter = strpos($data, '|');
+            $expiration = substr($data, 0, $delimiter);
 
-                    if ($expiration < time()) {
-                        redis()->hDel(self::NAMESPACE . ':' . $user_id, $path);
-                    } else {
-                        return $data;
-                    }
-                }
-            });
+            if ($expiration < time()) {
+                redis()->hDel(self::NAMESPACE . ':' . $user_id, $path);
+                return false;
+            }
+
+            return substr($data, $delimiter + 1);
         } catch (\RedisException) {
             return false;
         }
@@ -283,19 +284,16 @@ class CacheMiddleware
             $user_id = $key[0];
             $path = $key[1] . ':' . $key[2];
 
-            redis()->inDatabase(redis()->calcDbIndex($user_id), function () use ($user_id, $path, $data) {
+            redis()->hSet(self::NAMESPACE . ':' . $user_id, $path, (time() + $this->getExpiresIn()) . '|' . $data);
 
-                redis()->hSet(self::NAMESPACE . ':' . $user_id, $path, (time() + $this->getExpiresIn()) . '|' . $data);
-
-                if (empty($user_id)) {
-                    $ttl = redis()->ttl(self::NAMESPACE . ':' . $user_id);
-                    if ($ttl && $ttl <= 0) {
-                        redis()->expire(self::NAMESPACE . ':' . $user_id, redis()->expiresAtTheEndDay());
-                    }
-                } else {
-                    redis()->expire(self::NAMESPACE . ':' . $user_id, (int) env('CACHE_MIDDLEWARE_KEY_EXPIRE', Time::_24H));
+            if (empty($user_id)) {
+                $ttl = redis()->ttl(self::NAMESPACE . ':' . $user_id);
+                if ($ttl && $ttl <= 0) {
+                    redis()->expire(self::NAMESPACE . ':' . $user_id, redis()->expiresAtTheEndDay());
                 }
-            });
+            } else {
+                redis()->expire(self::NAMESPACE . ':' . $user_id, (int) env('CACHE_MIDDLEWARE_KEY_EXPIRE', Time::_24H));
+            }
         } catch (\RedisException $e) {
             return false;
         }
@@ -317,25 +315,23 @@ class CacheMiddleware
             $user_id = $key[0];
             $search = $key[1] . ':' . $key[2];
 
-            redis()->inDatabase(redis()->calcDbIndex($user_id), function () use ($user_id, $search) {
-                $args = [self::NAMESPACE . ':' . $user_id];
+            $args = [self::NAMESPACE . ':' . $user_id];
 
-                $search = preg_replace('/\*/', '.*', preg_replace('/\//', '\\/', $search));
+            $search = preg_replace('/\*/', '.*', preg_replace('/\//', '\\/', $search));
 
-                foreach (redis()->hKeys(self::NAMESPACE . ':' . $user_id) as $key) {
-                    if (preg_match("/$search/", $key)) {
-                        $args[] = $key;
-                    }
+            foreach (redis()->hKeys(self::NAMESPACE . ':' . $user_id) as $field) {
+                if (preg_match("/$search/", $field)) {
+                    $args[] = $field;
                 }
+            }
 
-                if (count($args) > 1) {
-                    try {
-                        redis()->hDel(...$args);
-                    } catch (\Exception $e) {
-                        logger()->error($e->getMessage());
-                    }
+            if (count($args) > 1) {
+                try {
+                    redis()->hDel(...$args);
+                } catch (\Exception $e) {
+                    logger()->error($e->getMessage());
                 }
-            });
+            }
         }
     }
 }

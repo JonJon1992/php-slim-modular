@@ -389,7 +389,7 @@ class Redis
             if ($this->isTlsScheme($scheme)) {
                 $this->connectTls($host, $port, $timeout, $config);
             } else {
-                $this->redis->connect($host, $port, $timeout);
+                $this->redis->{$this->connectMethod()}($host, $port, $timeout, $this->persistentId());
             }
 
             $username = $config['username'] ?? null;
@@ -400,6 +400,11 @@ class Redis
                 } else {
                     $this->redis->auth($password);
                 }
+            }
+
+            // Uma conexão persistente pode ter ficado em outro DB numa requisição anterior.
+            if ($this->isPersistent()) {
+                $this->redis->select(0);
             }
         } catch (\RedisException $exception) {
             throw new RedisException("Falha ao conectar ao Redis: {$exception->getMessage()}");
@@ -414,7 +419,34 @@ class Redis
     protected function connectTls(string $host, int $port, float $timeout, array $config): void
     {
         $tlsHost = str_contains($host, '://') ? $host : "tls://{$host}";
-        $this->redis->connect($tlsHost, $port, $timeout, null, 0, 0, $this->buildTlsContext($config));
+        $this->redis->{$this->connectMethod()}($tlsHost, $port, $timeout, $this->persistentId(), 0, 0, $this->buildTlsContext($config));
+    }
+
+    /**
+     * Conexão persistente (pconnect) é opcional: 'persistent' => true na config do cache.
+     * Evita refazer a conexão TCP/TLS a cada requisição no PHP-FPM.
+     */
+    protected function isPersistent(): bool
+    {
+        return filter_var($this->config['persistent'] ?? false, FILTER_VALIDATE_BOOLEAN);
+    }
+
+    protected function connectMethod(): string
+    {
+        return $this->isPersistent() ? 'pconnect' : 'connect';
+    }
+
+    /**
+     * Separa o pool de conexões persistentes por credencial, para nunca reaproveitar
+     * uma conexão autenticada com outro usuário.
+     */
+    protected function persistentId(): ?string
+    {
+        if (!$this->isPersistent()) {
+            return null;
+        }
+
+        return md5(($this->config['username'] ?? '') . '|' . ($this->config['password'] ?? ''));
     }
 
     protected function buildTlsContext(array $config): array
