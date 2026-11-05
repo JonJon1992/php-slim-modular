@@ -9,17 +9,17 @@ use Slim\Views\PhpRenderer;
 
 trait ViewServiceTrait
 {
-    protected function registerViewServices(array &$bindings, $configs): void
+    protected function registerViewServices(array &$bindings, $configs, ?array $modules = null): void
     {
         $bindings['view'] = function () use ($configs) {
             return new PhpRenderer($configs->get('app.view.folder'));
         };
 
-        foreach (config('app.modules', []) as $class) {
+        $modules ??= array_map(fn(string $class) => new $class(), config('app.modules', []));
 
-            $module = new $class();
+        foreach ($modules as $module) {
             $alias = $module->namespace();
-            $dir = Path::modules('/' . $module->namespace() . $module->viewsFolder());
+            $dir = Path::modules('/' . $alias . $module->viewsFolder());
 
             if (!is_dir($dir)) {
                 continue;

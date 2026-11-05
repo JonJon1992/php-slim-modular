@@ -25,7 +25,11 @@ return new class {
     use ViewServiceTrait;
     use MailerServiceTrait;
 
-    public function __invoke(ContainerBuilder $builder): void
+    /**
+     * @param ContainerBuilder $builder
+     * @param array|null $modules instâncias já criadas dos módulos (evita instanciá-los de novo)
+     */
+    public function __invoke(ContainerBuilder $builder, ?array $modules = null): void
     {
         $configs = Config::singleton();
         $bindings = [];
@@ -66,7 +70,7 @@ return new class {
         }
 
         try {
-            $this->registerViewServices($bindings, $configs);
+            $this->registerViewServices($bindings, $configs, $modules);
         } catch (\Throwable $e) {
             throw new \Exception("View: " . $e->getMessage());
         }
