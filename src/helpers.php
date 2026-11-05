@@ -101,6 +101,7 @@ function mailer(?string $alias = null)
 
 /**
  * @return Client
+ * @deprecated desde 3.0.5, será removido na 4.0. Veja Core\Utils\Client.
  */
 function client(): Client
 {

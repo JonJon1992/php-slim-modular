@@ -5,6 +5,10 @@ namespace Core\Utils;
 use Core\Contracts\IClient;
 use Core\Traits\Singleton;
 
+/**
+ * @deprecated desde 3.0.5, será removido na 4.0. O ApiGatewayMiddleware deixou de repassar
+ *             o header x-client na v2.12.5.
+ */
 class Client implements IClient
 {
     use Singleton;

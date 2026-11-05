@@ -8,6 +8,11 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 
+/**
+ * @deprecated desde 3.0.5, será removido na 4.0. Desde a v2.12.5 o ApiGatewayMiddleware
+ *             remove o header x-client de toda requisição, então este middleware sempre
+ *             responde 400.
+ */
 class ClientMiddleware
 {
     protected IClient $client;

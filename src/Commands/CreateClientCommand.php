@@ -12,6 +12,10 @@ use Illuminate\Database\Schema\Blueprint;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
+/**
+ * @deprecated desde 3.0.5, será removido na 4.0. As chaves de module_client_keys não são
+ *             mais validadas pelo ApiGatewayMiddleware desde a v2.12.5.
+ */
 class CreateClientCommand extends AbstractCommand
 {
     private SymfonyStyle $io;
