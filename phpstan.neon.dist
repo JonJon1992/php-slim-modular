@@ -1,0 +1,14 @@
+# Análise estática: composer analyse
+#
+# Primeira execução: vendor/bin/phpstan analyse --generate-baseline
+# Depois descomente o "includes" abaixo: a baseline congela os erros atuais e a
+# análise passa a acusar só os novos. Corrija a baseline aos poucos.
+#
+# includes:
+#     - phpstan-baseline.neon
+
+parameters:
+    level: 5
+    paths:
+        - src
+    tmpDir: var/cache/phpstan

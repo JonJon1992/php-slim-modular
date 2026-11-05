@@ -10,3 +10,4 @@ localstack-data/
 auth.json
 docker
 xdebug.ini
+/var/
