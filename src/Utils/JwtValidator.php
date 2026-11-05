@@ -10,6 +10,7 @@ use Lcobucci\JWT\Encoding\JoseEncoder;
 use Lcobucci\JWT\Signer\Hmac\Sha256;
 use Lcobucci\JWT\Signer\Key\InMemory;
 use Lcobucci\JWT\Token\Parser;
+use Lcobucci\JWT\Token\RegisteredClaims;
 use Lcobucci\JWT\Token\UnencryptedToken;
 use Lcobucci\JWT\Validation\Constraint\LooseValidAt;
 use Lcobucci\JWT\Validation\Constraint\SignedWith;
@@ -20,12 +21,20 @@ class JwtValidator implements IJwtValidator
     private Parser $parser;
     private Validator $validator;
     private string $secret;
+    private bool $requireExpiration;
 
-    public function __construct(?string $secret = null)
+    /**
+     * @param string|null $secret padrão: JWT_SECRET
+     * @param bool|null $requireExpiration rejeita tokens sem "exp"; padrão: JWT_REQUIRE_EXP (true)
+     */
+    public function __construct(?string $secret = null, ?bool $requireExpiration = null)
     {
         $this->parser = new Parser(new JoseEncoder());
         $this->validator = new Validator();
-        $this->secret = $secret ?? env('JWT_SECRET');
+        // Sem JWT_SECRET o env() devolve null, que não cabe na propriedade string.
+        $this->secret = (string) ($secret ?? env('JWT_SECRET', ''));
+        $this->requireExpiration = $requireExpiration
+            ?? filter_var(env('JWT_REQUIRE_EXP', true), FILTER_VALIDATE_BOOLEAN);
     }
 
     /**
@@ -53,6 +62,11 @@ class JwtValidator implements IJwtValidator
             }
 
             if (!$token instanceof UnencryptedToken) {
+                return null;
+            }
+
+            // LooseValidAt só confere "exp" se ele existir; sem esta checagem o token nunca expira.
+            if ($this->requireExpiration && !$token->claims()->has(RegisteredClaims::EXPIRATION_TIME)) {
                 return null;
             }
 
