@@ -1,5 +1,10 @@
 # CHANGELOG
 
+### v3.3.0
+ - Log: compatível com Monolog 2 e 3 (`monolog/monolog ^2.3.2 || ^3.0`). A linha de log passa a ser montada pelo `Core\Utils\TraceJsonFormatter` em vez do `Trace::processor`, que substituía o registro inteiro (o `LogRecord` do Monolog 3 é imutável). O JSON gerado tem os mesmos campos; `timestamp` passa a ser o horário do registro
+ - `Trace::processor()` fica obsoleto (remoção na 4.0); `Trace::logData()` monta os campos a partir de um registro do Monolog 2 ou 3
+ - **Atenção:** handlers adicionados pelo projeto a esses loggers passam a receber o registro padrão do Monolog (antes recebiam o array já remontado pelo processor)
+
 ### v3.2.0
  - CacheMiddleware: tudo fica no DB 0 do Redis (a chave já separa por usuário); acabou o `SELECT` por requisição, que custava idas extras ao Redis e não funciona em Redis Cluster. O cache antigo nos DBs 1–15 expira sozinho (até 24h)
  - Redis: opção `persistent` na config do cache para reaproveitar a conexão (TCP/TLS) entre requisições, com pool separado por credencial
