@@ -69,13 +69,11 @@ class CacheMiddleware
         }
 
         $response = $handler->handle($request);
+        $body = $response->getBody();
 
-        if ($response->getStatusCode() == 200) {
-            ob_start();
-            $this->respond($request, $response);
-            $data = ob_get_contents();
-            ob_end_clean();
-            $this->write($key, $data);
+        // Lê o corpo direto do stream; o emissor do Slim volta o ponteiro ao início antes de enviar.
+        if ($response->getStatusCode() == 200 && $body->isSeekable()) {
+            $this->write($key, (string) $body);
         }
 
         return $response->withHeader('X-Cache-Middleware', 'false');
@@ -143,6 +141,8 @@ class CacheMiddleware
      * @param $request
      * @param $response
      * @return void
+     * @deprecated desde 3.1.0, será removido na 4.0. O middleware não usa mais este método,
+     *             que envia headers direto com header().
      */
     public function respond($request, $response): void
     {
