@@ -31,8 +31,8 @@ class QueueWorkCommand extends AbstractCommand
             ->addOption('tries', null, InputOption::VALUE_OPTIONAL, 'Tentativas antes de marcar o job como falha', 0)
             ->addOption('memory', null, InputOption::VALUE_OPTIONAL, 'Limite de memória em megabytes', 128)
             ->addOption('max-jobs', null, InputOption::VALUE_OPTIONAL, 'Reiniciar worker após N jobs (evita vazamento de memória)', 0)
-            ->addOption('max-time', null, InputOption::VALUE_OPTIONAL, 'Reiniciar worker após N segundos', 0)
-            ->addOption('verbose', 'v', InputOption::VALUE_NONE, 'Exibir mensagens de debug');
+            ->addOption('max-time', null, InputOption::VALUE_OPTIONAL, 'Reiniciar worker após N segundos', 0);
+        // -v/--verbose já é uma opção global do Symfony Console; redeclará-la gera LogicException.
     }
 
     protected function handler(): void
@@ -83,7 +83,7 @@ class QueueWorkCommand extends AbstractCommand
         }
 
         app()->setModule($module);
-        $verbose = (bool) $this->input->getOption('verbose');
+        $verbose = $this->output->isVerbose();
         $io->text("Módulo: {$module}");
         $io->text("Conexão: {$connectionName}");
         $io->text("Fila(s): {$queueName}");

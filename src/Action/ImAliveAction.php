@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Core\Action;
 
 use Core\App\Action;
+use Core\Utils\Env;
 use Core\Utils\Path;
 use Core\Utils\Str;
 use Core\Utils\Time;
@@ -12,6 +13,7 @@ use Exception;
 use Illuminate\Filesystem\Filesystem;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Log\LoggerInterface;
+use Throwable;
 
 class ImAliveAction extends Action
 {
@@ -38,50 +40,55 @@ class ImAliveAction extends Action
         $this->filesystem = new Filesystem();
         $this->logger = logger();
 
-        // Verifica se deve usar cache
-        if ($this->shouldUseCache()) {
+        $service = (string) $this->queryParam('service', '');
+
+        if ($this->shouldUseCache($service)) {
             return $this->getCachedResponse();
         }
 
-        $service = $this->queryParam('service', '');
-
-        // Verifica serviços de cache
         $this->checkCacheServices($service);
 
-        // Verifica serviços de banco de dados
         $this->checkDatabaseServices($service);
 
-        // Verifica serviços de storage
         $this->checkStorageServices($service);
 
-        // Verifica serviços DynamoDB
         $this->checkDynamoServices($service);
 
-        // Adiciona métricas gerais
         $this->addGeneralMetrics();
 
-        // Processa resultado
         if ($this->deadServices > 0) {
             return $this->handleFailure();
         }
 
-        // Salva log de sucesso
-        $this->saveSuccessLog();
+        // Só a verificação completa alimenta o cache; uma checagem parcial (?service=)
+        // não pode fazer a próxima checagem completa responder OK sem testar tudo.
+        if (empty($service)) {
+            $this->saveSuccessLog();
+        }
 
         return $this->responseData;
     }
 
     /**
-     * Verifica se deve usar resposta em cache
+     * Usa o resultado em cache apenas se a última verificação completa bem-sucedida
+     * tiver ocorrido há menos de CACHE_DURATION segundos.
      *
+     * @param string $service
      * @return bool
      */
-    private function shouldUseCache(): bool
+    private function shouldUseCache(string $service): bool
     {
-        $forceCheck = $this->queryParam('force', '');
+        if (!empty($service) || !empty($this->queryParam('force', ''))) {
+            return false;
+        }
+
         $cacheFile = Path::temp(self::HEALTHY_CHECK_FILE);
 
-        return $this->filesystem->exists($cacheFile) && empty($forceCheck);
+        if (!$this->filesystem->exists($cacheFile)) {
+            return false;
+        }
+
+        return (time() - $this->filesystem->lastModified($cacheFile)) < self::CACHE_DURATION;
     }
 
     /**
@@ -230,13 +237,35 @@ class ImAliveAction extends Action
      */
     private function handleFailure(): ResponseInterface
     {
+        $this->filesystem->delete(Path::temp(self::HEALTHY_CHECK_FILE));
+
         $this->logger->critical('Health check failed', [
             'dead_services' => $this->deadServices,
             'response' => $this->responseData,
             'timestamp' => time()
         ]);
 
-        return $this->respondWithJSON($this->responseData, 503);
+        return $this->respondWithJSON($this->publicResponseData(), 503);
+    }
+
+    /**
+     * Em produção/staging, omite as mensagens de erro das conexões da resposta pública
+     * (elas continuam registradas no log em handleFailure).
+     *
+     * @return array
+     */
+    private function publicResponseData(): array
+    {
+        if (!Env::real()) {
+            return $this->responseData;
+        }
+
+        return array_map(function ($item) {
+            if (is_array($item)) {
+                unset($item['error']);
+            }
+            return $item;
+        }, $this->responseData);
     }
 
     /**
@@ -249,10 +278,7 @@ class ImAliveAction extends Action
         $logFile = Path::temp(self::HEALTHY_CHECK_FILE);
         $timestamp = time();
 
-        // Adiciona nova entrada
         $this->filesystem->append($logFile, $timestamp . "\n");
-
-        // Limita número de entradas no log
         $this->limitLogEntries($logFile);
     }
 
@@ -304,7 +330,7 @@ class ImAliveAction extends Action
         try {
             redis($alias)->ping();
             $info['details'] = 'Redis connection successful';
-        } catch (Exception $e) {
+        } catch (Throwable $e) {
             $info['status'] = 'dead';
             $info['error'] = $e->getMessage();
             $info['details'] = 'Redis connection failed';
@@ -328,7 +354,7 @@ class ImAliveAction extends Action
         try {
             db($alias)->getPdo();
             $info['details'] = 'Database connection successful';
-        } catch (Exception $e) {
+        } catch (Throwable $e) {
             $info['status'] = 'dead';
             $info['error'] = $e->getMessage();
             $info['details'] = 'Database connection failed';
@@ -359,7 +385,7 @@ class ImAliveAction extends Action
                 $info['status'] = 'dead';
                 $info['details'] = 'S3 bucket not found';
             }
-        } catch (Exception $e) {
+        } catch (Throwable $e) {
             $info['status'] = 'dead';
             $info['error'] = $e->getMessage();
             $info['details'] = 'S3 connection failed';
@@ -383,11 +409,10 @@ class ImAliveAction extends Action
         try {
             $dynamoClient = dynamo($alias);
 
-            // Tenta listar tabelas para verificar conectividade
             $tables = $dynamoClient->listTables();
             $info['details'] = 'DynamoDB connection successful';
             $info['tables_count'] = count($tables);
-        } catch (Exception $e) {
+        } catch (Throwable $e) {
             $info['status'] = 'dead';
             $info['error'] = $e->getMessage();
             $info['details'] = 'DynamoDB connection failed';

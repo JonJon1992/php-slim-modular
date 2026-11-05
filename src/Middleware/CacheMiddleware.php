@@ -53,7 +53,7 @@ class CacheMiddleware
      */
     public function __invoke(Request $request, Handler $handler): Response
     {
-        if ($this->inactive || $request->getMethod() != 'GET' || env('CACHE_MIDDLEWARE') != 'true') {
+        if ($this->inactive || $request->getMethod() != 'GET' || !self::enabled()) {
             return $handler->handle($request);
         }
 
@@ -79,6 +79,17 @@ class CacheMiddleware
         }
 
         return $response->withHeader('X-Cache-Middleware', 'false');
+    }
+
+    /**
+     * O env() do Illuminate devolve bool true para "true", mas outras implementações
+     * podem devolver a string; filter_var aceita os dois (e também "1", "on", "yes").
+     *
+     * @return bool
+     */
+    protected static function enabled(): bool
+    {
+        return filter_var(env('CACHE_MIDDLEWARE'), FILTER_VALIDATE_BOOLEAN);
     }
 
     /**
@@ -123,7 +134,7 @@ class CacheMiddleware
     public function getExpiresIn(): int
     {
         if (empty($this->expiresIn)) {
-            $this->expiresIn = env('CACHE_MIDDLEWARE_DEFAULT_EXPIRE', redis()->expiresAtTheEndDay());
+            $this->expiresIn = (int) env('CACHE_MIDDLEWARE_DEFAULT_EXPIRE', redis()->expiresAtTheEndDay());
         }
         return $this->expiresIn;
     }
@@ -282,7 +293,7 @@ class CacheMiddleware
                         redis()->expire(self::NAMESPACE . ':' . $user_id, redis()->expiresAtTheEndDay());
                     }
                 } else {
-                    redis()->expire(self::NAMESPACE . ':' . $user_id, env('CACHE_MIDDLEWARE_KEY_EXPIRE', Time::_24H));
+                    redis()->expire(self::NAMESPACE . ':' . $user_id, (int) env('CACHE_MIDDLEWARE_KEY_EXPIRE', Time::_24H));
                 }
             });
         } catch (\RedisException $e) {
@@ -295,7 +306,7 @@ class CacheMiddleware
      */
     public static function destroy($patterns): void
     {
-        if (env('CACHE_MIDDLEWARE') !== 'true') {
+        if (!self::enabled()) {
             return;
         }
 

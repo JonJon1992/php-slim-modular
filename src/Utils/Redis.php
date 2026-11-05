@@ -315,7 +315,14 @@ class Redis
      */
     public function calcDbIndex($id): int
     {
-        return $id <= 0 ? 0 : ($id % 15) + 1;
+        if (is_numeric($id)) {
+            $id = (int) $id;
+            return $id <= 0 ? 0 : ($id % 15) + 1;
+        }
+
+        // IDs não numéricos (ex.: UUID vindo do "sub" do JWT)
+        $id = (string) $id;
+        return $id === '' ? 0 : (crc32($id) % 15) + 1;
     }
 
     /**
@@ -326,10 +333,16 @@ class Redis
     public function inDatabase($dbIndex, Closure $closure): mixed
     {
         $this->getRedis()->select($dbIndex);
-        $result = $closure();
-        $this->getRedis()->select(0);
 
-        return $result;
+        try {
+            return $closure();
+        } finally {
+            try {
+                $this->getRedis()->select(0);
+            } catch (RedisException) {
+                // Conexão perdida: uma nova conexão já começa no DB 0.
+            }
+        }
     }
 
     /**
