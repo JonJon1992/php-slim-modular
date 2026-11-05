@@ -323,6 +323,20 @@ logger()->error('Erro na operação', ['context' => 'dados']);
 logger()->info('Operação realizada', ['user_id' => 123]);
 ```
 
+## 🧪 Testes
+
+```bash
+composer install
+composer test      # PHPUnit: Eloquent, filas e formato do log (SQLite em memória)
+composer analyse   # PHPStan
+```
+
+A lib aceita illuminate 10, 11 e 12. Para rodar os testes com outra versão sem mudar o `composer.json`:
+
+```bash
+composer update -W --with "illuminate/support:^11.0"
+```
+
 ## 🤝 Contribuindo
 
 1. Fork o projeto

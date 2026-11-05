@@ -11,3 +11,4 @@ auth.json
 docker
 xdebug.ini
 /var/
+/.phpunit.cache/

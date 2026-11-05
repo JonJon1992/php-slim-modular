@@ -43,24 +43,25 @@
     "awurth/slim-validation": "5.0.0",
     "guzzlehttp/guzzle": "^7.4.5",
     "hashids/hashids": "^5.0.2",
-    "illuminate/bus": "^10.37.3",
-    "illuminate/database": "^10.37.3",
-    "illuminate/events": "^10.37.3",
-    "illuminate/filesystem": "^10.37.3",
-    "illuminate/hashing": "^10.37.3",
-    "illuminate/pagination": "^10.37.3",
-    "illuminate/queue": "^10.37.3",
+    "illuminate/bus": "^10.37.3 || ^11.0 || ^12.0",
+    "illuminate/database": "^10.37.3 || ^11.0 || ^12.0",
+    "illuminate/events": "^10.37.3 || ^11.0 || ^12.0",
+    "illuminate/filesystem": "^10.37.3 || ^11.0 || ^12.0",
+    "illuminate/hashing": "^10.37.3 || ^11.0 || ^12.0",
+    "illuminate/pagination": "^10.37.3 || ^11.0 || ^12.0",
+    "illuminate/queue": "^10.37.3 || ^11.0 || ^12.0",
     "laminas/laminas-hydrator": "4.18.0",
     "lcobucci/clock": "^3.2",
     "lcobucci/jwt": "^5.5",
     "monolog/monolog": "^2.3.2 || ^3.0",
+    "nesbot/carbon": "^2.67 || ^3.0",
     "php-di/php-di": "^7.0",
     "predis/predis": "v1.1.6",
     "respect/validation": "^2.0",
     "slim/php-view": "^3.2",
     "slim/psr7": "^1.7",
     "slim/slim": "^4.9",
-    "symfony/console": "^6.4.1",
+    "symfony/console": "^6.4.1 || ^7.0",
     "symfony/event-dispatcher": "^6.3",
     "vlucas/phpdotenv": "^5.3",
     "jonjon1992/s3-php": "v2.4.0",
@@ -85,8 +86,14 @@
       "src/helpers.php"
     ]
   },
+  "autoload-dev": {
+    "psr-4": {
+      "Tests\\": "tests/"
+    }
+  },
   "scripts": {
-    "analyse": "phpstan analyse --memory-limit=1G"
+    "analyse": "phpstan analyse --memory-limit=1G",
+    "test": "phpunit"
   },
   "config": {
     "process-timeout": 0,
