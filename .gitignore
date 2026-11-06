@@ -7,7 +7,6 @@ Dockerfile
 .cursor
 @TODO.md
 localstack-data/
-auth.json
 docker
 xdebug.ini
 /var/
