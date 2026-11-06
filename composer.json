@@ -60,7 +60,7 @@
     "respect/validation": "^2.0",
     "slim/php-view": "^3.2",
     "slim/psr7": "^1.7",
-    "slim/slim": "^4.9",
+    "slim/slim": "^4.15.3",
     "symfony/console": "^6.4.1 || ^7.0",
     "symfony/event-dispatcher": "^6.3",
     "vlucas/phpdotenv": "^5.3",
