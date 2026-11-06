@@ -28,6 +28,7 @@ return new class {
     /**
      * @param ContainerBuilder $builder
      * @param array|null $modules instâncias já criadas dos módulos (evita instanciá-los de novo)
+     * @throws Exception
      */
     public function __invoke(ContainerBuilder $builder, ?array $modules = null): void
     {

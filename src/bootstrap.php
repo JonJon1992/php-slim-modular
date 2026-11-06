@@ -16,8 +16,6 @@ require_once __DIR__ . '/helpers.php';
 Trace::bootstrap();
 
 try {
-    // safeLoad: o .env é opcional (em containers as variáveis já vêm do ambiente);
-    // um .env presente mas inválido continua gerando erro.
     $dotenv = Dotenv::createImmutable(Path::root());
     $dotenv->safeLoad();
 } catch (\Exception $e) {
@@ -31,9 +29,6 @@ $containerBuilder = new ContainerBuilder();
 $containerBuilder->useAutowiring(true);
 $containerBuilder->useAttributes(true);
 
-// Em production/staging, guarda no APCu as definições de autowiring para não refazer a
-// reflexão a cada requisição. O namespace usa o caminho real do projeto, então cada release
-// tem o próprio cache. Desative com APP_CONTAINER_CACHE=false.
 if (Env::real() && env('APP_CONTAINER_CACHE', true) && function_exists('apcu_enabled') && apcu_enabled()) {
     $containerBuilder->enableDefinitionCache('php-slim-modular.' . md5(Path::root()));
 }
@@ -49,8 +44,6 @@ foreach ($bindings as $key => $class) {
 }
 
 $containerBuilder->addDefinitions($processedBindings);
-
-// Cada módulo é instanciado uma única vez e compartilhado com os serviços (views).
 $moduleClasses = config('app.modules', []);
 $modules = array_map(fn(string $class) => new $class(), $moduleClasses);
 

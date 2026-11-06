@@ -9,6 +9,5 @@ return [
     ICrypt::class => Crypt::class,
     IValidate::class => Validate::class,
     IAuth::class => Auth::class,
-    IClient::class => Client::class,
     IJwtValidator::class => JwtValidator::class,
 ];
