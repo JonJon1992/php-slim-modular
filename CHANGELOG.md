@@ -1,5 +1,16 @@
 # CHANGELOG
 
+## [Unreleased]
+
+## [4.0.0] — 2026-11-06
+
+### Added
+ - Utilitário `Core\Utils\Ai` para chat e embeddings com LLPhant instalado separadamente.
+
+### Changed
+ - **Breaking:** o container não registra mais `IClient` automaticamente. Projetos que usam `IClient` ou `ClientMiddleware` devem registrar explicitamente o vínculo com `Core\Utils\Client`.
+ - Dependências: Slim exige `^4.15.3`; as versões solicitadas de Guzzle e PHP_CodeSniffer passaram a ser `8.0.1.0` e `4.0.2.0`. O `composer.lock` ainda precisa ser atualizado para refletir essas restrições.
+
 ### v3.4.0
  - Dependências: os sete pacotes `illuminate/*` aceitam 10, 11 e 12 (`^10.37.3 || ^11.0 || ^12.0`); `symfony/console` aceita 7 (exigido pelo `illuminate/console` 11/12); `nesbot/carbon` declarado (aceita Carbon 3, exigido pelo illuminate 12)
  - Nenhuma mudança de código foi necessária: `Worker`, `WorkerOptions`, `ExceptionHandler`, os `Capsule\Manager` de banco e fila, os conectores, a grammar de schema, `Str`/`Arr`/`Env` e o `Command` do Symfony 7 mantêm as assinaturas usadas
